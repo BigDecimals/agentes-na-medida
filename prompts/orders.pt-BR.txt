@@ -1,0 +1,1 @@
+Encontre os cinco pedidos de maior valor que aguardam envio. Ordene por valor decrescente; em caso de empate, use ID decrescente. Use os dados reais do laboratório. Não altere arquivos ou dados. Não delegue para outros agentes. Retorne somente JSON no formato {"orderIds":[...]}, com os IDs em ordem. Se não conseguir consultar, reporte o bloqueio em vez de inventar pedidos.

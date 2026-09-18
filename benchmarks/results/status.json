@@ -1,0 +1,11 @@
+{
+  "status": "measured",
+  "campaign": "measured-v1",
+  "runCount": 12,
+  "correct": 12,
+  "scope": "isolated bounded Responses harness using Hermes authentication; excludes parent and setup",
+  "claims": {
+    "universalSavings": false,
+    "generalModelRanking": false
+  }
+}
