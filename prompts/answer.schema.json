@@ -1,0 +1,6 @@
+{
+  "type": "object",
+  "properties": { "orderIds": { "type": "array", "items": { "type": "integer" }, "maxItems": 5 } },
+  "required": ["orderIds"],
+  "additionalProperties": false
+}

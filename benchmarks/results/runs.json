@@ -1,0 +1,842 @@
+[
+  {
+    "apiCalls": 3,
+    "arm": "generic",
+    "cachedInputTokens": 0,
+    "campaign": "measured-v1",
+    "correct": true,
+    "elapsedMs": 19905,
+    "embeddedSeedSha256": "eb7c2e64f1e35f9f30a0519729f53cc366bd13a2a4179edf52a8e52c7fd1eaef",
+    "error": null,
+    "harness": "bounded Responses loop with Hermes credential resolution; not Codex CLI or full Hermes agent",
+    "harnessSha256": "eb4d24cf350422f7b942325a0cb5e6c4d063ce47fd1c98017060723b94c65280",
+    "inputTokens": 1677,
+    "jarSha256": "3be1deb589cb73d07e8726d289b1dd4a55b3b2f249aef6c50573655029352a85",
+    "maxReportedInputTokens": 925,
+    "openaiSdkVersion": "2.24.0",
+    "orderIds": [
+      1004,
+      1002,
+      1009,
+      1007,
+      1001
+    ],
+    "outputTokens": 105,
+    "perCallUsage": [
+      {
+        "inputTokens": 287,
+        "outputTokens": 30,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 11
+      },
+      {
+        "inputTokens": 465,
+        "outputTokens": 17,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 0
+      },
+      {
+        "inputTokens": 925,
+        "outputTokens": 58,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 33
+      }
+    ],
+    "provider": "openai-codex",
+    "reasoningEffort": "low",
+    "reasoningTokens": 44,
+    "recordedAt": "2026-09-18T12:27:41.595399+00:00",
+    "requestedModel": "gpt-5.6-luna",
+    "schemaVersion": 1,
+    "scope": "all model requests in this isolated trial; excludes parent conversation and setup probes",
+    "servedModels": [
+      "gpt-5.6-luna"
+    ],
+    "sourcesUnchanged": true,
+    "toolCalls": 2,
+    "toolEvents": [
+      {
+        "name": "orders",
+        "arguments": {
+          "operation": "schema"
+        },
+        "resultRows": 5,
+        "resultBytes": 501
+      },
+      {
+        "name": "orders",
+        "arguments": {
+          "operation": "list"
+        },
+        "resultRows": 12,
+        "resultBytes": 1195
+      }
+    ],
+    "trial": 1,
+    "usageComplete": true,
+    "workflowComplete": true
+  },
+  {
+    "apiCalls": 2,
+    "arm": "tool",
+    "cachedInputTokens": 0,
+    "campaign": "measured-v1",
+    "correct": true,
+    "elapsedMs": 11745,
+    "embeddedSeedSha256": "eb7c2e64f1e35f9f30a0519729f53cc366bd13a2a4179edf52a8e52c7fd1eaef",
+    "error": null,
+    "harness": "bounded Responses loop with Hermes credential resolution; not Codex CLI or full Hermes agent",
+    "harnessSha256": "eb4d24cf350422f7b942325a0cb5e6c4d063ce47fd1c98017060723b94c65280",
+    "inputTokens": 862,
+    "jarSha256": "3be1deb589cb73d07e8726d289b1dd4a55b3b2f249aef6c50573655029352a85",
+    "maxReportedInputTokens": 549,
+    "openaiSdkVersion": "2.24.0",
+    "orderIds": [
+      1004,
+      1002,
+      1009,
+      1007,
+      1001
+    ],
+    "outputTokens": 67,
+    "perCallUsage": [
+      {
+        "inputTokens": 313,
+        "outputTokens": 44,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 17
+      },
+      {
+        "inputTokens": 549,
+        "outputTokens": 23,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 0
+      }
+    ],
+    "provider": "openai-codex",
+    "reasoningEffort": "low",
+    "reasoningTokens": 17,
+    "recordedAt": "2026-09-18T12:27:55.057458+00:00",
+    "requestedModel": "gpt-5.6-luna",
+    "schemaVersion": 1,
+    "scope": "all model requests in this isolated trial; excludes parent conversation and setup probes",
+    "servedModels": [
+      "gpt-5.6-luna"
+    ],
+    "sourcesUnchanged": true,
+    "toolCalls": 1,
+    "toolEvents": [
+      {
+        "name": "orders",
+        "arguments": {
+          "status": "AWAITING_SHIPMENT",
+          "limit": 5
+        },
+        "resultRows": 5,
+        "resultBytes": 506
+      }
+    ],
+    "trial": 1,
+    "usageComplete": true,
+    "workflowComplete": true
+  },
+  {
+    "apiCalls": 3,
+    "arm": "skill",
+    "cachedInputTokens": 0,
+    "campaign": "measured-v1",
+    "correct": true,
+    "elapsedMs": 12667,
+    "embeddedSeedSha256": "eb7c2e64f1e35f9f30a0519729f53cc366bd13a2a4179edf52a8e52c7fd1eaef",
+    "error": null,
+    "harness": "bounded Responses loop with Hermes credential resolution; not Codex CLI or full Hermes agent",
+    "harnessSha256": "eb4d24cf350422f7b942325a0cb5e6c4d063ce47fd1c98017060723b94c65280",
+    "inputTokens": 1902,
+    "jarSha256": "3be1deb589cb73d07e8726d289b1dd4a55b3b2f249aef6c50573655029352a85",
+    "maxReportedInputTokens": 884,
+    "openaiSdkVersion": "2.24.0",
+    "orderIds": [
+      1004,
+      1002,
+      1009,
+      1007,
+      1001
+    ],
+    "outputTokens": 76,
+    "perCallUsage": [
+      {
+        "inputTokens": 351,
+        "outputTokens": 28,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 12
+      },
+      {
+        "inputTokens": 667,
+        "outputTokens": 25,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 0
+      },
+      {
+        "inputTokens": 884,
+        "outputTokens": 23,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 0
+      }
+    ],
+    "provider": "openai-codex",
+    "reasoningEffort": "low",
+    "reasoningTokens": 12,
+    "recordedAt": "2026-09-18T12:28:09.479640+00:00",
+    "requestedModel": "gpt-5.6-luna",
+    "schemaVersion": 1,
+    "scope": "all model requests in this isolated trial; excludes parent conversation and setup probes",
+    "servedModels": [
+      "gpt-5.6-luna"
+    ],
+    "sourcesUnchanged": true,
+    "toolCalls": 2,
+    "toolEvents": [
+      {
+        "name": "load_skill",
+        "resultRows": null,
+        "resultBytes": 1165
+      },
+      {
+        "name": "orders",
+        "arguments": {
+          "status": "AWAITING_SHIPMENT",
+          "limit": 5
+        },
+        "resultRows": 5,
+        "resultBytes": 506
+      }
+    ],
+    "trial": 1,
+    "usageComplete": true,
+    "workflowComplete": true
+  },
+  {
+    "apiCalls": 2,
+    "arm": "tool",
+    "cachedInputTokens": 0,
+    "campaign": "measured-v1",
+    "correct": true,
+    "elapsedMs": 11688,
+    "embeddedSeedSha256": "eb7c2e64f1e35f9f30a0519729f53cc366bd13a2a4179edf52a8e52c7fd1eaef",
+    "error": null,
+    "harness": "bounded Responses loop with Hermes credential resolution; not Codex CLI or full Hermes agent",
+    "harnessSha256": "eb4d24cf350422f7b942325a0cb5e6c4d063ce47fd1c98017060723b94c65280",
+    "inputTokens": 843,
+    "jarSha256": "3be1deb589cb73d07e8726d289b1dd4a55b3b2f249aef6c50573655029352a85",
+    "maxReportedInputTokens": 530,
+    "openaiSdkVersion": "2.24.0",
+    "orderIds": [
+      1004,
+      1002,
+      1009,
+      1007,
+      1001
+    ],
+    "outputTokens": 48,
+    "perCallUsage": [
+      {
+        "inputTokens": 313,
+        "outputTokens": 25,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 0
+      },
+      {
+        "inputTokens": 530,
+        "outputTokens": 23,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 0
+      }
+    ],
+    "provider": "openai-codex",
+    "reasoningEffort": "low",
+    "reasoningTokens": 0,
+    "recordedAt": "2026-09-18T12:28:22.892935+00:00",
+    "requestedModel": "gpt-6-astra",
+    "schemaVersion": 1,
+    "scope": "all model requests in this isolated trial; excludes parent conversation and setup probes",
+    "servedModels": [
+      "gpt-6-astra"
+    ],
+    "sourcesUnchanged": true,
+    "toolCalls": 1,
+    "toolEvents": [
+      {
+        "name": "orders",
+        "arguments": {
+          "status": "AWAITING_SHIPMENT",
+          "limit": 5
+        },
+        "resultRows": 5,
+        "resultBytes": 506
+      }
+    ],
+    "trial": 1,
+    "usageComplete": true,
+    "workflowComplete": true
+  },
+  {
+    "apiCalls": 2,
+    "arm": "tool",
+    "cachedInputTokens": 0,
+    "campaign": "measured-v1",
+    "correct": true,
+    "elapsedMs": 14636,
+    "embeddedSeedSha256": "eb7c2e64f1e35f9f30a0519729f53cc366bd13a2a4179edf52a8e52c7fd1eaef",
+    "error": null,
+    "harness": "bounded Responses loop with Hermes credential resolution; not Codex CLI or full Hermes agent",
+    "harnessSha256": "eb4d24cf350422f7b942325a0cb5e6c4d063ce47fd1c98017060723b94c65280",
+    "inputTokens": 859,
+    "jarSha256": "3be1deb589cb73d07e8726d289b1dd4a55b3b2f249aef6c50573655029352a85",
+    "maxReportedInputTokens": 546,
+    "openaiSdkVersion": "2.24.0",
+    "orderIds": [
+      1004,
+      1002,
+      1009,
+      1007,
+      1001
+    ],
+    "outputTokens": 64,
+    "perCallUsage": [
+      {
+        "inputTokens": 313,
+        "outputTokens": 41,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 14
+      },
+      {
+        "inputTokens": 546,
+        "outputTokens": 23,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 0
+      }
+    ],
+    "provider": "openai-codex",
+    "reasoningEffort": "low",
+    "reasoningTokens": 14,
+    "recordedAt": "2026-09-18T12:28:39.275412+00:00",
+    "requestedModel": "gpt-5.6-luna",
+    "schemaVersion": 1,
+    "scope": "all model requests in this isolated trial; excludes parent conversation and setup probes",
+    "servedModels": [
+      "gpt-5.6-luna"
+    ],
+    "sourcesUnchanged": true,
+    "toolCalls": 1,
+    "toolEvents": [
+      {
+        "name": "orders",
+        "arguments": {
+          "status": "AWAITING_SHIPMENT",
+          "limit": 5
+        },
+        "resultRows": 5,
+        "resultBytes": 506
+      }
+    ],
+    "trial": 2,
+    "usageComplete": true,
+    "workflowComplete": true
+  },
+  {
+    "apiCalls": 3,
+    "arm": "skill",
+    "cachedInputTokens": 0,
+    "campaign": "measured-v1",
+    "correct": true,
+    "elapsedMs": 11913,
+    "embeddedSeedSha256": "eb7c2e64f1e35f9f30a0519729f53cc366bd13a2a4179edf52a8e52c7fd1eaef",
+    "error": null,
+    "harness": "bounded Responses loop with Hermes credential resolution; not Codex CLI or full Hermes agent",
+    "harnessSha256": "eb4d24cf350422f7b942325a0cb5e6c4d063ce47fd1c98017060723b94c65280",
+    "inputTokens": 1902,
+    "jarSha256": "3be1deb589cb73d07e8726d289b1dd4a55b3b2f249aef6c50573655029352a85",
+    "maxReportedInputTokens": 884,
+    "openaiSdkVersion": "2.24.0",
+    "orderIds": [
+      1004,
+      1002,
+      1009,
+      1007,
+      1001
+    ],
+    "outputTokens": 76,
+    "perCallUsage": [
+      {
+        "inputTokens": 351,
+        "outputTokens": 28,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 12
+      },
+      {
+        "inputTokens": 667,
+        "outputTokens": 25,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 0
+      },
+      {
+        "inputTokens": 884,
+        "outputTokens": 23,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 0
+      }
+    ],
+    "provider": "openai-codex",
+    "reasoningEffort": "low",
+    "reasoningTokens": 12,
+    "recordedAt": "2026-09-18T12:28:52.932028+00:00",
+    "requestedModel": "gpt-5.6-luna",
+    "schemaVersion": 1,
+    "scope": "all model requests in this isolated trial; excludes parent conversation and setup probes",
+    "servedModels": [
+      "gpt-5.6-luna"
+    ],
+    "sourcesUnchanged": true,
+    "toolCalls": 2,
+    "toolEvents": [
+      {
+        "name": "load_skill",
+        "resultRows": null,
+        "resultBytes": 1165
+      },
+      {
+        "name": "orders",
+        "arguments": {
+          "status": "AWAITING_SHIPMENT",
+          "limit": 5
+        },
+        "resultRows": 5,
+        "resultBytes": 506
+      }
+    ],
+    "trial": 2,
+    "usageComplete": true,
+    "workflowComplete": true
+  },
+  {
+    "apiCalls": 3,
+    "arm": "generic",
+    "cachedInputTokens": 0,
+    "campaign": "measured-v1",
+    "correct": true,
+    "elapsedMs": 19956,
+    "embeddedSeedSha256": "eb7c2e64f1e35f9f30a0519729f53cc366bd13a2a4179edf52a8e52c7fd1eaef",
+    "error": null,
+    "harness": "bounded Responses loop with Hermes credential resolution; not Codex CLI or full Hermes agent",
+    "harnessSha256": "eb4d24cf350422f7b942325a0cb5e6c4d063ce47fd1c98017060723b94c65280",
+    "inputTokens": 1679,
+    "jarSha256": "3be1deb589cb73d07e8726d289b1dd4a55b3b2f249aef6c50573655029352a85",
+    "maxReportedInputTokens": 926,
+    "openaiSdkVersion": "2.24.0",
+    "orderIds": [
+      1004,
+      1002,
+      1009,
+      1007,
+      1001
+    ],
+    "outputTokens": 112,
+    "perCallUsage": [
+      {
+        "inputTokens": 287,
+        "outputTokens": 31,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 12
+      },
+      {
+        "inputTokens": 466,
+        "outputTokens": 17,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 0
+      },
+      {
+        "inputTokens": 926,
+        "outputTokens": 64,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 39
+      }
+    ],
+    "provider": "openai-codex",
+    "reasoningEffort": "low",
+    "reasoningTokens": 51,
+    "recordedAt": "2026-09-18T12:29:14.640174+00:00",
+    "requestedModel": "gpt-5.6-luna",
+    "schemaVersion": 1,
+    "scope": "all model requests in this isolated trial; excludes parent conversation and setup probes",
+    "servedModels": [
+      "gpt-5.6-luna"
+    ],
+    "sourcesUnchanged": true,
+    "toolCalls": 2,
+    "toolEvents": [
+      {
+        "name": "orders",
+        "arguments": {
+          "operation": "schema"
+        },
+        "resultRows": 5,
+        "resultBytes": 501
+      },
+      {
+        "name": "orders",
+        "arguments": {
+          "operation": "list"
+        },
+        "resultRows": 12,
+        "resultBytes": 1195
+      }
+    ],
+    "trial": 2,
+    "usageComplete": true,
+    "workflowComplete": true
+  },
+  {
+    "apiCalls": 2,
+    "arm": "tool",
+    "cachedInputTokens": 0,
+    "campaign": "measured-v1",
+    "correct": true,
+    "elapsedMs": 13034,
+    "embeddedSeedSha256": "eb7c2e64f1e35f9f30a0519729f53cc366bd13a2a4179edf52a8e52c7fd1eaef",
+    "error": null,
+    "harness": "bounded Responses loop with Hermes credential resolution; not Codex CLI or full Hermes agent",
+    "harnessSha256": "eb4d24cf350422f7b942325a0cb5e6c4d063ce47fd1c98017060723b94c65280",
+    "inputTokens": 843,
+    "jarSha256": "3be1deb589cb73d07e8726d289b1dd4a55b3b2f249aef6c50573655029352a85",
+    "maxReportedInputTokens": 530,
+    "openaiSdkVersion": "2.24.0",
+    "orderIds": [
+      1004,
+      1002,
+      1009,
+      1007,
+      1001
+    ],
+    "outputTokens": 48,
+    "perCallUsage": [
+      {
+        "inputTokens": 313,
+        "outputTokens": 25,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 0
+      },
+      {
+        "inputTokens": 530,
+        "outputTokens": 23,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 0
+      }
+    ],
+    "provider": "openai-codex",
+    "reasoningEffort": "low",
+    "reasoningTokens": 0,
+    "recordedAt": "2026-09-18T12:29:29.432446+00:00",
+    "requestedModel": "gpt-6-astra",
+    "schemaVersion": 1,
+    "scope": "all model requests in this isolated trial; excludes parent conversation and setup probes",
+    "servedModels": [
+      "gpt-6-astra"
+    ],
+    "sourcesUnchanged": true,
+    "toolCalls": 1,
+    "toolEvents": [
+      {
+        "name": "orders",
+        "arguments": {
+          "status": "AWAITING_SHIPMENT",
+          "limit": 5
+        },
+        "resultRows": 5,
+        "resultBytes": 506
+      }
+    ],
+    "trial": 2,
+    "usageComplete": true,
+    "workflowComplete": true
+  },
+  {
+    "apiCalls": 3,
+    "arm": "skill",
+    "cachedInputTokens": 0,
+    "campaign": "measured-v1",
+    "correct": true,
+    "elapsedMs": 11740,
+    "embeddedSeedSha256": "eb7c2e64f1e35f9f30a0519729f53cc366bd13a2a4179edf52a8e52c7fd1eaef",
+    "error": null,
+    "harness": "bounded Responses loop with Hermes credential resolution; not Codex CLI or full Hermes agent",
+    "harnessSha256": "eb4d24cf350422f7b942325a0cb5e6c4d063ce47fd1c98017060723b94c65280",
+    "inputTokens": 1874,
+    "jarSha256": "3be1deb589cb73d07e8726d289b1dd4a55b3b2f249aef6c50573655029352a85",
+    "maxReportedInputTokens": 870,
+    "openaiSdkVersion": "2.24.0",
+    "orderIds": [
+      1004,
+      1002,
+      1009,
+      1007,
+      1001
+    ],
+    "outputTokens": 62,
+    "perCallUsage": [
+      {
+        "inputTokens": 351,
+        "outputTokens": 14,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 0
+      },
+      {
+        "inputTokens": 653,
+        "outputTokens": 25,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 0
+      },
+      {
+        "inputTokens": 870,
+        "outputTokens": 23,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 0
+      }
+    ],
+    "provider": "openai-codex",
+    "reasoningEffort": "low",
+    "reasoningTokens": 0,
+    "recordedAt": "2026-09-18T12:29:42.931944+00:00",
+    "requestedModel": "gpt-5.6-luna",
+    "schemaVersion": 1,
+    "scope": "all model requests in this isolated trial; excludes parent conversation and setup probes",
+    "servedModels": [
+      "gpt-5.6-luna"
+    ],
+    "sourcesUnchanged": true,
+    "toolCalls": 2,
+    "toolEvents": [
+      {
+        "name": "load_skill",
+        "resultRows": null,
+        "resultBytes": 1165
+      },
+      {
+        "name": "orders",
+        "arguments": {
+          "status": "AWAITING_SHIPMENT",
+          "limit": 5
+        },
+        "resultRows": 5,
+        "resultBytes": 506
+      }
+    ],
+    "trial": 3,
+    "usageComplete": true,
+    "workflowComplete": true
+  },
+  {
+    "apiCalls": 3,
+    "arm": "generic",
+    "cachedInputTokens": 0,
+    "campaign": "measured-v1",
+    "correct": true,
+    "elapsedMs": 21273,
+    "embeddedSeedSha256": "eb7c2e64f1e35f9f30a0519729f53cc366bd13a2a4179edf52a8e52c7fd1eaef",
+    "error": null,
+    "harness": "bounded Responses loop with Hermes credential resolution; not Codex CLI or full Hermes agent",
+    "harnessSha256": "eb4d24cf350422f7b942325a0cb5e6c4d063ce47fd1c98017060723b94c65280",
+    "inputTokens": 1679,
+    "jarSha256": "3be1deb589cb73d07e8726d289b1dd4a55b3b2f249aef6c50573655029352a85",
+    "maxReportedInputTokens": 926,
+    "openaiSdkVersion": "2.24.0",
+    "orderIds": [
+      1004,
+      1002,
+      1009,
+      1007,
+      1001
+    ],
+    "outputTokens": 102,
+    "perCallUsage": [
+      {
+        "inputTokens": 287,
+        "outputTokens": 31,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 12
+      },
+      {
+        "inputTokens": 466,
+        "outputTokens": 17,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 0
+      },
+      {
+        "inputTokens": 926,
+        "outputTokens": 54,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 29
+      }
+    ],
+    "provider": "openai-codex",
+    "reasoningEffort": "low",
+    "reasoningTokens": 41,
+    "recordedAt": "2026-09-18T12:30:05.885829+00:00",
+    "requestedModel": "gpt-5.6-luna",
+    "schemaVersion": 1,
+    "scope": "all model requests in this isolated trial; excludes parent conversation and setup probes",
+    "servedModels": [
+      "gpt-5.6-luna"
+    ],
+    "sourcesUnchanged": true,
+    "toolCalls": 2,
+    "toolEvents": [
+      {
+        "name": "orders",
+        "arguments": {
+          "operation": "schema"
+        },
+        "resultRows": 5,
+        "resultBytes": 501
+      },
+      {
+        "name": "orders",
+        "arguments": {
+          "operation": "list"
+        },
+        "resultRows": 12,
+        "resultBytes": 1195
+      }
+    ],
+    "trial": 3,
+    "usageComplete": true,
+    "workflowComplete": true
+  },
+  {
+    "apiCalls": 2,
+    "arm": "tool",
+    "cachedInputTokens": 0,
+    "campaign": "measured-v1",
+    "correct": true,
+    "elapsedMs": 12035,
+    "embeddedSeedSha256": "eb7c2e64f1e35f9f30a0519729f53cc366bd13a2a4179edf52a8e52c7fd1eaef",
+    "error": null,
+    "harness": "bounded Responses loop with Hermes credential resolution; not Codex CLI or full Hermes agent",
+    "harnessSha256": "eb4d24cf350422f7b942325a0cb5e6c4d063ce47fd1c98017060723b94c65280",
+    "inputTokens": 862,
+    "jarSha256": "3be1deb589cb73d07e8726d289b1dd4a55b3b2f249aef6c50573655029352a85",
+    "maxReportedInputTokens": 549,
+    "openaiSdkVersion": "2.24.0",
+    "orderIds": [
+      1004,
+      1002,
+      1009,
+      1007,
+      1001
+    ],
+    "outputTokens": 67,
+    "perCallUsage": [
+      {
+        "inputTokens": 313,
+        "outputTokens": 44,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 17
+      },
+      {
+        "inputTokens": 549,
+        "outputTokens": 23,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 0
+      }
+    ],
+    "provider": "openai-codex",
+    "reasoningEffort": "low",
+    "reasoningTokens": 17,
+    "recordedAt": "2026-09-18T12:30:19.626296+00:00",
+    "requestedModel": "gpt-5.6-luna",
+    "schemaVersion": 1,
+    "scope": "all model requests in this isolated trial; excludes parent conversation and setup probes",
+    "servedModels": [
+      "gpt-5.6-luna"
+    ],
+    "sourcesUnchanged": true,
+    "toolCalls": 1,
+    "toolEvents": [
+      {
+        "name": "orders",
+        "arguments": {
+          "status": "AWAITING_SHIPMENT",
+          "limit": 5
+        },
+        "resultRows": 5,
+        "resultBytes": 506
+      }
+    ],
+    "trial": 3,
+    "usageComplete": true,
+    "workflowComplete": true
+  },
+  {
+    "apiCalls": 2,
+    "arm": "tool",
+    "cachedInputTokens": 0,
+    "campaign": "measured-v1",
+    "correct": true,
+    "elapsedMs": 12160,
+    "embeddedSeedSha256": "eb7c2e64f1e35f9f30a0519729f53cc366bd13a2a4179edf52a8e52c7fd1eaef",
+    "error": null,
+    "harness": "bounded Responses loop with Hermes credential resolution; not Codex CLI or full Hermes agent",
+    "harnessSha256": "eb4d24cf350422f7b942325a0cb5e6c4d063ce47fd1c98017060723b94c65280",
+    "inputTokens": 843,
+    "jarSha256": "3be1deb589cb73d07e8726d289b1dd4a55b3b2f249aef6c50573655029352a85",
+    "maxReportedInputTokens": 530,
+    "openaiSdkVersion": "2.24.0",
+    "orderIds": [
+      1004,
+      1002,
+      1009,
+      1007,
+      1001
+    ],
+    "outputTokens": 48,
+    "perCallUsage": [
+      {
+        "inputTokens": 313,
+        "outputTokens": 25,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 0
+      },
+      {
+        "inputTokens": 530,
+        "outputTokens": 23,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 0
+      }
+    ],
+    "provider": "openai-codex",
+    "reasoningEffort": "low",
+    "reasoningTokens": 0,
+    "recordedAt": "2026-09-18T12:30:33.534332+00:00",
+    "requestedModel": "gpt-6-astra",
+    "schemaVersion": 1,
+    "scope": "all model requests in this isolated trial; excludes parent conversation and setup probes",
+    "servedModels": [
+      "gpt-6-astra"
+    ],
+    "sourcesUnchanged": true,
+    "toolCalls": 1,
+    "toolEvents": [
+      {
+        "name": "orders",
+        "arguments": {
+          "status": "AWAITING_SHIPMENT",
+          "limit": 5
+        },
+        "resultRows": 5,
+        "resultBytes": 506
+      }
+    ],
+    "trial": 3,
+    "usageComplete": true,
+    "workflowComplete": true
+  }
+]

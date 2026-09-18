@@ -1,0 +1,17 @@
+{
+  "name": "agentes-na-medida",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Apresentação estática em PT-BR sobre agentes eficientes, com exemplos verificáveis.",
+  "scripts": {
+    "vendor": "node scripts/vendor.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "test:browser": "playwright test",
+    "serve": "node scripts/serve.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "reveal.js": "6.0.2"
+  }
+}
