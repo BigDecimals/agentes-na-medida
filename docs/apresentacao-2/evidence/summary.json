@@ -1,0 +1,123 @@
+{
+  "arms": {
+    "baseline": {
+      "attempts": 3,
+      "correct": 3,
+      "usageComplete": 3,
+      "inputTokens": {
+        "median": 3223,
+        "min": 3219,
+        "max": 3761,
+        "sum": 10203
+      },
+      "outputTokens": {
+        "median": 575,
+        "min": 556,
+        "max": 583,
+        "sum": 1714
+      },
+      "totalTokens": {
+        "median": 3802,
+        "min": 3798,
+        "max": 4317,
+        "sum": 11917
+      },
+      "cachedInputTokens": {
+        "median": 0,
+        "min": 0,
+        "max": 0,
+        "sum": 0
+      },
+      "reasoningTokens": {
+        "median": 104,
+        "min": 89,
+        "max": 112,
+        "sum": 305
+      },
+      "elapsedMs": {
+        "median": 25440,
+        "min": 24932,
+        "max": 29291,
+        "sum": 79663
+      },
+      "apiCalls": {
+        "median": 3,
+        "min": 3,
+        "max": 3,
+        "sum": 9
+      },
+      "toolCalls": {
+        "median": 2,
+        "min": 2,
+        "max": 2,
+        "sum": 6
+      }
+    },
+    "skill": {
+      "attempts": 3,
+      "correct": 3,
+      "usageComplete": 3,
+      "inputTokens": {
+        "median": 2308,
+        "min": 2307,
+        "max": 2309,
+        "sum": 6924
+      },
+      "outputTokens": {
+        "median": 525,
+        "min": 524,
+        "max": 530,
+        "sum": 1579
+      },
+      "totalTokens": {
+        "median": 2832,
+        "min": 2832,
+        "max": 2839,
+        "sum": 8503
+      },
+      "cachedInputTokens": {
+        "median": 0,
+        "min": 0,
+        "max": 0,
+        "sum": 0
+      },
+      "reasoningTokens": {
+        "median": 78,
+        "min": 77,
+        "max": 83,
+        "sum": 238
+      },
+      "elapsedMs": {
+        "median": 25316,
+        "min": 20888,
+        "max": 25500,
+        "sum": 71704
+      },
+      "apiCalls": {
+        "median": 2,
+        "min": 2,
+        "max": 2,
+        "sum": 6
+      },
+      "toolCalls": {
+        "median": 1,
+        "min": 1,
+        "max": 1,
+        "sum": 3
+      }
+    }
+  },
+  "servedModels": [
+    "gpt-5.6-luna"
+  ],
+  "allUsageComplete": true,
+  "medianTotalTokenReductionPercent": 25.512887953708574,
+  "metric": "provider-reported input_tokens + output_tokens, including cached input and reasoning output",
+  "scope": "model-token microbenchmark; not monetary billing or full Hermes benchmark",
+  "limits": [
+    "n=3 per arm; one synthetic CLI and one task; fixed alternating order, not randomized",
+    "skill was hand-authored for this task family; authoring cost excluded",
+    "provider caching and load are uncontrolled; input includes cache hits",
+    "no claim about cheaper models, dollar savings, generalization or statistical significance"
+  ]
+}

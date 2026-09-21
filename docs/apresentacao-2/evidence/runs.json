@@ -1,0 +1,1696 @@
+[
+  {
+    "arm": "baseline",
+    "requestedModel": "gpt-5.6-luna",
+    "servedModels": [
+      "gpt-5.6-luna"
+    ],
+    "reasoningEffort": "low",
+    "apiCalls": 3,
+    "toolCalls": 2,
+    "toolEvents": [
+      {
+        "name": "search_docs",
+        "arguments": {
+          "query": "limit"
+        },
+        "output": {
+          "matches": [
+            {
+              "path": "README.md",
+              "line": 13,
+              "text": "./scripts/java-lab.sh schema"
+            },
+            {
+              "path": "README.md",
+              "line": 14,
+              "text": "./scripts/java-lab.sh list"
+            },
+            {
+              "path": "README.md",
+              "line": 15,
+              "text": "./scripts/java-lab.sh search --status AWAITING_SHIPMENT --limit 5"
+            },
+            {
+              "path": "README.md",
+              "line": 16,
+              "text": "```"
+            },
+            {
+              "path": "README.md",
+              "line": 17,
+              "text": ""
+            },
+            {
+              "path": "README.md",
+              "line": 29,
+              "text": "| `schema` | Colunas da tabela `ORDERS`, na ordem de declaração; nome, tipo, precisão/escala numérica e nulabilidade |"
+            },
+            {
+              "path": "README.md",
+              "line": 30,
+              "text": "| `list` | Todos os 12 pedidos, ordenados por `id ASC` |"
+            },
+            {
+              "path": "README.md",
+              "line": 31,
+              "text": "| `search --status STATUS --limit N` | Somente o status solicitado, `total DESC, id DESC`, no máximo N linhas |"
+            },
+            {
+              "path": "README.md",
+              "line": 32,
+              "text": ""
+            },
+            {
+              "path": "README.md",
+              "line": 33,
+              "text": "A ordem dos argumentos é fixa. Não há parâmetros opcionais nem SQL livre."
+            },
+            {
+              "path": "README.md",
+              "line": 46,
+              "text": ""
+            },
+            {
+              "path": "README.md",
+              "line": 47,
+              "text": "```json"
+            },
+            {
+              "path": "README.md",
+              "line": 48,
+              "text": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}"
+            },
+            {
+              "path": "README.md",
+              "line": 49,
+              "text": "```"
+            },
+            {
+              "path": "README.md",
+              "line": 50,
+              "text": ""
+            },
+            {
+              "path": "Command.java",
+              "line": 1,
+              "text": "package dev.agentesnamedida.orders;"
+            },
+            {
+              "path": "Command.java",
+              "line": 2,
+              "text": ""
+            },
+            {
+              "path": "Command.java",
+              "line": 3,
+              "text": "record Command(String action, Status status, int limit) {"
+            },
+            {
+              "path": "Command.java",
+              "line": 4,
+              "text": "    enum Status { AWAITING_SHIPMENT, SHIPPED, CANCELLED, PENDING_PAYMENT }"
+            },
+            {
+              "path": "Command.java",
+              "line": 5,
+              "text": ""
+            },
+            {
+              "path": "Command.java",
+              "line": 9,
+              "text": "        }"
+            },
+            {
+              "path": "Command.java",
+              "line": 10,
+              "text": "        if (args.length != 5 || !args[0].equals(\"search\")"
+            },
+            {
+              "path": "Command.java",
+              "line": 11,
+              "text": "                || !args[1].equals(\"--status\") || !args[3].equals(\"--limit\")) {"
+            },
+            {
+              "path": "Command.java",
+              "line": 12,
+              "text": "            throw new IllegalArgumentException();"
+            },
+            {
+              "path": "Command.java",
+              "line": 13,
+              "text": "        }"
+            },
+            {
+              "path": "Command.java",
+              "line": 14,
+              "text": "        var status = Status.valueOf(args[2]);"
+            },
+            {
+              "path": "Command.java",
+              "line": 15,
+              "text": "        int limit = Integer.parseInt(args[4]);"
+            },
+            {
+              "path": "Command.java",
+              "line": 16,
+              "text": "        if (limit < 1 || limit > 10) throw new IllegalArgumentException();"
+            },
+            {
+              "path": "Command.java",
+              "line": 17,
+              "text": "        return new Command(\"search\", status, limit);"
+            },
+            {
+              "path": "Command.java",
+              "line": 18,
+              "text": "    }"
+            }
+          ],
+          "hasMore": true
+        }
+      },
+      {
+        "name": "execute_cli",
+        "arguments": {
+          "commands": [
+            [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "0"
+            ],
+            [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "11"
+            ],
+            [
+              "search",
+              "--status",
+              "awaiting_shipment",
+              "--limit",
+              "4"
+            ],
+            [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "4"
+            ]
+          ]
+        },
+        "output": [
+          {
+            "args": [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "0"
+            ],
+            "exit": 2,
+            "stdout": "",
+            "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+          },
+          {
+            "args": [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "11"
+            ],
+            "exit": 2,
+            "stdout": "",
+            "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+          },
+          {
+            "args": [
+              "search",
+              "--status",
+              "awaiting_shipment",
+              "--limit",
+              "4"
+            ],
+            "exit": 2,
+            "stdout": "",
+            "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+          },
+          {
+            "args": [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "4"
+            ],
+            "exit": 0,
+            "stdout": "[{\"id\":1004,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"2500.00\",\"createdOn\":\"2026-01-04\",\"shippedOn\":null},{\"id\":1002,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"2500.00\",\"createdOn\":\"2026-01-02\",\"shippedOn\":null},{\"id\":1009,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"1750.00\",\"createdOn\":\"2026-01-09\",\"shippedOn\":null},{\"id\":1007,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"1750.00\",\"createdOn\":\"2026-01-07\",\"shippedOn\":null}]\n",
+            "stderr": ""
+          }
+        ]
+      }
+    ],
+    "answer": {
+      "results": [
+        {
+          "args": [
+            "search",
+            "--status",
+            "AWAITING_SHIPMENT",
+            "--limit",
+            "0"
+          ],
+          "exit": 2,
+          "stdout": "",
+          "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+        },
+        {
+          "args": [
+            "search",
+            "--status",
+            "AWAITING_SHIPMENT",
+            "--limit",
+            "11"
+          ],
+          "exit": 2,
+          "stdout": "",
+          "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+        },
+        {
+          "args": [
+            "search",
+            "--status",
+            "awaiting_shipment",
+            "--limit",
+            "4"
+          ],
+          "exit": 2,
+          "stdout": "",
+          "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+        },
+        {
+          "args": [
+            "search",
+            "--status",
+            "AWAITING_SHIPMENT",
+            "--limit",
+            "4"
+          ],
+          "exit": 0,
+          "stdout": "[{\"id\":1004,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"2500.00\",\"createdOn\":\"2026-01-04\",\"shippedOn\":null},{\"id\":1002,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"2500.00\",\"createdOn\":\"2026-01-02\",\"shippedOn\":null},{\"id\":1009,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"1750.00\",\"createdOn\":\"2026-01-09\",\"shippedOn\":null},{\"id\":1007,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"1750.00\",\"createdOn\":\"2026-01-07\",\"shippedOn\":null}]\n",
+          "stderr": ""
+        }
+      ],
+      "invalidRejected": true,
+      "tieBreakCorrect": true
+    },
+    "workflowComplete": true,
+    "correct": true,
+    "usageComplete": true,
+    "error": null,
+    "elapsedMs": 25440,
+    "inputTokens": 3761,
+    "outputTokens": 556,
+    "totalTokens": 4317,
+    "cachedInputTokens": 0,
+    "reasoningTokens": 89,
+    "trial": 1,
+    "campaign": "skills-ab-v1",
+    "recordedAt": "2026-09-21T16:27:21.318003+00:00",
+    "perCall": [
+      {
+        "index": 1,
+        "model": "gpt-5.6-luna",
+        "status": "completed",
+        "usageComplete": true,
+        "inputTokens": 609,
+        "outputTokens": 30,
+        "totalTokens": 639,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 10,
+        "usage": {
+          "input_tokens": 609,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 30,
+          "output_tokens_details": {
+            "reasoning_tokens": 10
+          },
+          "total_tokens": 639
+        }
+      },
+      {
+        "index": 2,
+        "model": "gpt-5.6-luna",
+        "status": "completed",
+        "usageComplete": true,
+        "inputTokens": 1331,
+        "outputTokens": 138,
+        "totalTokens": 1469,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 52,
+        "usage": {
+          "input_tokens": 1331,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 138,
+          "output_tokens_details": {
+            "reasoning_tokens": 52
+          },
+          "total_tokens": 1469
+        }
+      },
+      {
+        "index": 3,
+        "model": "gpt-5.6-luna",
+        "status": "completed",
+        "usageComplete": true,
+        "inputTokens": 1821,
+        "outputTokens": 388,
+        "totalTokens": 2209,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 27,
+        "usage": {
+          "input_tokens": 1821,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 388,
+          "output_tokens_details": {
+            "reasoning_tokens": 27
+          },
+          "total_tokens": 2209
+        }
+      }
+    ]
+  },
+  {
+    "arm": "skill",
+    "requestedModel": "gpt-5.6-luna",
+    "servedModels": [
+      "gpt-5.6-luna"
+    ],
+    "reasoningEffort": "low",
+    "apiCalls": 2,
+    "toolCalls": 1,
+    "toolEvents": [
+      {
+        "name": "execute_cli",
+        "arguments": {
+          "commands": [
+            [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "0"
+            ],
+            [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "11"
+            ],
+            [
+              "search",
+              "--status",
+              "awaiting_shipment",
+              "--limit",
+              "4"
+            ],
+            [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "4"
+            ]
+          ]
+        },
+        "output": [
+          {
+            "args": [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "0"
+            ],
+            "exit": 2,
+            "stdout": "",
+            "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+          },
+          {
+            "args": [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "11"
+            ],
+            "exit": 2,
+            "stdout": "",
+            "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+          },
+          {
+            "args": [
+              "search",
+              "--status",
+              "awaiting_shipment",
+              "--limit",
+              "4"
+            ],
+            "exit": 2,
+            "stdout": "",
+            "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+          },
+          {
+            "args": [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "4"
+            ],
+            "exit": 0,
+            "stdout": "[{\"id\":1004,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"2500.00\",\"createdOn\":\"2026-01-04\",\"shippedOn\":null},{\"id\":1002,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"2500.00\",\"createdOn\":\"2026-01-02\",\"shippedOn\":null},{\"id\":1009,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"1750.00\",\"createdOn\":\"2026-01-09\",\"shippedOn\":null},{\"id\":1007,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"1750.00\",\"createdOn\":\"2026-01-07\",\"shippedOn\":null}]\n",
+            "stderr": ""
+          }
+        ]
+      }
+    ],
+    "answer": {
+      "results": [
+        {
+          "args": [
+            "search",
+            "--status",
+            "AWAITING_SHIPMENT",
+            "--limit",
+            "0"
+          ],
+          "exit": 2,
+          "stdout": "",
+          "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+        },
+        {
+          "args": [
+            "search",
+            "--status",
+            "AWAITING_SHIPMENT",
+            "--limit",
+            "11"
+          ],
+          "exit": 2,
+          "stdout": "",
+          "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+        },
+        {
+          "args": [
+            "search",
+            "--status",
+            "awaiting_shipment",
+            "--limit",
+            "4"
+          ],
+          "exit": 2,
+          "stdout": "",
+          "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+        },
+        {
+          "args": [
+            "search",
+            "--status",
+            "AWAITING_SHIPMENT",
+            "--limit",
+            "4"
+          ],
+          "exit": 0,
+          "stdout": "[{\"id\":1004,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"2500.00\",\"createdOn\":\"2026-01-04\",\"shippedOn\":null},{\"id\":1002,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"2500.00\",\"createdOn\":\"2026-01-02\",\"shippedOn\":null},{\"id\":1009,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"1750.00\",\"createdOn\":\"2026-01-09\",\"shippedOn\":null},{\"id\":1007,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"1750.00\",\"createdOn\":\"2026-01-07\",\"shippedOn\":null}]\n",
+          "stderr": ""
+        }
+      ],
+      "invalidRejected": true,
+      "tieBreakCorrect": true
+    },
+    "workflowComplete": true,
+    "correct": true,
+    "usageComplete": true,
+    "error": null,
+    "elapsedMs": 25500,
+    "inputTokens": 2307,
+    "outputTokens": 525,
+    "totalTokens": 2832,
+    "cachedInputTokens": 0,
+    "reasoningTokens": 78,
+    "trial": 2,
+    "campaign": "skills-ab-v1",
+    "recordedAt": "2026-09-21T16:27:46.819974+00:00",
+    "perCall": [
+      {
+        "index": 1,
+        "model": "gpt-5.6-luna",
+        "status": "completed",
+        "usageComplete": true,
+        "inputTokens": 919,
+        "outputTokens": 117,
+        "totalTokens": 1036,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 31,
+        "usage": {
+          "input_tokens": 919,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 117,
+          "output_tokens_details": {
+            "reasoning_tokens": 31
+          },
+          "total_tokens": 1036
+        }
+      },
+      {
+        "index": 2,
+        "model": "gpt-5.6-luna",
+        "status": "completed",
+        "usageComplete": true,
+        "inputTokens": 1388,
+        "outputTokens": 408,
+        "totalTokens": 1796,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 47,
+        "usage": {
+          "input_tokens": 1388,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 408,
+          "output_tokens_details": {
+            "reasoning_tokens": 47
+          },
+          "total_tokens": 1796
+        }
+      }
+    ]
+  },
+  {
+    "arm": "baseline",
+    "requestedModel": "gpt-5.6-luna",
+    "servedModels": [
+      "gpt-5.6-luna"
+    ],
+    "reasoningEffort": "low",
+    "apiCalls": 3,
+    "toolCalls": 2,
+    "toolEvents": [
+      {
+        "name": "search_docs",
+        "arguments": {
+          "query": "AWAITING_SHIPMENT"
+        },
+        "output": {
+          "matches": [
+            {
+              "path": "README.md",
+              "line": 13,
+              "text": "./scripts/java-lab.sh schema"
+            },
+            {
+              "path": "README.md",
+              "line": 14,
+              "text": "./scripts/java-lab.sh list"
+            },
+            {
+              "path": "README.md",
+              "line": 15,
+              "text": "./scripts/java-lab.sh search --status AWAITING_SHIPMENT --limit 5"
+            },
+            {
+              "path": "README.md",
+              "line": 16,
+              "text": "```"
+            },
+            {
+              "path": "README.md",
+              "line": 17,
+              "text": ""
+            },
+            {
+              "path": "README.md",
+              "line": 32,
+              "text": ""
+            },
+            {
+              "path": "README.md",
+              "line": 33,
+              "text": "A ordem dos argumentos é fixa. Não há parâmetros opcionais nem SQL livre."
+            },
+            {
+              "path": "README.md",
+              "line": 34,
+              "text": "`STATUS` é um enum sensível a maiúsculas: `AWAITING_SHIPMENT`, `SHIPPED`,"
+            },
+            {
+              "path": "README.md",
+              "line": 35,
+              "text": "`CANCELLED`, `PENDING_PAYMENT`. `N` é um inteiro de **1 a 10**, inclusive."
+            },
+            {
+              "path": "README.md",
+              "line": 36,
+              "text": "Filtros são parâmetros JDBC, não concatenação de SQL. `AWAITING_SHIPMENT` significa"
+            },
+            {
+              "path": "README.md",
+              "line": 37,
+              "text": "aguardando envio: os pedidos `SHIPPED` não entram, mesmo com valores maiores."
+            },
+            {
+              "path": "README.md",
+              "line": 38,
+              "text": ""
+            },
+            {
+              "path": "Command.java",
+              "line": 2,
+              "text": ""
+            },
+            {
+              "path": "Command.java",
+              "line": 3,
+              "text": "record Command(String action, Status status, int limit) {"
+            },
+            {
+              "path": "Command.java",
+              "line": 4,
+              "text": "    enum Status { AWAITING_SHIPMENT, SHIPPED, CANCELLED, PENDING_PAYMENT }"
+            },
+            {
+              "path": "Command.java",
+              "line": 5,
+              "text": ""
+            },
+            {
+              "path": "Command.java",
+              "line": 6,
+              "text": "    static Command parse(String[] args) {"
+            }
+          ],
+          "hasMore": false
+        }
+      },
+      {
+        "name": "execute_cli",
+        "arguments": {
+          "commands": [
+            [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "0"
+            ],
+            [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "11"
+            ],
+            [
+              "search",
+              "--status",
+              "awaiting_shipment",
+              "--limit",
+              "4"
+            ],
+            [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "4"
+            ]
+          ]
+        },
+        "output": [
+          {
+            "args": [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "0"
+            ],
+            "exit": 2,
+            "stdout": "",
+            "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+          },
+          {
+            "args": [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "11"
+            ],
+            "exit": 2,
+            "stdout": "",
+            "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+          },
+          {
+            "args": [
+              "search",
+              "--status",
+              "awaiting_shipment",
+              "--limit",
+              "4"
+            ],
+            "exit": 2,
+            "stdout": "",
+            "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+          },
+          {
+            "args": [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "4"
+            ],
+            "exit": 0,
+            "stdout": "[{\"id\":1004,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"2500.00\",\"createdOn\":\"2026-01-04\",\"shippedOn\":null},{\"id\":1002,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"2500.00\",\"createdOn\":\"2026-01-02\",\"shippedOn\":null},{\"id\":1009,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"1750.00\",\"createdOn\":\"2026-01-09\",\"shippedOn\":null},{\"id\":1007,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"1750.00\",\"createdOn\":\"2026-01-07\",\"shippedOn\":null}]\n",
+            "stderr": ""
+          }
+        ]
+      }
+    ],
+    "answer": {
+      "results": [
+        {
+          "args": [
+            "search",
+            "--status",
+            "AWAITING_SHIPMENT",
+            "--limit",
+            "0"
+          ],
+          "exit": 2,
+          "stdout": "",
+          "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+        },
+        {
+          "args": [
+            "search",
+            "--status",
+            "AWAITING_SHIPMENT",
+            "--limit",
+            "11"
+          ],
+          "exit": 2,
+          "stdout": "",
+          "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+        },
+        {
+          "args": [
+            "search",
+            "--status",
+            "awaiting_shipment",
+            "--limit",
+            "4"
+          ],
+          "exit": 2,
+          "stdout": "",
+          "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+        },
+        {
+          "args": [
+            "search",
+            "--status",
+            "AWAITING_SHIPMENT",
+            "--limit",
+            "4"
+          ],
+          "exit": 0,
+          "stdout": "[{\"id\":1004,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"2500.00\",\"createdOn\":\"2026-01-04\",\"shippedOn\":null},{\"id\":1002,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"2500.00\",\"createdOn\":\"2026-01-02\",\"shippedOn\":null},{\"id\":1009,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"1750.00\",\"createdOn\":\"2026-01-09\",\"shippedOn\":null},{\"id\":1007,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"1750.00\",\"createdOn\":\"2026-01-07\",\"shippedOn\":null}]\n",
+          "stderr": ""
+        }
+      ],
+      "invalidRejected": true,
+      "tieBreakCorrect": true
+    },
+    "workflowComplete": true,
+    "correct": true,
+    "usageComplete": true,
+    "error": null,
+    "elapsedMs": 29291,
+    "inputTokens": 3219,
+    "outputTokens": 583,
+    "totalTokens": 3802,
+    "cachedInputTokens": 0,
+    "reasoningTokens": 112,
+    "trial": 3,
+    "campaign": "skills-ab-v1",
+    "recordedAt": "2026-09-21T16:28:16.113410+00:00",
+    "perCall": [
+      {
+        "index": 1,
+        "model": "gpt-5.6-luna",
+        "status": "completed",
+        "usageComplete": true,
+        "inputTokens": 609,
+        "outputTokens": 44,
+        "totalTokens": 653,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 20,
+        "usage": {
+          "input_tokens": 609,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 44,
+          "output_tokens_details": {
+            "reasoning_tokens": 20
+          },
+          "total_tokens": 653
+        }
+      },
+      {
+        "index": 2,
+        "model": "gpt-5.6-luna",
+        "status": "completed",
+        "usageComplete": true,
+        "inputTokens": 1065,
+        "outputTokens": 128,
+        "totalTokens": 1193,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 42,
+        "usage": {
+          "input_tokens": 1065,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 128,
+          "output_tokens_details": {
+            "reasoning_tokens": 42
+          },
+          "total_tokens": 1193
+        }
+      },
+      {
+        "index": 3,
+        "model": "gpt-5.6-luna",
+        "status": "completed",
+        "usageComplete": true,
+        "inputTokens": 1545,
+        "outputTokens": 411,
+        "totalTokens": 1956,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 50,
+        "usage": {
+          "input_tokens": 1545,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 411,
+          "output_tokens_details": {
+            "reasoning_tokens": 50
+          },
+          "total_tokens": 1956
+        }
+      }
+    ]
+  },
+  {
+    "arm": "skill",
+    "requestedModel": "gpt-5.6-luna",
+    "servedModels": [
+      "gpt-5.6-luna"
+    ],
+    "reasoningEffort": "low",
+    "apiCalls": 2,
+    "toolCalls": 1,
+    "toolEvents": [
+      {
+        "name": "execute_cli",
+        "arguments": {
+          "commands": [
+            [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "0"
+            ],
+            [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "11"
+            ],
+            [
+              "search",
+              "--status",
+              "awaiting_shipment",
+              "--limit",
+              "4"
+            ],
+            [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "4"
+            ]
+          ]
+        },
+        "output": [
+          {
+            "args": [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "0"
+            ],
+            "exit": 2,
+            "stdout": "",
+            "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+          },
+          {
+            "args": [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "11"
+            ],
+            "exit": 2,
+            "stdout": "",
+            "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+          },
+          {
+            "args": [
+              "search",
+              "--status",
+              "awaiting_shipment",
+              "--limit",
+              "4"
+            ],
+            "exit": 2,
+            "stdout": "",
+            "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+          },
+          {
+            "args": [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "4"
+            ],
+            "exit": 0,
+            "stdout": "[{\"id\":1004,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"2500.00\",\"createdOn\":\"2026-01-04\",\"shippedOn\":null},{\"id\":1002,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"2500.00\",\"createdOn\":\"2026-01-02\",\"shippedOn\":null},{\"id\":1009,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"1750.00\",\"createdOn\":\"2026-01-09\",\"shippedOn\":null},{\"id\":1007,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"1750.00\",\"createdOn\":\"2026-01-07\",\"shippedOn\":null}]\n",
+            "stderr": ""
+          }
+        ]
+      }
+    ],
+    "answer": {
+      "results": [
+        {
+          "args": [
+            "search",
+            "--status",
+            "AWAITING_SHIPMENT",
+            "--limit",
+            "0"
+          ],
+          "exit": 2,
+          "stdout": "",
+          "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+        },
+        {
+          "args": [
+            "search",
+            "--status",
+            "AWAITING_SHIPMENT",
+            "--limit",
+            "11"
+          ],
+          "exit": 2,
+          "stdout": "",
+          "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+        },
+        {
+          "args": [
+            "search",
+            "--status",
+            "awaiting_shipment",
+            "--limit",
+            "4"
+          ],
+          "exit": 2,
+          "stdout": "",
+          "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+        },
+        {
+          "args": [
+            "search",
+            "--status",
+            "AWAITING_SHIPMENT",
+            "--limit",
+            "4"
+          ],
+          "exit": 0,
+          "stdout": "[{\"id\":1004,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"2500.00\",\"createdOn\":\"2026-01-04\",\"shippedOn\":null},{\"id\":1002,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"2500.00\",\"createdOn\":\"2026-01-02\",\"shippedOn\":null},{\"id\":1009,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"1750.00\",\"createdOn\":\"2026-01-09\",\"shippedOn\":null},{\"id\":1007,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"1750.00\",\"createdOn\":\"2026-01-07\",\"shippedOn\":null}]\n",
+          "stderr": ""
+        }
+      ],
+      "invalidRejected": true,
+      "tieBreakCorrect": true
+    },
+    "workflowComplete": true,
+    "correct": true,
+    "usageComplete": true,
+    "error": null,
+    "elapsedMs": 20888,
+    "inputTokens": 2308,
+    "outputTokens": 524,
+    "totalTokens": 2832,
+    "cachedInputTokens": 0,
+    "reasoningTokens": 77,
+    "trial": 4,
+    "campaign": "skills-ab-v1",
+    "recordedAt": "2026-09-21T16:28:37.005042+00:00",
+    "perCall": [
+      {
+        "index": 1,
+        "model": "gpt-5.6-luna",
+        "status": "completed",
+        "usageComplete": true,
+        "inputTokens": 919,
+        "outputTokens": 118,
+        "totalTokens": 1037,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 32,
+        "usage": {
+          "input_tokens": 919,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 118,
+          "output_tokens_details": {
+            "reasoning_tokens": 32
+          },
+          "total_tokens": 1037
+        }
+      },
+      {
+        "index": 2,
+        "model": "gpt-5.6-luna",
+        "status": "completed",
+        "usageComplete": true,
+        "inputTokens": 1389,
+        "outputTokens": 406,
+        "totalTokens": 1795,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 45,
+        "usage": {
+          "input_tokens": 1389,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 406,
+          "output_tokens_details": {
+            "reasoning_tokens": 45
+          },
+          "total_tokens": 1795
+        }
+      }
+    ]
+  },
+  {
+    "arm": "baseline",
+    "requestedModel": "gpt-5.6-luna",
+    "servedModels": [
+      "gpt-5.6-luna"
+    ],
+    "reasoningEffort": "low",
+    "apiCalls": 3,
+    "toolCalls": 2,
+    "toolEvents": [
+      {
+        "name": "search_docs",
+        "arguments": {
+          "query": "AWAITING_SHIPMENT"
+        },
+        "output": {
+          "matches": [
+            {
+              "path": "README.md",
+              "line": 13,
+              "text": "./scripts/java-lab.sh schema"
+            },
+            {
+              "path": "README.md",
+              "line": 14,
+              "text": "./scripts/java-lab.sh list"
+            },
+            {
+              "path": "README.md",
+              "line": 15,
+              "text": "./scripts/java-lab.sh search --status AWAITING_SHIPMENT --limit 5"
+            },
+            {
+              "path": "README.md",
+              "line": 16,
+              "text": "```"
+            },
+            {
+              "path": "README.md",
+              "line": 17,
+              "text": ""
+            },
+            {
+              "path": "README.md",
+              "line": 32,
+              "text": ""
+            },
+            {
+              "path": "README.md",
+              "line": 33,
+              "text": "A ordem dos argumentos é fixa. Não há parâmetros opcionais nem SQL livre."
+            },
+            {
+              "path": "README.md",
+              "line": 34,
+              "text": "`STATUS` é um enum sensível a maiúsculas: `AWAITING_SHIPMENT`, `SHIPPED`,"
+            },
+            {
+              "path": "README.md",
+              "line": 35,
+              "text": "`CANCELLED`, `PENDING_PAYMENT`. `N` é um inteiro de **1 a 10**, inclusive."
+            },
+            {
+              "path": "README.md",
+              "line": 36,
+              "text": "Filtros são parâmetros JDBC, não concatenação de SQL. `AWAITING_SHIPMENT` significa"
+            },
+            {
+              "path": "README.md",
+              "line": 37,
+              "text": "aguardando envio: os pedidos `SHIPPED` não entram, mesmo com valores maiores."
+            },
+            {
+              "path": "README.md",
+              "line": 38,
+              "text": ""
+            },
+            {
+              "path": "Command.java",
+              "line": 2,
+              "text": ""
+            },
+            {
+              "path": "Command.java",
+              "line": 3,
+              "text": "record Command(String action, Status status, int limit) {"
+            },
+            {
+              "path": "Command.java",
+              "line": 4,
+              "text": "    enum Status { AWAITING_SHIPMENT, SHIPPED, CANCELLED, PENDING_PAYMENT }"
+            },
+            {
+              "path": "Command.java",
+              "line": 5,
+              "text": ""
+            },
+            {
+              "path": "Command.java",
+              "line": 6,
+              "text": "    static Command parse(String[] args) {"
+            }
+          ],
+          "hasMore": false
+        }
+      },
+      {
+        "name": "execute_cli",
+        "arguments": {
+          "commands": [
+            [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "0"
+            ],
+            [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "11"
+            ],
+            [
+              "search",
+              "--status",
+              "awaiting_shipment",
+              "--limit",
+              "4"
+            ],
+            [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "4"
+            ]
+          ]
+        },
+        "output": [
+          {
+            "args": [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "0"
+            ],
+            "exit": 2,
+            "stdout": "",
+            "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+          },
+          {
+            "args": [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "11"
+            ],
+            "exit": 2,
+            "stdout": "",
+            "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+          },
+          {
+            "args": [
+              "search",
+              "--status",
+              "awaiting_shipment",
+              "--limit",
+              "4"
+            ],
+            "exit": 2,
+            "stdout": "",
+            "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+          },
+          {
+            "args": [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "4"
+            ],
+            "exit": 0,
+            "stdout": "[{\"id\":1004,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"2500.00\",\"createdOn\":\"2026-01-04\",\"shippedOn\":null},{\"id\":1002,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"2500.00\",\"createdOn\":\"2026-01-02\",\"shippedOn\":null},{\"id\":1009,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"1750.00\",\"createdOn\":\"2026-01-09\",\"shippedOn\":null},{\"id\":1007,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"1750.00\",\"createdOn\":\"2026-01-07\",\"shippedOn\":null}]\n",
+            "stderr": ""
+          }
+        ]
+      }
+    ],
+    "answer": {
+      "results": [
+        {
+          "args": [
+            "search",
+            "--status",
+            "AWAITING_SHIPMENT",
+            "--limit",
+            "0"
+          ],
+          "exit": 2,
+          "stdout": "",
+          "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+        },
+        {
+          "args": [
+            "search",
+            "--status",
+            "AWAITING_SHIPMENT",
+            "--limit",
+            "11"
+          ],
+          "exit": 2,
+          "stdout": "",
+          "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+        },
+        {
+          "args": [
+            "search",
+            "--status",
+            "awaiting_shipment",
+            "--limit",
+            "4"
+          ],
+          "exit": 2,
+          "stdout": "",
+          "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+        },
+        {
+          "args": [
+            "search",
+            "--status",
+            "AWAITING_SHIPMENT",
+            "--limit",
+            "4"
+          ],
+          "exit": 0,
+          "stdout": "[{\"id\":1004,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"2500.00\",\"createdOn\":\"2026-01-04\",\"shippedOn\":null},{\"id\":1002,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"2500.00\",\"createdOn\":\"2026-01-02\",\"shippedOn\":null},{\"id\":1009,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"1750.00\",\"createdOn\":\"2026-01-09\",\"shippedOn\":null},{\"id\":1007,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"1750.00\",\"createdOn\":\"2026-01-07\",\"shippedOn\":null}]\n",
+          "stderr": ""
+        }
+      ],
+      "invalidRejected": true,
+      "tieBreakCorrect": true
+    },
+    "workflowComplete": true,
+    "correct": true,
+    "usageComplete": true,
+    "error": null,
+    "elapsedMs": 24932,
+    "inputTokens": 3223,
+    "outputTokens": 575,
+    "totalTokens": 3798,
+    "cachedInputTokens": 0,
+    "reasoningTokens": 104,
+    "trial": 5,
+    "campaign": "skills-ab-v1",
+    "recordedAt": "2026-09-21T16:29:01.940786+00:00",
+    "perCall": [
+      {
+        "index": 1,
+        "model": "gpt-5.6-luna",
+        "status": "completed",
+        "usageComplete": true,
+        "inputTokens": 609,
+        "outputTokens": 34,
+        "totalTokens": 643,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 10,
+        "usage": {
+          "input_tokens": 609,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 34,
+          "output_tokens_details": {
+            "reasoning_tokens": 10
+          },
+          "total_tokens": 643
+        }
+      },
+      {
+        "index": 2,
+        "model": "gpt-5.6-luna",
+        "status": "completed",
+        "usageComplete": true,
+        "inputTokens": 1055,
+        "outputTokens": 152,
+        "totalTokens": 1207,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 66,
+        "usage": {
+          "input_tokens": 1055,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 152,
+          "output_tokens_details": {
+            "reasoning_tokens": 66
+          },
+          "total_tokens": 1207
+        }
+      },
+      {
+        "index": 3,
+        "model": "gpt-5.6-luna",
+        "status": "completed",
+        "usageComplete": true,
+        "inputTokens": 1559,
+        "outputTokens": 389,
+        "totalTokens": 1948,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 28,
+        "usage": {
+          "input_tokens": 1559,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 389,
+          "output_tokens_details": {
+            "reasoning_tokens": 28
+          },
+          "total_tokens": 1948
+        }
+      }
+    ]
+  },
+  {
+    "arm": "skill",
+    "requestedModel": "gpt-5.6-luna",
+    "servedModels": [
+      "gpt-5.6-luna"
+    ],
+    "reasoningEffort": "low",
+    "apiCalls": 2,
+    "toolCalls": 1,
+    "toolEvents": [
+      {
+        "name": "execute_cli",
+        "arguments": {
+          "commands": [
+            [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "0"
+            ],
+            [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "11"
+            ],
+            [
+              "search",
+              "--status",
+              "awaiting_shipment",
+              "--limit",
+              "4"
+            ],
+            [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "4"
+            ]
+          ]
+        },
+        "output": [
+          {
+            "args": [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "0"
+            ],
+            "exit": 2,
+            "stdout": "",
+            "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+          },
+          {
+            "args": [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "11"
+            ],
+            "exit": 2,
+            "stdout": "",
+            "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+          },
+          {
+            "args": [
+              "search",
+              "--status",
+              "awaiting_shipment",
+              "--limit",
+              "4"
+            ],
+            "exit": 2,
+            "stdout": "",
+            "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+          },
+          {
+            "args": [
+              "search",
+              "--status",
+              "AWAITING_SHIPMENT",
+              "--limit",
+              "4"
+            ],
+            "exit": 0,
+            "stdout": "[{\"id\":1004,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"2500.00\",\"createdOn\":\"2026-01-04\",\"shippedOn\":null},{\"id\":1002,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"2500.00\",\"createdOn\":\"2026-01-02\",\"shippedOn\":null},{\"id\":1009,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"1750.00\",\"createdOn\":\"2026-01-09\",\"shippedOn\":null},{\"id\":1007,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"1750.00\",\"createdOn\":\"2026-01-07\",\"shippedOn\":null}]\n",
+            "stderr": ""
+          }
+        ]
+      }
+    ],
+    "answer": {
+      "results": [
+        {
+          "args": [
+            "search",
+            "--status",
+            "AWAITING_SHIPMENT",
+            "--limit",
+            "0"
+          ],
+          "exit": 2,
+          "stdout": "",
+          "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+        },
+        {
+          "args": [
+            "search",
+            "--status",
+            "AWAITING_SHIPMENT",
+            "--limit",
+            "11"
+          ],
+          "exit": 2,
+          "stdout": "",
+          "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+        },
+        {
+          "args": [
+            "search",
+            "--status",
+            "awaiting_shipment",
+            "--limit",
+            "4"
+          ],
+          "exit": 2,
+          "stdout": "",
+          "stderr": "{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n"
+        },
+        {
+          "args": [
+            "search",
+            "--status",
+            "AWAITING_SHIPMENT",
+            "--limit",
+            "4"
+          ],
+          "exit": 0,
+          "stdout": "[{\"id\":1004,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"2500.00\",\"createdOn\":\"2026-01-04\",\"shippedOn\":null},{\"id\":1002,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"2500.00\",\"createdOn\":\"2026-01-02\",\"shippedOn\":null},{\"id\":1009,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"1750.00\",\"createdOn\":\"2026-01-09\",\"shippedOn\":null},{\"id\":1007,\"status\":\"AWAITING_SHIPMENT\",\"total\":\"1750.00\",\"createdOn\":\"2026-01-07\",\"shippedOn\":null}]\n",
+          "stderr": ""
+        }
+      ],
+      "invalidRejected": true,
+      "tieBreakCorrect": true
+    },
+    "workflowComplete": true,
+    "correct": true,
+    "usageComplete": true,
+    "error": null,
+    "elapsedMs": 25316,
+    "inputTokens": 2309,
+    "outputTokens": 530,
+    "totalTokens": 2839,
+    "cachedInputTokens": 0,
+    "reasoningTokens": 83,
+    "trial": 6,
+    "campaign": "skills-ab-v1",
+    "recordedAt": "2026-09-21T16:29:27.260977+00:00",
+    "perCall": [
+      {
+        "index": 1,
+        "model": "gpt-5.6-luna",
+        "status": "completed",
+        "usageComplete": true,
+        "inputTokens": 919,
+        "outputTokens": 119,
+        "totalTokens": 1038,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 33,
+        "usage": {
+          "input_tokens": 919,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 119,
+          "output_tokens_details": {
+            "reasoning_tokens": 33
+          },
+          "total_tokens": 1038
+        }
+      },
+      {
+        "index": 2,
+        "model": "gpt-5.6-luna",
+        "status": "completed",
+        "usageComplete": true,
+        "inputTokens": 1390,
+        "outputTokens": 411,
+        "totalTokens": 1801,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 50,
+        "usage": {
+          "input_tokens": 1390,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 411,
+          "output_tokens_details": {
+            "reasoning_tokens": 50
+          },
+          "total_tokens": 1801
+        }
+      }
+    ]
+  }
+]

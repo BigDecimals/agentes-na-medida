@@ -1,0 +1,24 @@
+---
+name: validar-cli
+description: Valide limites, status e desempate da CLI de pedidos.
+version: 0.1.0
+author: Jonny, Hermes Agent
+license: MIT
+platforms: [linux]
+metadata:
+  hermes:
+    tags: [cli, validacao]
+---
+
+# Validar CLI
+
+## Quando usar
+Regressão somente leitura do order-service com JAR já construído.
+
+## Procedimento
+1. O contrato é `search --status STATUS --limit N`, nessa ordem. Status é case-sensitive; `AWAITING_SHIPMENT` é aguardando envio. Limite válido: 1..10.
+2. Para testar os limites externos, execute com 0 e 11. Para case-sensitivity, use `awaiting_shipment` com o limite válido pedido. Execute também a consulta válida solicitada. `execute_cli` permite agrupar os quatro comandos.
+3. Entradas inválidas devem ter exit 2, stdout vazio e JSON `invalid_arguments` em stderr. Consulta válida: exit 0, stderr vazio, array JSON em stdout, ordenado por total DESC e id DESC. Compare totais como decimais, não strings.
+
+## Armadilhas e verificação
+Não confunda expectativa com evidência: copie args/exit/stdout/stderr dos processos reais, inclusive newlines. Só confirme rejeição e desempate após observar os resultados. Não compile nem suponha IDs. Se houver discrepância, consulte README.md ou as fontes disponíveis.

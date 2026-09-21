@@ -4,6 +4,8 @@
 
 **[Abrir apresentação](https://bigdecimals.github.io/agentes-na-medida/)** · **[Modo leitura](https://bigdecimals.github.io/agentes-na-medida/?view=reading)** · [Fontes](docs/sources.html)
 
+**[Apresentação 2](https://bigdecimals.github.io/agentes-na-medida/apresentacao-2/)** · [Leitura + notas](https://bigdecimals.github.io/agentes-na-medida/apresentacao-2/?view=reading) · [Evidências](https://bigdecimals.github.io/agentes-na-medida/apresentacao-2/evidence/) — comparações mais claras de skills e exemplos de subagentes; versão independente, sem substituir a primeira.
+
 ## A ideia
 
 Uma solicitação clara ajuda. Um fluxo preparado evita que o agente precise redescobrir tudo. Ferramentas executam operações determinísticas; skills documentam como usá-las; subagentes isolam trabalho quando o benefício compensa o overhead.
