@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-09-21T16:26:45.912288+00:00",
+  "campaign": "skills-ab-v1",
+  "requestedModel": "gpt-5.6-luna",
+  "provider": "openai-codex",
+  "reasoningEffort": "low",
+  "order": [
+    "baseline",
+    "skill",
+    "baseline",
+    "skill",
+    "baseline",
+    "skill"
+  ],
+  "maxApiCalls": 8,
+  "maxToolCalls": 8,
+  "deadlineSeconds": 180,
+  "sdkTimeoutSeconds": 80,
+  "sdkMaxRetries": 0,
+  "stream": true,
+  "parallelToolCalls": false,
+  "store": false,
+  "temperature": "provider default; omitted in both arms",
+  "tools": [
+    {
+      "type": "function",
+      "name": "read_doc",
+      "description": "Leia linhas de um documento público. start é 1-based; count até 100.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "enum": [
+              "README.md",
+              "Command.java",
+              "OrderRepository.java"
+            ]
+          },
+          "start": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "path",
+          "start",
+          "count"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "type": "function",
+      "name": "search_docs",
+      "description": "Busca literal case-insensitive nos documentos; retorna linhas com contexto, até 30 linhas.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "type": "function",
+      "name": "execute_cli",
+      "description": "Executa o wrapper java-lab.sh real, somente leitura. Retorna args, exit, stdout e stderr. Aceita schema/list ou search --status STATUS --limit N. Entradas de teste inválidas podem chegar à CLI; sem shell.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "commands": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 4,
+            "items": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 5,
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "required": [
+          "commands"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "system": "Valide uma CLI sintética usando ferramentas. Não invente observações; execute os casos.\nVocê pode consultar documentação seletivamente com search_docs/read_doc, ou executar diretamente\nse já souber o contrato. Não é necessário ler todos os documentos. Não há shell nem build.\nexecute_cli aceita lotes de até 4 comandos; tanto lotes quanto comandos separados são permitidos.\nHá no máximo 8 chamadas de API e 8 chamadas de ferramentas, e 180s por tentativa.\nRetorne somente JSON: {\"results\":[{\"args\":[...],\"exit\":0,\"stdout\":\"...\",\"stderr\":\"...\"}],\n\"invalidRejected\":true,\"tieBreakCorrect\":true}. Preserve stdout/stderr literais, inclusive newlines.\nOs booleanos são conclusões dos resultados reais, não expectativas. Reporte os quatro casos pedidos.",
+  "prompt": "Faça uma validação de regressão somente leitura da CLI order-service, sem compilar:\n1. Rejeição dos dois inteiros imediatamente fora dos limites documentados, usando AWAITING_SHIPMENT.\n2. Rejeição do status em minúsculas awaiting_shipment com limite 4.\n3. Consulta dos quatro pedidos de maior total em AWAITING_SHIPMENT, confirmando total DESC e id DESC nos empates.\nReporte argumentos, exit code, stdout e stderr de cada um dos quatro casos realmente executados.\nDocumentos disponíveis: README.md (manual sem seção de resposta pronta), Command.java e OrderRepository.java.",
+  "skill": "---\nname: validar-cli\ndescription: Valide limites, status e desempate da CLI de pedidos.\nversion: 0.1.0\nauthor: Jonny, Hermes Agent\nlicense: MIT\nplatforms: [linux]\nmetadata:\n  hermes:\n    tags: [cli, validacao]\n---\n\n# Validar CLI\n\n## Quando usar\nRegressão somente leitura do order-service com JAR já construído.\n\n## Procedimento\n1. O contrato é `search --status STATUS --limit N`, nessa ordem. Status é case-sensitive; `AWAITING_SHIPMENT` é aguardando envio. Limite válido: 1..10.\n2. Para testar os limites externos, execute com 0 e 11. Para case-sensitivity, use `awaiting_shipment` com o limite válido pedido. Execute também a consulta válida solicitada. `execute_cli` permite agrupar os quatro comandos.\n3. Entradas inválidas devem ter exit 2, stdout vazio e JSON `invalid_arguments` em stderr. Consulta válida: exit 0, stderr vazio, array JSON em stdout, ordenado por total DESC e id DESC. Compare totais como decimais, não strings.\n\n## Armadilhas e verificação\nNão confunda expectativa com evidência: copie args/exit/stdout/stderr dos processos reais, inclusive newlines. Só confirme rejeição e desempate após observar os resultados. Não compile nem suponha IDs. Se houver discrepância, consulte README.md ou as fontes disponíveis.\n",
+  "documents": {
+    "README.md": "# Laboratório Java: pedidos sintéticos\n\nAplicação **console**, sem servidor: Java 21, Spring Boot 4.1.0, Spring JDBC,\nLombok (`@RequiredArgsConstructor`), records, H2 em memória e JUnit.\nCada execução recria os mesmos 12 pedidos; não há nomes, endereços ou dados reais.\n\n## Executar\n\nNa raiz do repositório, com Bash e Docker disponíveis (não exige Java/Maven no host):\n\n```bash\n./scripts/java-lab.sh build\n./scripts/java-lab.sh schema\n./scripts/java-lab.sh list\n./scripts/java-lab.sh search --status AWAITING_SHIPMENT --limit 5\n```\n\nO primeiro build baixa a imagem e as dependências; precisa de internet. Os comandos\n`schema`, `list` e `search` executam o JAR em um contêiner **sem rede**. Em checkout\nnovo, esses comandos compilam automaticamente se o JAR ainda não existir.\n**Após editar fontes, rode `build` novamente**: um JAR existente não é recompilado\nimplicitamente. Faça o build antes de medir consultas; não inclua o download no\nbenchmark. Não é necessário executar código durante a apresentação.\n\n## Contrato pequeno\n\n| Comando | Resultado JSON em stdout |\n|---|---|\n| `schema` | Colunas da tabela `ORDERS`, na ordem de declaração; nome, tipo, precisão/escala numérica e nulabilidade |\n| `list` | Todos os 12 pedidos, ordenados por `id ASC` |\n| `search --status STATUS --limit N` | Somente o status solicitado, `total DESC, id DESC`, no máximo N linhas |\n\nA ordem dos argumentos é fixa. Não há parâmetros opcionais nem SQL livre.\n`STATUS` é um enum sensível a maiúsculas: `AWAITING_SHIPMENT`, `SHIPPED`,\n`CANCELLED`, `PENDING_PAYMENT`. `N` é um inteiro de **1 a 10**, inclusive.\nFiltros são parâmetros JDBC, não concatenação de SQL. `AWAITING_SHIPMENT` significa\naguardando envio: os pedidos `SHIPPED` não entram, mesmo com valores maiores.\n\nUma consulta válida devolve um array JSON (inclusive `[]` quando não há resultados),\ncom exit code 0 e sem logs Spring. Datas são ISO `YYYY-MM-DD`. `total` é uma\n**string decimal com duas casas**, em reais, para não perder precisão monetária.\n`shippedOn` é `null` antes do envio. Os nomes camelCase do JSON correspondem às\ncolunas snake_case do banco.\n\nArgumentos inválidos: exit code **2**, stdout vazio e JSON em stderr:\n\n```json\n{\"error\":\"invalid_arguments\",\"usage\":\"schema | list | search --status STATUS --limit 1..10\"}\n```\n\nFalhas de infraestrutura/build também retornam código não zero; não são resultados\nde consulta. Logs de build vão para stderr, nunca para stdout da consulta.\n\n",
+    "Command.java": "package dev.agentesnamedida.orders;\n\nrecord Command(String action, Status status, int limit) {\n    enum Status { AWAITING_SHIPMENT, SHIPPED, CANCELLED, PENDING_PAYMENT }\n\n    static Command parse(String[] args) {\n        if (args.length == 1 && (args[0].equals(\"schema\") || args[0].equals(\"list\"))) {\n            return new Command(args[0], null, 0);\n        }\n        if (args.length != 5 || !args[0].equals(\"search\")\n                || !args[1].equals(\"--status\") || !args[3].equals(\"--limit\")) {\n            throw new IllegalArgumentException();\n        }\n        var status = Status.valueOf(args[2]);\n        int limit = Integer.parseInt(args[4]);\n        if (limit < 1 || limit > 10) throw new IllegalArgumentException();\n        return new Command(\"search\", status, limit);\n    }\n}\n",
+    "OrderRepository.java": "package dev.agentesnamedida.orders;\n\nimport java.util.List;\nimport lombok.RequiredArgsConstructor;\nimport org.springframework.jdbc.core.JdbcTemplate;\nimport org.springframework.stereotype.Repository;\n\n@Repository\n@RequiredArgsConstructor\npublic class OrderRepository {\n    private final JdbcTemplate jdbc;\n\n    public record Order(long id, String status, String total, String createdOn, String shippedOn) {}\n\n    public record Column(String table, String column, String type, Integer precision,\n                         Integer scale, boolean nullable) {}\n\n    public List<Column> schema() {\n        return jdbc.query(\"\"\"\n                SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE, NUMERIC_PRECISION,\n                       NUMERIC_SCALE, IS_NULLABLE\n                FROM INFORMATION_SCHEMA.COLUMNS\n                WHERE TABLE_SCHEMA = 'PUBLIC' AND TABLE_NAME = 'ORDERS'\n                ORDER BY ORDINAL_POSITION\n                \"\"\", (rs, row) -> new Column(rs.getString(\"TABLE_NAME\"), rs.getString(\"COLUMN_NAME\"),\n                rs.getString(\"DATA_TYPE\"), rs.getObject(\"NUMERIC_PRECISION\", Integer.class),\n                rs.getObject(\"NUMERIC_SCALE\", Integer.class), rs.getString(\"IS_NULLABLE\").equals(\"YES\")));\n    }\n\n    public List<Order> search(Command.Status status, int limit) {\n        return jdbc.query(\"\"\"\n                SELECT * FROM orders WHERE status = ?\n                ORDER BY total DESC, id DESC LIMIT ?\n                \"\"\", (rs, row) -> new Order(rs.getLong(\"id\"), rs.getString(\"status\"),\n                rs.getBigDecimal(\"total\").toPlainString(), rs.getString(\"created_on\"),\n                rs.getString(\"shipped_on\")), status.name(), limit);\n    }\n\n    public List<Order> list() {\n        return jdbc.query(\"SELECT * FROM orders ORDER BY id\", (rs, row) -> new Order(\n                rs.getLong(\"id\"), rs.getString(\"status\"),\n                rs.getBigDecimal(\"total\").toPlainString(),\n                rs.getString(\"created_on\"), rs.getString(\"shipped_on\")));\n    }\n}\n"
+  },
+  "sourcesSha256": {
+    "skills_benchmark.py": "ba55f5a7e7c89521d9272d584115812fb4e24efee20a1739dc59e1076ad8ee34",
+    "skills_benchmark_test.py": "44616f6f6a009588594e46e9332962fdd2e25b01280545cfc2b52b0e006055f1"
+  },
+  "skillSha256": "77e3696e42d043777d632ab3122248adef730c89384e35581314e01e9a19fe98",
+  "harness": "bounded Responses loop with current Hermes profile credential resolution; not full Hermes",
+  "scope": "all six attempts retained; no warmup model calls; excludes authoring/setup/reference execution",
+  "cachePolicy": "no cache control or busting; report all provider cached_tokens",
+  "openaiSdkVersion": "2.24.0",
+  "publication": {
+    "kind": "sanitized measured receipts and protocol, not raw agent transcripts",
+    "removed": [
+      "profile filesystem location",
+      "original worktree bookkeeping",
+      "provider response identifiers",
+      "redundant visible message objects",
+      "provider attribution breakdown"
+    ],
+    "usageCountsUnchanged": true,
+    "runnerSource": "Local experimental runner; not included in this static publication. sourcesSha256 records the measured runner, not an executable in this directory."
+  }
+}
