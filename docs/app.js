@@ -167,6 +167,7 @@ function renderPromptSlide() {
   document.getElementById("promptOutcomeBox").innerHTML = isVague
     ? data.vagueOutcome
     : data.descriptiveOutcome;
+  fitSlidesToViewport();
 }
 
 // ============================================================================
@@ -315,6 +316,7 @@ function setCacheState(state) {
       <p style="margin-top: 10px;">Quanto maior o bloco de instruções fixas, mais a atenção do modelo se dilui entre regras que não têm nada a ver com a tarefa atual (fenômeno conhecido como <em>Context Rot / Lost in the Middle</em>). A solução é manter a raiz enxuta e <strong>modularizar o resto</strong>!</p>
     `;
   }
+  fitSlidesToViewport();
 }
 
 // ============================================================================
@@ -454,6 +456,7 @@ function selectFolder(folderKey) {
   document.getElementById("meterLegendScoped").innerHTML = d.legend;
   document.getElementById("folderCodePreview").textContent = d.code;
   document.getElementById("folderTakeawayText").textContent = d.takeaway;
+  fitSlidesToViewport();
 }
 
 // ============================================================================
@@ -553,6 +556,7 @@ function setToolCase(caseKey) {
 
   document.getElementById("noToolVerdict").textContent = c.noToolVerdict;
   document.getElementById("withToolVerdict").textContent = c.withToolVerdict;
+  fitSlidesToViewport();
 }
 
 // ============================================================================
@@ -619,6 +623,62 @@ function setDuelSim(mode) {
     subBar.innerHTML = `<div class="meter-segment" style="width: 0%;"></div>`;
     subExplain.innerHTML = `⚠️ Deveria ter usado um <strong>Subagent</strong> para isolar a investigação pesada fora da conversa principal.`;
   }
+  fitSlidesToViewport();
+}
+
+// ============================================================================
+// AUTO-FIT VIEWPORT & FULLSCREEN CONTROLLER
+// ============================================================================
+function fitSlidesToViewport() {
+  const containers = document.querySelectorAll(".slide-container");
+  if (!containers.length) return;
+
+  if (window.innerWidth <= 1024) {
+    containers.forEach((c) => {
+      c.style.transform = "none";
+    });
+    return;
+  }
+
+  const isFs = Boolean(document.fullscreenElement);
+  const topOffset = isFs ? 56 : 66;
+  const availWidth = window.innerWidth - 64;
+  const availHeight = window.innerHeight - topOffset - 22;
+
+  containers.forEach((container) => {
+    container.style.transform = "none";
+    const naturalWidth = container.offsetWidth || 1260;
+    const naturalHeight = container.offsetHeight || 600;
+
+    const scaleX = availWidth / naturalWidth;
+    const scaleY = availHeight / naturalHeight;
+    const scale = Math.min(scaleX, scaleY, 1.16);
+    container.style.transform = `scale(${scale.toFixed(4)})`;
+  });
+}
+
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen?.().catch(() => {});
+  } else {
+    document.exitFullscreen?.().catch(() => {});
+  }
+}
+
+function updateFullscreenUI() {
+  const isFs = Boolean(document.fullscreenElement);
+  document.body.classList.toggle("is-fullscreen", isFs);
+  const fsBtn = document.getElementById("fullscreenBtn");
+  if (fsBtn) {
+    fsBtn.classList.toggle("active", isFs);
+    fsBtn.innerHTML = isFs ? "🗗 Sair da Tela Cheia" : "⛶ Tela Cheia";
+  }
+  fitSlidesToViewport();
+  // Keep current slide aligned after fullscreen transition
+  const target = document.getElementById(`slide-${currentSlide}`);
+  if (target) {
+    target.scrollIntoView({ behavior: "instant" });
+  }
 }
 
 // ============================================================================
@@ -667,6 +727,14 @@ document.addEventListener("DOMContentLoaded", () => {
   setToolCase("logs");
   setDuelSim("skill");
   updateNavigationUI(0);
+  fitSlidesToViewport();
+
+  if (document.fonts?.ready) {
+    document.fonts.ready.then(() => fitSlidesToViewport());
+  }
+
+  window.addEventListener("resize", fitSlidesToViewport);
+  document.addEventListener("fullscreenchange", updateFullscreenUI);
 
   // Slide dot clicks
   document.querySelectorAll(".slide-dot").forEach((dot) => {
@@ -677,6 +745,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Top bar buttons
+  document.getElementById("fullscreenBtn").addEventListener("click", toggleFullscreen);
   document.getElementById("prevSlideBtn").addEventListener("click", () => {
     goToSlide(currentSlide - 1);
   });
@@ -715,6 +784,9 @@ document.addEventListener("DOMContentLoaded", () => {
     } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
       e.preventDefault();
       goToSlide(currentSlide - 1);
+    } else if (e.key === "f" || e.key === "F") {
+      e.preventDefault();
+      toggleFullscreen();
     } else if (e.key === "n" || e.key === "N") {
       e.preventDefault();
       toggleNotes();

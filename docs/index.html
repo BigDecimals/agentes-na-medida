@@ -30,6 +30,9 @@
     </nav>
 
     <div class="top-actions">
+      <button class="action-btn" id="fullscreenBtn" title="Tela Cheia (Atalho: tecla F)">
+        ⛶ Tela Cheia
+      </button>
       <button class="action-btn" id="toggleNotesBtn" title="Atalho: tecla N">
         🎙️ Roteiro <span id="slideCounterBadge">01/07</span>
       </button>
@@ -72,8 +75,11 @@
             <button class="nav-btn" onclick="goToSlide(1)" style="background: rgba(56, 189, 248, 0.2); border-color: rgba(56, 189, 248, 0.5); color: #38bdf8; padding: 10px 18px; font-size: 0.9rem;">
               Começar Apresentação →
             </button>
+            <button class="nav-btn" onclick="toggleFullscreen()" style="background: rgba(16, 185, 129, 0.16); border-color: rgba(16, 185, 129, 0.45); color: #34d399; padding: 10px 16px; font-size: 0.9rem;">
+              ⛶ Tela Cheia (F)
+            </button>
             <span style="font-size: 0.8rem; color: var(--text-muted);">
-              Use o <strong>Scroll</strong> ou as setas <strong>← / →</strong> do teclado · Tecla <strong>N</strong> abre o roteiro de fala
+              Use o <strong>Scroll</strong> ou setas <strong>← / →</strong> · Tecla <strong>F</strong> tela cheia · Tecla <strong>N</strong> roteiro
             </span>
           </div>
         </div>

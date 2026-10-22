@@ -64,7 +64,7 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  height: 58px;
+  height: 52px;
   background: var(--bg-glass);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border-subtle);
@@ -72,8 +72,16 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 28px;
+  padding: 0 24px;
+  transition: height 0.2s ease, background 0.2s ease;
 }
+
+body.is-fullscreen .top-bar {
+  height: 46px;
+  background: rgba(7, 9, 14, 0.72);
+}
+
+. progress-track-dummy { display: none; }
 
 .brand {
   display: flex;
@@ -167,12 +175,17 @@ body {
 
 .progress-track {
   position: fixed;
-  top: 58px;
+  top: 52px;
   left: 0;
   right: 0;
   height: 3px;
   background: rgba(255, 255, 255, 0.04);
   z-index: 101;
+  transition: top 0.2s ease;
+}
+
+body.is-fullscreen .progress-track {
+  top: 46px;
 }
 
 .progress-fill {
@@ -182,16 +195,18 @@ body {
   transition: width 0.3s ease;
 }
 
-/* Slide Layout (Hybrid Scrollytelling + PowerPoint Snap) */
+/* Slide Layout (Hybrid Scrollytelling + PowerPoint Snap + Auto-Fit Viewport) */
 .slide {
+  height: 100vh;
   min-height: 100vh;
   scroll-snap-align: start;
   scroll-snap-stop: always;
-  padding: 86px 40px 56px;
+  padding: 62px 32px 18px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+  overflow: hidden;
   border-bottom: 1px solid rgba(148, 163, 184, 0.06);
 }
 
@@ -199,11 +214,13 @@ body {
   width: 100%;
   max-width: 1260px;
   margin: 0 auto;
+  transform-origin: center center;
+  will-change: transform;
 }
 
 /* Header inside each Slide */
 .slide-header {
-  margin-bottom: 24px;
+  margin-bottom: 18px;
 }
 
 .slide-eyebrow {
@@ -982,6 +999,12 @@ body {
 @media (max-width: 1024px) {
   html {
     scroll-snap-type: y proximity;
+  }
+  .slide {
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+    padding: 72px 24px 40px;
   }
   .hero-grid,
   .grid-2,
