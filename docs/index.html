@@ -25,8 +25,9 @@
       <button class="slide-dot" data-slide="2">03 · Cache</button>
       <button class="slide-dot" data-slide="3">04 · Modular</button>
       <button class="slide-dot" data-slide="4">05 · Tools</button>
-      <button class="slide-dot" data-slide="5">06 · Skills vs Subagents</button>
-      <button class="slide-dot" data-slide="6">07 · Decisão</button>
+      <button class="slide-dot" data-slide="5">06 · Skills</button>
+      <button class="slide-dot" data-slide="6">07 · Skills vs Subagents</button>
+      <button class="slide-dot" data-slide="7">08 · Decisão</button>
     </nav>
 
     <div class="top-actions">
@@ -34,7 +35,7 @@
         ⛶ Tela Cheia
       </button>
       <button class="action-btn" id="toggleNotesBtn" title="Atalho: tecla N">
-        🎙️ Roteiro <span id="slideCounterBadge">01/07</span>
+        🎙️ Roteiro <span id="slideCounterBadge">01/08</span>
       </button>
       <button class="nav-btn" id="prevSlideBtn" title="Slide anterior (← / ↑)">←</button>
       <button class="nav-btn" id="nextSlideBtn" title="Próximo slide (→ / ↓)">→</button>
@@ -459,15 +460,92 @@
   </section>
 
   <!-- =====================================================================
-       SLIDE 06: SKILLS VS SUBAGENTS (LADO A LADO)
+       SLIDE 06: SKILLS (COMO FUNCIONA O USO DE TOKENS E REVELAÇÃO PROGRESSIVA)
        ===================================================================== -->
   <section class="slide" id="slide-5" data-index="5">
     <div class="slide-container">
       <div class="slide-header">
-        <span class="slide-eyebrow eyebrow-duel">05 · O Grande Duelo Lado a Lado</span>
-        <h2 class="slide-title">Skills vs. Subagents: Quando Usar Cada Um?</h2>
+        <span class="slide-eyebrow" style="background: rgba(6, 182, 212, 0.14); color: #22d3ee; border-color: rgba(6, 182, 212, 0.35);">05 · Skills (Conhecimento Sob Demanda)</span>
+        <h2 class="slide-title">Skills: Como Poupam Tokens Sem Vasculhar Arquivo por Arquivo</h2>
         <p class="slide-subtitle">
-          Ambos evitam que você coloque tudo nas Instructions globais. A diferença fundamental está em <strong>onde a tarefa acontece</strong>: na <strong>mesma janela de contexto</strong> ou em uma <strong>janela isolada</strong>.
+          Sem uma Skill, o agente principal precisa <strong>abrir arquivo por arquivo</strong> para descobrir como o projeto funciona. A Skill funciona em <strong>2 níveis de economia de tokens</strong>: catálogo leve em repouso + receita pronta sob demanda.
+        </p>
+      </div>
+
+      <div class="control-bar">
+        <div class="tab-group">
+          <button class="tab-btn active" id="skillCaseExplore" onclick="setSkillCase('explore')">
+            🔍 1. Evitando Ler Arquivo por Arquivo (Execução)
+          </button>
+          <button class="tab-btn" id="skillCaseCatalog" onclick="setSkillCase('catalog')">
+            📚 2. Revelação Progressiva (Catálogo de 15 Skills)
+          </button>
+          <button class="tab-btn" id="skillCasePattern" onclick="setSkillCase('pattern')">
+            📐 3. Padronização Sem "Adivinhar" o Estilo do Time
+          </button>
+        </div>
+      </div>
+
+      <div class="tool-comparison-grid">
+        <!-- Without Skill -->
+        <div class="approach-card bad">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <h3 style="font-size: 1.05rem; color: #f87171;" id="noSkillTitle">❌ Sem Skill (Agente Explorando no Escuro)</h3>
+              <span class="cache-status-pill pill-red" id="noSkillTokenBadge">~9.400 tokens gastos</span>
+            </div>
+            <p style="font-size: 0.84rem; color: var(--text-secondary);" id="noSkillDesc"></p>
+
+            <div class="flow-steps" id="noSkillSteps"></div>
+          </div>
+
+          <div style="padding: 12px; border-radius: var(--radius-sm); background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25); font-size: 0.8rem; color: #fca5a5;" id="noSkillVerdict"></div>
+        </div>
+
+        <!-- With Skill -->
+        <div class="approach-card good" style="border-top-color: var(--accent-skill);">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <h3 style="font-size: 1.05rem; color: #22d3ee;" id="withSkillTitle">✅ Com Skill (Índice Leve + Atalho Direto)</h3>
+              <span class="cache-status-pill pill-green" id="withSkillTokenBadge">~520 tokens (-94%)</span>
+            </div>
+            <p style="font-size: 0.84rem; color: var(--text-secondary);" id="withSkillDesc"></p>
+
+            <div class="flow-steps" id="withSkillSteps"></div>
+          </div>
+
+          <div style="padding: 12px; border-radius: var(--radius-sm); background: rgba(6, 182, 212, 0.1); border: 1px solid rgba(6, 182, 212, 0.3); font-size: 0.8rem; color: #67e8f9;" id="withSkillVerdict"></div>
+        </div>
+      </div>
+
+      <!-- Bottom Summary of the 3-Step Token Lifecycle of a Skill -->
+      <div class="card" style="margin-top: 16px; padding: 13px 18px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; font-size: 0.82rem;">
+        <div>
+          <strong style="color: #34d399;">1️⃣ Em Repouso (~30 tokens):</strong><br/>
+          <span style="color: var(--text-secondary);">A IA só vê o nome + 1 linha de descrição no índice (que fica em cache).</span>
+        </div>
+        <div>
+          <strong style="color: #22d3ee;">2️⃣ Ao Ativar (~300 tokens):</strong><br/>
+          <span style="color: var(--text-secondary);">Abre o <code>SKILL.md</code> na mesma conversa somente quando a tarefa pede.</span>
+        </div>
+        <div>
+          <strong style="color: #fbbf24;">3️⃣ Na Execução (-90% tokens):</strong><br/>
+          <span style="color: var(--text-secondary);">Como já tem o mapa e os scripts, a IA <strong>não precisa abrir arquivo por arquivo</strong>!</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       SLIDE 07: SKILLS VS SUBAGENTS (LADO A LADO)
+       ===================================================================== -->
+  <section class="slide" id="slide-6" data-index="6">
+    <div class="slide-container">
+      <div class="slide-header">
+        <span class="slide-eyebrow eyebrow-duel">06 · O Grande Duelo Lado a Lado</span>
+        <h2 class="slide-title">Skills vs. Subagents: Como Cada Um Lida com os Tokens?</h2>
+        <p class="slide-subtitle">
+          A diferença prática: a <strong>Skill</strong> dá a receita pronta para o agente principal <strong>não precisar vasculhar arquivos</strong>; já o <strong>Subagent</strong> entra quando <strong>alguém precisa vasculhar dezenas de arquivos</strong>, fazendo isso em outra sala.
         </p>
       </div>
 
@@ -476,33 +554,27 @@
         <div class="duel-card skill-card">
           <div class="duel-header">
             <div class="duel-title" style="color: var(--accent-skill);">📘 Skills</div>
-            <span class="cache-status-pill" style="background: rgba(6, 182, 212, 0.18); color: #22d3ee;">Mesma Conversa</span>
+            <span class="cache-status-pill" style="background: rgba(6, 182, 212, 0.18); color: #22d3ee;">Mesma Conversa · Evita Exploração</span>
           </div>
-          <p class="duel-Analogy">"É como abrir um manual de instruções em cima da mesa do agente atual."</p>
+          <p class="duel-Analogy">"Dá o mapa pronto na mesa atual para a IA não ter que abrir arquivo por arquivo."</p>
 
           <ul class="feature-list">
             <li>
-              <span>🔍</span>
+              <span>💰</span>
               <div>
-                <strong>Revelação Progressiva (Progressive Disclosure):</strong> No começo, a IA só gasta ~1 linha sabendo que a Skill existe. Só abre o manual (<code>SKILL.md</code>) quando você pede aquela tarefa.
+                <strong>Como poupa tokens:</strong> Substitui milhares de tokens de "tentativa e erro / leitura de arquivos" por um manual enxuto (<code>SKILL.md</code> ~300t) + scripts prontos.
               </div>
             </li>
             <li>
               <span>🧠</span>
               <div>
-                <strong>Contexto Compartilhado:</strong> Roda dentro da sua conversa atual — aproveita tudo o que vocês já discutiram até ali.
-              </div>
-            </li>
-            <li>
-              <span>🧰</span>
-              <div>
-                <strong>Combo Manual + Tools:</strong> Pode trazer templates, checklists e scripts prontos para padronizar uma entrega.
+                <strong>Contexto Compartilhado:</strong> Roda dentro da sua conversa principal — aproveita o que você já estava discutindo com o agente.
               </div>
             </li>
             <li>
               <span>🎯</span>
               <div>
-                <strong>Quando usar:</strong> Tarefas padronizadas e repetíveis (ex: <em>gerar Release Notes, criar PR no padrão do time, escrever história de usuário</em>).
+                <strong>Quando usar:</strong> O processo já é conhecido/repetível (ex: <em>consultar pedidos no banco, gerar Release Notes, criar PR ou migration no padrão do time</em>).
               </div>
             </li>
           </ul>
@@ -512,33 +584,27 @@
         <div class="duel-card subagent-card">
           <div class="duel-header">
             <div class="duel-title" style="color: var(--accent-subagent);">🤖 Subagents</div>
-            <span class="cache-status-pill" style="background: rgba(236, 72, 153, 0.18); color: #f472b6;">Contexto Isolado</span>
+            <span class="cache-status-pill" style="background: rgba(236, 72, 153, 0.18); color: #f472b6;">Contexto Isolado · Absorve o Ruído</span>
           </div>
-          <p class="duel-Analogy">"É como pedir para um especialista ir a outra sala pesquisar e trazer só a conclusão."</p>
+          <p class="duel-Analogy">"Manda um especialista para outra sala ler 40 arquivos e trazer só a resposta."</p>
 
           <ul class="feature-list">
             <li>
               <span>🚪</span>
               <div>
-                <strong>Janela de Contexto Própria:</strong> O agente principal cria um ajudante do zero apenas com a missão específica que precisa ser resolvida.
+                <strong>Como poupa o contexto principal:</strong> Os 12.000 tokens lendo arquivo por arquivo são gastos na <strong>janela separada do Subagent</strong> (que é descartada ao final).
               </div>
             </li>
             <li>
               <span>🛡️</span>
               <div>
-                <strong>Blindagem contra Ruído:</strong> O Subagent pode abrir 40 arquivos, ler logs enormes e errar tentativas sem sujar a memória da conversa principal.
-              </div>
-            </li>
-            <li>
-              <span>⚡</span>
-              <div>
-                <strong>Paralelismo e Especialização:</strong> Você pode disparar 3 Subagents ao mesmo tempo (ex: segurança, performance e testes).
+                <strong>Retorno Limpo:</strong> O agente principal recebe apenas o resumo final (~250 tokens) com a resposta exata do que pediu.
               </div>
             </li>
             <li>
               <span>🎯</span>
               <div>
-                <strong>Quando usar:</strong> Pesquisas pesadas, exploração de muitos arquivos, auditorias ou tarefas independentes que geram muito volume intermediário.
+                <strong>Quando usar:</strong> Tarefas abertas ou investigativas onde <em>é obrigatório</em> vasculhar muitos arquivos (ex: <em>caçar a causa raiz de um bug complexo, auditar todo o código</em>).
               </div>
             </li>
           </ul>
@@ -549,17 +615,17 @@
       <div class="sim-visualizer">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
           <span style="font-size: 0.82rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary);">
-            Simulador de Janela de Contexto — Veja o que acontece na memória:
+            Compare o Uso de Tokens nos 3 Cenários:
           </span>
           <div class="tab-group">
             <button class="tab-btn active" id="simBtnSkill" onclick="setDuelSim('skill')">
-              📘 Usando uma Skill
+              📘 1. Com Skill (Atalho Direto: ~600t)
             </button>
             <button class="tab-btn" id="simBtnSubagent" onclick="setDuelSim('subagent')">
-              🤖 Usando um Subagent
+              🤖 2. Com Subagent (Pesquisa Isolada: ~250t no principal)
             </button>
             <button class="tab-btn" id="simBtnBad" onclick="setDuelSim('bad')">
-              ❌ Fazendo Pesquisa Pesada sem Subagent
+              ❌ 3. Agente Principal Lendo Arquivo a Arquivo (~12.000t!)
             </button>
           </div>
         </div>
@@ -568,7 +634,7 @@
           <div class="lane-box">
             <div class="lane-title">
               <span>Janela do Agente Principal (Sua Conversa)</span>
-              <span id="simMainTokenLabel" style="color: #22d3ee;">Limpa e Focada (22% ocupada)</span>
+              <span id="simMainTokenLabel" style="color: #22d3ee;">Limpa e Focada</span>
             </div>
             <div class="context-meter-bar" id="simMainBar"></div>
             <div style="font-size: 0.8rem; color: var(--text-secondary);" id="simMainExplain"></div>
@@ -588,12 +654,12 @@
   </section>
 
   <!-- =====================================================================
-       SLIDE 07: GUIA DE DECISÃO — QUAL USAR EM CADA CENÁRIO?
+       SLIDE 08: GUIA DE DECISÃO — QUAL USAR EM CADA CENÁRIO?
        ===================================================================== -->
-  <section class="slide" id="slide-6" data-index="6">
+  <section class="slide" id="slide-7" data-index="7">
     <div class="slide-container">
       <div class="slide-header">
-        <span class="slide-eyebrow eyebrow-cache">06 · Resumo Prático</span>
+        <span class="slide-eyebrow eyebrow-cache">07 · Resumo Prático</span>
         <h2 class="slide-title">Mapa de Decisão: Quando Usar Cada Peça?</h2>
         <p class="slide-subtitle">
           Um guia rápido de bolso para saber onde colocar cada regra, conhecimento ou automação no seu dia a dia.

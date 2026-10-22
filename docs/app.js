@@ -3,7 +3,7 @@
 // ============================================================================
 
 let currentSlide = 0;
-const totalSlides = 7;
+const totalSlides = 8;
 
 // Speaker Notes (~15 minutes total pacing)
 const speakerNotes = [
@@ -19,7 +19,7 @@ const speakerNotes = [
     `
   },
   {
-    title: "Slide 02 · O Pedido Descritivo (~2.5 min)",
+    title: "Slide 02 · O Pedido Descritivo (~2 min)",
     html: `
       <p><strong>Ponto principal:</strong> A IA é uma máquina probabilística. Quando você faz um pedido vago, ela não levanta a mão para perguntar — ela "chuta" a resposta mais provável.</p>
       <ul>
@@ -30,7 +30,7 @@ const speakerNotes = [
     `
   },
   {
-    title: "Slide 03 · Instructions & Prefix Caching (~2.5 min)",
+    title: "Slide 03 · Instructions & Prefix Caching (~2 min)",
     html: `
       <p><strong>Ponto principal:</strong> Tudo o que vale para o projeto inteiro vai nas <strong>Instructions</strong>. Além de poupar digitação, isso ativa o <strong>Prefix Caching</strong>.</p>
       <ul>
@@ -52,7 +52,7 @@ const speakerNotes = [
     `
   },
   {
-    title: "Slide 05 · Tools: Poupando Tokens e Reuso (~2.5 min)",
+    title: "Slide 05 · Tools: Poupando Tokens e Reuso (~2 min)",
     html: `
       <p><strong>Ponto principal:</strong> Não use tokens caros do modelo para fazer trabalho braçal que um código ou script faz em milissegundos.</p>
       <ul>
@@ -62,18 +62,27 @@ const speakerNotes = [
     `
   },
   {
-    title: "Slide 06 · Skills vs. Subagents (~3 min)",
+    title: "Slide 06 · Skills: Como Poupam Tokens (~2.5 min)",
     html: `
-      <p><strong>O coração da apresentação:</strong> Qual a diferença real entre uma Skill e um Subagent?</p>
+      <p><strong>Ponto principal:</strong> Sem uma Skill, o agente principal precisa <strong>abrir arquivo por arquivo</strong> para entender como o projeto funciona, gastando milhares de tokens de exploração.</p>
       <ul>
-        <li><strong>Skill = Manual na mesma sala:</strong> usa <em>Revelação Progressiva</em> (a IA só lê 1 linha de índice; quando precisa, abre o manual na <strong>mesma conversa</strong>). Ideal para fluxos padronizados onde o histórico atual importa.</li>
-        <li><strong>Subagent = Especialista em outra sala:</strong> abre uma <strong>janela de contexto isolada</strong>. Ideal quando a tarefa exige ler dezenas de arquivos sem poluir a conversa principal.</li>
-        <li>Use os 3 botões do simulador abaixo para mostrar visualmente o impacto na memória!</li>
+        <li><strong>Economia 1 (Catálogo Leve):</strong> Em repouso, cada Skill gasta apenas ~30 tokens (nome + descrição).</li>
+        <li><strong>Economia 2 (Atalho na Execução):</strong> Quando ativada, a Skill entrega o mapa exato (<code>SKILL.md</code> ~320 tokens) + scripts prontos. O agente <strong>pula a leitura arquivo a arquivo</strong> e vai direto ao ponto!</li>
       </ul>
     `
   },
   {
-    title: "Slide 07 · Mapa de Decisão e Fechamento (~1.5 min)",
+    title: "Slide 07 · Skills vs. Subagents Lado a Lado (~2 min)",
+    html: `
+      <p><strong>A diferença cristalina no uso de tokens:</strong></p>
+      <ul>
+        <li><strong>Skill (Mesma Conversa):</strong> Evita que o agente precise explorar arquivos, pois já dá a receita pronta (~320 tokens) na conversa atual.</li>
+        <li><strong>Subagent (Janela Isolada):</strong> Quando a tarefa é uma investigação aberta e <em>alguém realmente precisa</em> abrir 40 arquivos (~12.000 tokens), o Subagent faz isso em outra sala e devolve só o resumo (~250 tokens)!</li>
+      </ul>
+    `
+  },
+  {
+    title: "Slide 08 · Mapa de Decisão e Fechamento (~1 min)",
     html: `
       <p><strong>Fechamento prático:</strong></p>
       <ul>
@@ -560,7 +569,115 @@ function setToolCase(caseKey) {
 }
 
 // ============================================================================
-// SLIDE 06 DATA: Skills vs Subagents Context Simulator
+// SLIDE 06 DATA: Skills (Token Usage & Avoiding File-by-File Exploration)
+// ============================================================================
+const skillCases = {
+  explore: {
+    noSkillTitle: "❌ Sem Skill (Agente Lendo Arquivo por Arquivo)",
+    noSkillTokens: "~9.400 tokens gastos",
+    withSkillTitle: "✅ Com Skill (Mapa Direto + Script Pronto)",
+    withSkillTokens: "~520 tokens (-94%)",
+    noSkillDesc: "Você pede: 'Consulte os pedidos com falha no módulo de ordens'. O agente principal não sabe como o projeto funciona e sai vasculhando:",
+    withSkillDesc: "A Skill já ensina o atalho exato. O agente lê o SKILL.md sob demanda e executa de primeira sem abrir arquivos à toa:",
+    noSkillSteps: [
+      { label: "1. Lista pastas e lê config/build (pom.xml / package.json) para entender a stack", badge: "+2.100 tokens", color: "#f87171" },
+      { label: "2. Abre schema.sql, migrations e 5 classes para descobrir onde ficam os pedidos", badge: "+4.800 tokens", color: "#f87171" },
+      { label: "3. Tenta rodar um comando no chute, recebe erro de sintaxe e lê mais arquivos", badge: "+2.500 tokens", color: "#f87171" }
+    ],
+    withSkillSteps: [
+      { label: "1. No início do chat, a IA só leu 1 linha do índice: 'consultar-pedidos'", badge: "30 tokens (Cache)", color: "#34d399" },
+      { label: "2. Ao ver seu pedido, a IA abre o arquivo SKILL.md com a receita exata", badge: "+310 tokens", color: "#22d3ee" },
+      { label: "3. Executa o comando/script oficial de primeira (zero arquivos abertos à toa!)", badge: "+180 tokens", color: "#34d399" }
+    ],
+    noSkillVerdict: "❌ O agente principal gastou 9.400 tokens na sua conversa só para 'descobrir como o projeto funciona'.",
+    withSkillVerdict: "✅ A Skill eliminou a exploração às cegas: o agente não precisou ler arquivo por arquivo e economizou 94% dos tokens!"
+  },
+  catalog: {
+    noSkillTitle: "❌ 15 Manuais Jogados nas Instructions Globais",
+    noSkillTokens: "12.000 tokens em TODO chat",
+    withSkillTitle: "✅ 15 Skills com Revelação Progressiva",
+    withSkillTokens: "450t base + 320t da Skill usada",
+    noSkillDesc: "Se você colocar os 15 procedimentos da equipe direto no arquivo de Instructions para a IA 'saber tudo':",
+    withSkillDesc: "Transformando cada procedimento em uma Skill separada (arquivos SKILL.md independentes):",
+    noSkillSteps: [
+      { label: "1. Carrega manual de Deploy + Banco + UI + QA + Release em toda conversa", badge: "12.000 tokens", color: "#f87171" },
+      { label: "2. Você faz uma pergunta simples e já paga o peso de 14 manuais inúteis", badge: "Contexto Cheio", color: "#f87171" },
+      { label: "3. Instruções demais misturadas fazem a IA confundir regras", badge: "Perda de Foco", color: "#f87171" }
+    ],
+    withSkillSteps: [
+      { label: "1. Catálogo inicial: IA lê só nome + descrição curta das 15 Skills (15 × 30t)", badge: "450 tokens (Cache)", color: "#34d399" },
+      { label: "2. As 14 Skills que não têm relação com a tarefa continuam fechadas", badge: "0 tokens gastos", color: "#34d399" },
+      { label: "3. Apenas a Skill necessária para o pedido atual é carregada no contexto", badge: "+320 tokens", color: "#22d3ee" }
+    ],
+    noSkillVerdict: "❌ Escalar conhecimento colocando tudo nas Instructions estoura a janela de contexto rapidamente.",
+    withSkillVerdict: "✅ Com Skills você pode ter 20, 50 ou 100 playbooks no projeto sem engordar o contexto inicial!"
+  },
+  pattern: {
+    noSkillTitle: "❌ Sem Skill (IA Tentando Adivinhar o Padrão do Time)",
+    noSkillTokens: "~6.800 tokens + Retrabalho",
+    withSkillTitle: "✅ Com Skill (Template + Checklist Oficial)",
+    withSkillTokens: "~410 tokens (-93%)",
+    noSkillDesc: "Você pede: 'Crie uma nova rota/história seguindo o nosso padrão'. Sem Skill, a IA tenta deduzir o padrão olhando o passado:",
+    withSkillDesc: "A Skill já empacota o template oficial e o checklist de validação que o time definiu:",
+    noSkillSteps: [
+      { label: "1. IA abre 6 arquivos antigos do projeto para 'tentar imitar' o estilo", badge: "+4.600 tokens", color: "#f87171" },
+      { label: "2. Acaba copiando um código legado antigo que não é mais o padrão atual", badge: "Padrão Errado", color: "#f87171" },
+      { label: "3. Você precisa corrigir manualmente no chat gastando mais turnos", badge: "+2.200 tokens", color: "#f87171" }
+    ],
+    withSkillSteps: [
+      { label: "1. IA identifica a intenção e abre a Skill 'criar-endpoint-padrao'", badge: "+290 tokens", color: "#22d3ee" },
+      { label: "2. Segue o template atualizado sem precisar ler arquivos antigos no escuro", badge: "Zero Adivinhação", color: "#34d399" },
+      { label: "3. Entrega no formato exato do time logo na primeira tentativa", badge: "+120 tokens", color: "#34d399" }
+    ],
+    noSkillVerdict: "❌ Deixar a IA deduzir padrões lendo arquivos antigos gasta milhares de tokens e perpetua código legado.",
+    withSkillVerdict: "✅ A Skill garante que qualquer pessoa do time gere entregas padronizadas gastando o mínimo de tokens."
+  }
+};
+
+function setSkillCase(caseKey) {
+  ["explore", "catalog", "pattern"].forEach((k) => {
+    const id = "skillCase" + k.charAt(0).toUpperCase() + k.slice(1);
+    const btn = document.getElementById(id);
+    if (btn) btn.className = "tab-btn" + (k === caseKey ? " active" : "");
+  });
+
+  const c = skillCases[caseKey];
+  document.getElementById("noSkillTitle").textContent = c.noSkillTitle;
+  document.getElementById("noSkillTokenBadge").textContent = c.noSkillTokens;
+  document.getElementById("withSkillTitle").textContent = c.withSkillTitle;
+  document.getElementById("withSkillTokenBadge").textContent = c.withSkillTokens;
+  document.getElementById("noSkillDesc").textContent = c.noSkillDesc;
+  document.getElementById("withSkillDesc").textContent = c.withSkillDesc;
+
+  document.getElementById("noSkillSteps").innerHTML = c.noSkillSteps
+    .map(
+      (s) => `
+      <div class="flow-step">
+        <span>${s.label}</span>
+        <strong style="color: ${s.color}; font-family: var(--font-mono); font-size: 0.76rem;">${s.badge}</strong>
+      </div>
+    `
+    )
+    .join("");
+
+  document.getElementById("withSkillSteps").innerHTML = c.withSkillSteps
+    .map(
+      (s) => `
+      <div class="flow-step">
+        <span>${s.label}</span>
+        <strong style="color: ${s.color}; font-family: var(--font-mono); font-size: 0.76rem;">${s.badge}</strong>
+      </div>
+    `
+    )
+    .join("");
+
+  document.getElementById("noSkillVerdict").textContent = c.noSkillVerdict;
+  document.getElementById("withSkillVerdict").textContent = c.withSkillVerdict;
+  fitSlidesToViewport();
+}
+
+// ============================================================================
+// SLIDE 07 DATA: Skills vs Subagents Context Simulator
 // ============================================================================
 function setDuelSim(mode) {
   document.getElementById("simBtnSkill").className =
@@ -580,48 +697,48 @@ function setDuelSim(mode) {
 
   if (mode === "skill") {
     mainLabel.style.color = "#22d3ee";
-    mainLabel.textContent = "Mesma Conversa · 28% ocupada";
+    mainLabel.textContent = "Mesma Conversa · ~600 tokens gastos (Sem exploração!)";
     mainBar.innerHTML = `
       <div class="meter-segment" style="width: 10%; background: var(--accent-cache);" title="Instructions em Cache"></div>
       <div class="meter-segment" style="width: 8%; background: var(--accent-prompt);" title="Conversa Atual"></div>
-      <div class="meter-segment" style="width: 10%; background: var(--accent-skill);" title="Skill Carregada Sob Demanda"></div>
+      <div class="meter-segment" style="width: 8%; background: var(--accent-skill);" title="Skill Carregada Sob Demanda (~320t)"></div>
     `;
-    mainExplain.innerHTML = `🟢 <strong>Base em Cache (10%)</strong> + 🔵 <strong>Histórico (8%)</strong> + 📘 <strong>Manual da Skill (10%)</strong>.<br/>A Skill entrou na conversa atual só quando foi chamada, aproveitando todo o contexto que você já tinha construído.`;
+    mainExplain.innerHTML = `🟢 <strong>Base (400t)</strong> + 🔵 <strong>Pedido (200t)</strong> + 📘 <strong>Skill (~320t)</strong>.<br/>Como a Skill já deu a receita pronta e o comando exato, o agente principal <strong>não precisou abrir arquivo por arquivo</strong>!`;
 
     subLabel.style.color = "var(--text-muted)";
-    subLabel.textContent = "Não utilizada (0%)";
+    subLabel.textContent = "Não utilizada (0 tokens)";
     subBar.innerHTML = `<div class="meter-segment" style="width: 0%;"></div>`;
-    subExplain.innerHTML = `Como a tarefa era direta e padronizada (ex: gerar uma Release Note ou seguir um template), não precisou abrir outra sala.`;
+    subExplain.innerHTML = `Não precisou de Subagent porque não havia necessidade de vasculhar dezenas de arquivos desconhecidos — a Skill já tinha o atalho.`;
   } else if (mode === "subagent") {
     mainLabel.style.color = "#34d399";
-    mainLabel.textContent = "Protegida e Limpa! · 20% ocupada";
+    mainLabel.textContent = "Protegida! · Só +250 tokens recebidos na principal";
     mainBar.innerHTML = `
       <div class="meter-segment" style="width: 10%; background: var(--accent-cache);" title="Instructions em Cache"></div>
       <div class="meter-segment" style="width: 7%; background: var(--accent-prompt);" title="Conversa Atual"></div>
-      <div class="meter-segment" style="width: 3%; background: var(--accent-subagent);" title="Apenas o Resumo Final do Subagent"></div>
+      <div class="meter-segment" style="width: 4%; background: var(--accent-subagent);" title="Apenas o Resumo Final do Subagent (+250t)"></div>
     `;
-    mainExplain.innerHTML = `🟢 <strong>Base (10%)</strong> + 🔵 <strong>Histórico (7%)</strong> + 🤖 <strong>Resumo Final do Subagent (3%)</strong>.<br/>Sua conversa principal continua leve, rápida e sem nenhum lixo das 40 buscas intermediárias!`;
+    mainExplain.innerHTML = `🟢 <strong>Base (400t)</strong> + 🔵 <strong>Pedido (200t)</strong> + 🤖 <strong>Resposta Final do Subagent (+250t)</strong>.<br/>Sua conversa principal ficou limpa! Todo o peso de abrir arquivo por arquivo ficou fora daqui.`;
 
     subLabel.style.color = "#f472b6";
-    subLabel.textContent = "Trabalho Pesado Isolado · 75% usada (e descartada depois)";
+    subLabel.textContent = "Absorveu a Exploração · ~12.000 tokens isolados (e descartados)";
     subBar.innerHTML = `
-      <div class="meter-segment" style="width: 75%; background: var(--accent-subagent);"></div>
+      <div class="meter-segment" style="width: 82%; background: var(--accent-subagent);"></div>
     `;
-    subExplain.innerHTML = `🤖 O Subagent abriu 40 arquivos, testou hipóteses e gastou tokens na <strong>janela separada dele</strong>. Ao terminar, devolveu só a resposta mastigada e encerrou a sala.`;
+    subExplain.innerHTML = `🤖 Como era uma investigação aberta (caçar um bug em 40 arquivos), o Subagent fez a leitura arquivo a arquivo na <strong>janela própria dele</strong> e devolveu só a resposta.`;
   } else {
     mainLabel.style.color = "#f87171";
-    mainLabel.textContent = "⚠️ Poluída com Ruído · 92% ocupada!";
+    mainLabel.textContent = "⚠️ Poluída! · +12.000 tokens acumulados na conversa";
     mainBar.innerHTML = `
       <div class="meter-segment" style="width: 10%; background: var(--accent-cache);"></div>
       <div class="meter-segment" style="width: 8%; background: var(--accent-prompt);"></div>
-      <div class="meter-segment" style="width: 74%; background: var(--accent-danger);"></div>
+      <div class="meter-segment" style="width: 76%; background: var(--accent-danger);"></div>
     `;
-    mainExplain.innerHTML = `🔴 O agente principal abriu dezenas de arquivos e logs direto na sua conversa. Agora toda nova mensagem carrega esse peso morto de 74% de ruído!`;
+    mainExplain.innerHTML = `🔴 Sem Skill (para dar o atalho) e sem Subagent (para isolar a busca), o <strong>agente principal teve que abrir arquivo por arquivo na sua conversa</strong>, deixando tudo caro e lento!`;
 
     subLabel.style.color = "var(--text-muted)";
-    subLabel.textContent = "Não utilizada (Erro de escolha)";
+    subLabel.textContent = "Não utilizada (Todo o ruído ficou na janela principal)";
     subBar.innerHTML = `<div class="meter-segment" style="width: 0%;"></div>`;
-    subExplain.innerHTML = `⚠️ Deveria ter usado um <strong>Subagent</strong> para isolar a investigação pesada fora da conversa principal.`;
+    subExplain.innerHTML = `⚠️ Se a tarefa era repetível, uma <strong>Skill</strong> evitaria ler esses arquivos; se era uma busca aberta, um <strong>Subagent</strong> isolaria esse ruído.`;
   }
   fitSlidesToViewport();
 }
@@ -725,6 +842,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setCacheState("turn2");
   selectFolder("frontend");
   setToolCase("logs");
+  setSkillCase("explore");
   setDuelSim("skill");
   updateNavigationUI(0);
   fitSlidesToViewport();
@@ -790,7 +908,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } else if (e.key === "n" || e.key === "N") {
       e.preventDefault();
       toggleNotes();
-    } else if (e.key >= "1" && e.key <= "7") {
+    } else if (e.key >= "1" && e.key <= "8") {
       goToSlide(Number(e.key) - 1);
     }
   });
