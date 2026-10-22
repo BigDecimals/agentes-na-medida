@@ -405,23 +405,26 @@
       <div class="control-bar">
         <div class="tab-group">
           <button class="tab-btn active" id="toolCaseLogs" onclick="setToolCase('logs')">
-            📄 Caso 1: Analisar 5.000 linhas de Log / Planilha
+            📄 1. Analisar 5.000 linhas de Log
           </button>
           <button class="tab-btn" id="toolCaseSprint" onclick="setToolCase('sprint')">
-            📋 Caso 2: Cruzar Status de Tarefas da Sprint
+            📋 2. Cruzar Status da Sprint
           </button>
           <button class="tab-btn" id="toolCaseCalc" onclick="setToolCase('calc')">
-            🧮 Caso 3: Validar Regras e Cálculos Financeiros
+            🧮 3. Cálculos & Regras
+          </button>
+          <button class="tab-btn" id="toolCaseCode" onclick="setToolCase('code')">
+            💻 4. Exemplo em Código (Arquivo & Chamada)
           </button>
         </div>
       </div>
 
       <div class="tool-comparison-grid">
-        <!-- Without Tool: Raw tokens in prompt -->
-        <div class="approach-card bad">
+        <!-- Without Tool / Left Card -->
+        <div class="approach-card bad" id="noToolCard">
           <div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-              <h3 style="font-size: 1.05rem; color: #f87171;">❌ Sem Tool (Tudo "No Braço" no Prompt)</h3>
+              <h3 style="font-size: 1.05rem; color: #f87171;" id="noToolTitle">❌ Sem Tool (Tudo "No Braço" no Prompt)</h3>
               <span class="cache-status-pill pill-red" id="noToolTokenBadge">~18.500 tokens</span>
             </div>
             <p style="font-size: 0.84rem; color: var(--text-secondary);" id="noToolDesc"></p>
@@ -432,11 +435,11 @@
           <div style="padding: 12px; border-radius: var(--radius-sm); background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25); font-size: 0.8rem; color: #fca5a5;" id="noToolVerdict"></div>
         </div>
 
-        <!-- With Tool: Deterministic execution + Reuse -->
-        <div class="approach-card good">
+        <!-- With Tool / Right Card -->
+        <div class="approach-card good" id="withToolCard">
           <div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-              <h3 style="font-size: 1.05rem; color: #fbbf24;">✅ Com Tool (Execução Determinística + Reuso)</h3>
+              <h3 style="font-size: 1.05rem; color: #fbbf24;" id="withToolTitle">✅ Com Tool (Execução Determinística + Reuso)</h3>
               <span class="cache-status-pill pill-green" id="withToolTokenBadge">~240 tokens (-98%)</span>
             </div>
             <p style="font-size: 0.84rem; color: var(--text-secondary);" id="withToolDesc"></p>
@@ -476,20 +479,23 @@
       <div class="control-bar">
         <div class="tab-group">
           <button class="tab-btn active" id="skillCaseExplore" onclick="setSkillCase('explore')">
-            🔍 1. Evitando Ler Arquivo por Arquivo (Execução)
+            🔍 1. Evitando Ler Arquivo por Arquivo
           </button>
           <button class="tab-btn" id="skillCaseCatalog" onclick="setSkillCase('catalog')">
-            📚 2. Revelação Progressiva (Catálogo de 15 Skills)
+            📚 2. Catálogo Leve (15 Skills)
           </button>
           <button class="tab-btn" id="skillCasePattern" onclick="setSkillCase('pattern')">
-            📐 3. Padronização Sem "Adivinhar" o Estilo do Time
+            📐 3. Padronização do Time
+          </button>
+          <button class="tab-btn" id="skillCaseCode" onclick="setSkillCase('code')">
+            💻 4. Exemplo em Código (SKILL.md & Chamada)
           </button>
         </div>
       </div>
 
       <div class="tool-comparison-grid">
         <!-- Without Skill -->
-        <div class="approach-card bad">
+        <div class="approach-card bad" id="noSkillCard">
           <div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
               <h3 style="font-size: 1.05rem; color: #f87171;" id="noSkillTitle">❌ Sem Skill (Agente Explorando no Escuro)</h3>
@@ -504,7 +510,7 @@
         </div>
 
         <!-- With Skill -->
-        <div class="approach-card good" style="border-top-color: var(--accent-skill);">
+        <div class="approach-card good" id="withSkillCard" style="border-top-color: var(--accent-skill);">
           <div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
               <h3 style="font-size: 1.05rem; color: #22d3ee;" id="withSkillTitle">✅ Com Skill (Índice Leve + Atalho Direto)</h3>
@@ -553,20 +559,23 @@
       <div class="control-bar">
         <div class="tab-group">
           <button class="tab-btn active" id="subagentCaseInvestigate" onclick="setSubagentCase('investigate')">
-            🕵️ 1. Investigação Pesada (Ler 40 Arquivos)
+            🕵️ 1. Investigação Pesada (40 Arquivos)
           </button>
           <button class="tab-btn" id="subagentCaseParallel" onclick="setSubagentCase('parallel')">
-            ⚡ 2. Paralelismo (3 Especialistas Simultâneos)
+            ⚡ 2. Paralelismo (3 Especialistas)
           </button>
           <button class="tab-btn" id="subagentCaseSafety" onclick="setSubagentCase('safety')">
-            🔒 3. Permissão & Modelo Sob Medida
+            🔒 3. Permissão & Modelo
+          </button>
+          <button class="tab-btn" id="subagentCaseCode" onclick="setSubagentCase('code')">
+            💻 4. Exemplo em Código (Arquivo & Delegação)
           </button>
         </div>
       </div>
 
       <div class="tool-comparison-grid">
         <!-- Without Subagent -->
-        <div class="approach-card bad">
+        <div class="approach-card bad" id="noSubagentCard">
           <div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
               <h3 style="font-size: 1.05rem; color: #f87171;" id="noSubagentTitle">❌ Sem Subagent (Tudo na Conversa Principal)</h3>
@@ -581,7 +590,7 @@
         </div>
 
         <!-- With Subagent -->
-        <div class="approach-card good" style="border-top-color: var(--accent-subagent);">
+        <div class="approach-card good" id="withSubagentCard" style="border-top-color: var(--accent-subagent);">
           <div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
               <h3 style="font-size: 1.05rem; color: #f472b6;" id="withSubagentTitle">✅ Com Subagent (Janela Isolada + Resumo)</h3>

@@ -482,6 +482,8 @@ function selectFolder(folderKey) {
 // ============================================================================
 const toolCases = {
   logs: {
+    noToolTitle: "❌ Sem Tool (Tudo 'No Braço' no Prompt)",
+    withToolTitle: "✅ Com Tool (Execução Determinística + Reuso)",
     noToolTokens: "~18.500 tokens",
     withToolTokens: "~240 tokens (-98%)",
     noToolDesc: "Você copia 5.000 linhas de log ou planilha e cola direto no chat pedindo para a IA encontrar os erros.",
@@ -500,6 +502,8 @@ const toolCases = {
     withToolVerdict: "✅ Poupa 98% dos tokens, contagem 100% exata e a Tool fica pronta para qualquer pessoa ou agente reutilizar."
   },
   sprint: {
+    noToolTitle: "❌ Sem Tool (Colando JSON Bruto no Chat)",
+    withToolTitle: "✅ Com Tool (Consulta Limpa via Integração)",
     noToolTokens: "~9.200 tokens",
     withToolTokens: "~310 tokens (-96%)",
     noToolDesc: "Exportar JSON/HTML gigante do Jira ou GitHub e colar no prompt para descobrir quais tarefas estão sem revisão.",
@@ -518,9 +522,11 @@ const toolCases = {
     withToolVerdict: "✅ Conecta a IA aos dados reais em tempo real, gastando o mínimo possível de tokens."
   },
   calc: {
+    noToolTitle: "❌ Sem Tool (Fazendo Conta no Texto)",
+    withToolTitle: "✅ Com Tool (Cálculo Determinístico Certificado)",
     noToolTokens: "~4.800 tokens + Risco",
     withToolTokens: "~180 tokens (100% Exato)",
-    noToolDesc: "Pedir para o modelo calcular impostos, juros compostos ou validar 200 registros " + "usando apenas texto preditivo.",
+    noToolDesc: "Pedir para o modelo calcular impostos, juros compostos ou validar 200 registros usando apenas texto preditivo.",
     withToolDesc: "A IA extrai os parâmetros da conversa e chama uma Tool de cálculo/validação determinística já testada.",
     noToolSteps: [
       { label: "1. Explicar todas as fórmulas complexas no texto do prompt", badge: "+1.500 tokens", color: "#f87171" },
@@ -534,43 +540,112 @@ const toolCases = {
     ],
     noToolVerdict: "❌ Modelos de linguagem preveem palavras — não foram feitos para substituir calculadoras ou validadores no braço.",
     withToolVerdict: "✅ Você combina o melhor dos dois mundos: a IA entende o pedido humano e a Tool garante a matemática exata."
+  },
+  code: {
+    isCodeView: true,
+    noToolTitle: "📄 1. O Arquivo da Tool (mcp-server/filtrar-logs.ts)",
+    withToolTitle: "⚡ 2. Como a IA Chama e Usa na Prática",
+    noToolTokens: "Definição no Topo (🟢 Em Cache)",
+    withToolTokens: "Execução Determinística",
+    noToolDesc: "A IA conhece apenas a assinatura da Tool (nome + parâmetros). O código pesado roda fora do modelo:",
+    withToolDesc: "Veja o que acontece por trás dos panos quando você faz a pergunta no chat:",
+    leftCode: `// 📁 mcp-server/tools/filtrar-logs.ts
+export const filtrarErrosLogTool = {
+  name: "filtrar_erros_log",
+  description: "Filtra arquivos grandes de log e retorna apenas a contagem e resumo de erros.",
+  parameters: {
+    servico: { type: "string", description: "Ex: checkout, auth" },
+    nivel:   { type: "string", enum: ["ERROR", "WARN"] }
+  },
+  // 👇 Roda FORA da IA (0 tokens gastos para ler as 5.000 linhas!)
+  async execute({ servico, nivel }) {
+    const linhas = fs.readFileSync(\`/logs/\${servico}.log\`, "utf8").split("\\n");
+    const erros = linhas.filter((l) => l.includes(\`[\${nivel}]\`));
+    return {
+      totalLinhasAnalisadas: linhas.length,
+      totalErrosEncontrados: erros.length,
+      amostra: erros.slice(0, 5) // Devolve só o resumo enxuto!
+    };
+  }
+};`,
+    rightCode: `👤 1. Usuário pergunta no chat:
+"Tivemos erros graves no serviço de checkout hoje?"
+
+🤖 2. IA decide chamar a Tool (gasta só ~35 tokens):
+tool_call: filtrar_erros_log({
+  "servico": "checkout",
+  "nivel": "ERROR"
+})
+
+📥 3. Retorno da Tool para a janela de contexto (~180 tokens):
+{
+  "totalLinhasAnalisadas": 5420,
+  "totalErrosEncontrados": 12,
+  "amostra": ["[ERROR] Timeout gateway pagamento (12 ocorrências)"]
+}
+
+💬 4. Resposta final da IA:
+"Sim! Analisei as 5.420 linhas do log de checkout e encontrei
+exatamente 12 erros, todos causados por timeout no gateway."`,
+    noToolVerdict: "💡 Só o cabeçalho (name + description + parameters) fica no contexto inicial (e entra no Prefix Cache!).",
+    withToolVerdict: "✅ As 5.420 linhas brutas nunca entraram no prompt — a IA recebeu apenas 6 linhas JSON mastigadas!"
   }
 };
 
 function setToolCase(caseKey) {
-  ["logs", "sprint", "calc"].forEach((k) => {
+  ["logs", "sprint", "calc", "code"].forEach((k) => {
     const id = "toolCase" + k.charAt(0).toUpperCase() + k.slice(1);
     const btn = document.getElementById(id);
     if (btn) btn.className = "tab-btn" + (k === caseKey ? " active" : "");
   });
 
   const c = toolCases[caseKey];
-  document.getElementById("noToolTokenBadge").textContent = c.noToolTokens;
+  const noCard = document.getElementById("noToolCard");
+  const noTitle = document.getElementById("noToolTitle");
+  const noBadge = document.getElementById("noToolTokenBadge");
+
+  noTitle.textContent = c.noToolTitle;
+  document.getElementById("withToolTitle").textContent = c.withToolTitle;
+  noBadge.textContent = c.noToolTokens;
   document.getElementById("withToolTokenBadge").textContent = c.withToolTokens;
   document.getElementById("noToolDesc").textContent = c.noToolDesc;
   document.getElementById("withToolDesc").textContent = c.withToolDesc;
 
-  document.getElementById("noToolSteps").innerHTML = c.noToolSteps
-    .map(
-      (s) => `
-      <div class="flow-step">
-        <span>${s.label}</span>
-        <strong style="color: ${s.color}; font-family: var(--font-mono); font-size: 0.76rem;">${s.badge}</strong>
-      </div>
-    `
-    )
-    .join("");
+  if (c.isCodeView) {
+    noCard.style.borderTopColor = "var(--accent-prompt)";
+    noTitle.style.color = "#38bdf8";
+    noBadge.className = "cache-status-pill pill-blue";
+    document.getElementById("noToolSteps").innerHTML = `<div class="code-preview" style="font-size:0.76rem;line-height:1.5;"></div>`;
+    document.getElementById("noToolSteps").firstChild.textContent = c.leftCode;
 
-  document.getElementById("withToolSteps").innerHTML = c.withToolSteps
-    .map(
-      (s) => `
-      <div class="flow-step">
-        <span>${s.label}</span>
-        <strong style="color: ${s.color}; font-family: var(--font-mono); font-size: 0.76rem;">${s.badge}</strong>
-      </div>
-    `
-    )
-    .join("");
+    document.getElementById("withToolSteps").innerHTML = `<div class="code-preview" style="font-size:0.76rem;line-height:1.5;"></div>`;
+    document.getElementById("withToolSteps").firstChild.textContent = c.rightCode;
+  } else {
+    noCard.style.borderTopColor = "var(--accent-danger)";
+    noTitle.style.color = "#f87171";
+    noBadge.className = "cache-status-pill pill-red";
+    document.getElementById("noToolSteps").innerHTML = c.noToolSteps
+      .map(
+        (s) => `
+        <div class="flow-step">
+          <span>${s.label}</span>
+          <strong style="color: ${s.color}; font-family: var(--font-mono); font-size: 0.76rem;">${s.badge}</strong>
+        </div>
+      `
+      )
+      .join("");
+
+    document.getElementById("withToolSteps").innerHTML = c.withToolSteps
+      .map(
+        (s) => `
+        <div class="flow-step">
+          <span>${s.label}</span>
+          <strong style="color: ${s.color}; font-family: var(--font-mono); font-size: 0.76rem;">${s.badge}</strong>
+        </div>
+      `
+      )
+      .join("");
+  }
 
   document.getElementById("noToolVerdict").textContent = c.noToolVerdict;
   document.getElementById("withToolVerdict").textContent = c.withToolVerdict;
@@ -640,45 +715,110 @@ const skillCases = {
     ],
     noSkillVerdict: "❌ Deixar a IA deduzir padrões lendo arquivos antigos gasta milhares de tokens e perpetua código legado.",
     withSkillVerdict: "✅ A Skill garante que qualquer pessoa do time gere entregas padronizadas gastando o mínimo de tokens."
+  },
+  code: {
+    isCodeView: true,
+    noSkillTitle: "📄 1. O Arquivo da Skill (.agents/skills/consultar-pedidos/SKILL.md)",
+    withSkillTitle: "⚡ 2. Como a Skill É Chamada e Usada na Prática",
+    noSkillTokens: "Topo: 30t | Corpo: ~280t",
+    withSkillTokens: "Revelação Progressiva",
+    noSkillDesc: "Veja a estrutura real do arquivo SKILL.md no repositório (YAML no topo + receita em Markdown):",
+    withSkillDesc: "Veja como o agente descobre, carrega sob demanda e executa a Skill na mesma conversa:",
+    leftCode: `---
+# 👇 SÓ ESTAS 2 LINHAS (~30 tokens) entram no início do chat!
+name: consultar-pedidos
+description: >
+  Use quando precisar consultar pedidos, status de pagamento
+  ou falhas de processamento no banco de ordens.
+---
+
+# Manual da Skill: Consultar Pedidos
+Não abra os arquivos Java/SQL para descobrir o schema.
+Use diretamente o script oficial já preparado na pasta desta Skill:
+
+## Como Executar
+1. Para listar pedidos com falha:
+   \`./.agents/skills/consultar-pedidos/scripts/query.sh --status FAILED\`
+2. Para buscar um pedido específico:
+   \`./.agents/skills/consultar-pedidos/scripts/query.sh --id <ORDER_ID>\`
+
+## Formato de Saída
+Sempre apresente o resultado em tabela com: ID, Cliente, Valor e Motivo.`,
+    rightCode: `🟢 1. No início da conversa (Catálogo em Cache — ~30 tokens):
+skills_disponiveis:
+  - consultar-pedidos: "Use quando precisar consultar pedidos..."
+
+👤 2. Usuário pede no chat:
+"Quais pedidos falharam hoje e qual o motivo?"
+
+📘 3. Agente vê que a descrição bate e abre o SKILL.md (+280 tokens):
+call: read_file(".agents/skills/consultar-pedidos/SKILL.md")
+
+🛠️ 4. Agente segue a receita direto (sem vasculhar pastas!):
+call: run_command("./.agents/skills/consultar-pedidos/scripts/query.sh --status FAILED")
+// Retorno: 3 pedidos com erro de cartão expirado
+
+💬 5. Resposta na mesma conversa (em tabela conforme a Skill pediu):
+"| ID #902 | Maria S. | R$ 240 | Cartão Expirado | ..."`,
+    noSkillVerdict: "💡 O YAML no topo (name + description) é o 'índice' de 30 tokens. O resto do arquivo fica fechado até precisar!",
+    withSkillVerdict: "✅ Quando ativada, a Skill entra na conversa atual e dá o comando pronto — zero arquivos abertos no chute!"
   }
 };
 
 function setSkillCase(caseKey) {
-  ["explore", "catalog", "pattern"].forEach((k) => {
+  ["explore", "catalog", "pattern", "code"].forEach((k) => {
     const id = "skillCase" + k.charAt(0).toUpperCase() + k.slice(1);
     const btn = document.getElementById(id);
     if (btn) btn.className = "tab-btn" + (k === caseKey ? " active" : "");
   });
 
   const c = skillCases[caseKey];
-  document.getElementById("noSkillTitle").textContent = c.noSkillTitle;
-  document.getElementById("noSkillTokenBadge").textContent = c.noSkillTokens;
+  const noCard = document.getElementById("noSkillCard");
+  const noTitle = document.getElementById("noSkillTitle");
+  const noBadge = document.getElementById("noSkillTokenBadge");
+
+  noTitle.textContent = c.noSkillTitle;
   document.getElementById("withSkillTitle").textContent = c.withSkillTitle;
+  noBadge.textContent = c.noSkillTokens;
   document.getElementById("withSkillTokenBadge").textContent = c.withSkillTokens;
   document.getElementById("noSkillDesc").textContent = c.noSkillDesc;
   document.getElementById("withSkillDesc").textContent = c.withSkillDesc;
 
-  document.getElementById("noSkillSteps").innerHTML = c.noSkillSteps
-    .map(
-      (s) => `
-      <div class="flow-step">
-        <span>${s.label}</span>
-        <strong style="color: ${s.color}; font-family: var(--font-mono); font-size: 0.76rem;">${s.badge}</strong>
-      </div>
-    `
-    )
-    .join("");
+  if (c.isCodeView) {
+    noCard.style.borderTopColor = "var(--accent-skill)";
+    noTitle.style.color = "#22d3ee";
+    noBadge.className = "cache-status-pill pill-blue";
+    document.getElementById("noSkillSteps").innerHTML = `<div class="code-preview" style="font-size:0.75rem;line-height:1.48;"></div>`;
+    document.getElementById("noSkillSteps").firstChild.textContent = c.leftCode;
 
-  document.getElementById("withSkillSteps").innerHTML = c.withSkillSteps
-    .map(
-      (s) => `
-      <div class="flow-step">
-        <span>${s.label}</span>
-        <strong style="color: ${s.color}; font-family: var(--font-mono); font-size: 0.76rem;">${s.badge}</strong>
-      </div>
-    `
-    )
-    .join("");
+    document.getElementById("withSkillSteps").innerHTML = `<div class="code-preview" style="font-size:0.75rem;line-height:1.48;"></div>`;
+    document.getElementById("withSkillSteps").firstChild.textContent = c.rightCode;
+  } else {
+    noCard.style.borderTopColor = "var(--accent-danger)";
+    noTitle.style.color = "#f87171";
+    noBadge.className = "cache-status-pill pill-red";
+    document.getElementById("noSkillSteps").innerHTML = c.noSkillSteps
+      .map(
+        (s) => `
+        <div class="flow-step">
+          <span>${s.label}</span>
+          <strong style="color: ${s.color}; font-family: var(--font-mono); font-size: 0.76rem;">${s.badge}</strong>
+        </div>
+      `
+      )
+      .join("");
+
+    document.getElementById("withSkillSteps").innerHTML = c.withSkillSteps
+      .map(
+        (s) => `
+        <div class="flow-step">
+          <span>${s.label}</span>
+          <strong style="color: ${s.color}; font-family: var(--font-mono); font-size: 0.76rem;">${s.badge}</strong>
+        </div>
+      `
+      )
+      .join("");
+  }
 
   document.getElementById("noSkillVerdict").textContent = c.noSkillVerdict;
   document.getElementById("withSkillVerdict").textContent = c.withSkillVerdict;
@@ -748,45 +888,110 @@ const subagentCases = {
     ],
     noSubVerdict: "❌ Nem toda subtarefa precisa das mesmas permissões ou do modelo mais caro do sistema.",
     withSubVerdict: "✅ Subagents permitem isolar não só o contexto (tokens), mas também permissões de segurança e custo de modelo!"
+  },
+  code: {
+    isCodeView: true,
+    noSubTitle: "📄 1. O Arquivo do Subagent (.agents/subagents/investigador.md)",
+    withSubTitle: "⚡ 2. Como É Delegado e o Que Volta pro Chat Principal",
+    noSubTokens: "Permissões + Modelo + Prompt",
+    withSubTokens: "Janela 100% Isolada",
+    noSubDesc: "Veja como um Subagent é definido (incluindo modelo próprio e restrição de ferramentas somente-leitura):",
+    withSubDesc: "Veja a chamada de delegação e como os 14.000 tokens de busca ficam isolados fora da conversa principal:",
+    leftCode: `---
+# 📁 .agents/subagents/investigador.md (ou .github/agents/)
+name: investigador-codigo
+description: >
+  Especialista em vasculhar múltiplos arquivos para encontrar
+  causa raiz de bugs e mapear fluxos sem poluir o chat principal.
+model: gemini-flash          # ⚡ Modelo rápido e econômico
+tools:                       # 🔒 Somente leitura (não edita arquivos!)
+  - read_file
+  - grep_search
+  - find_by_name
+---
+
+Você é um Subagent de investigação técnica.
+1. Faça todas as buscas e leituras de arquivos necessárias na sua janela.
+2. NÃO retorne arquivos inteiros para o agente principal.
+3. Retorne APENAS um resumo direto com:
+   - Arquivo(s) e linha(s) exatas encontradas
+   - Causa raiz explicada em no máximo 5 linhas.`,
+    rightCode: `👤 1. Usuário pergunta no chat principal:
+"Descubra onde o cálculo de frete parcelado está arredondando errado."
+
+🤖 2. Agente Principal delega para o Subagent (~80 tokens):
+invoke_subagent({
+  name: "investigador-codigo",
+  prompt: "Localize onde o frete parcelado é calculado e a causa do erro."
+})
+
+🚪 3. [SALA ISOLADA DO SUBAGENT — 14.000 tokens gastos lá dentro]:
+  -> grep_search("frete") -> abre 18 arquivos -> lê CheckoutService.ts
+  -> acha o bug na linha 142 -> [Sala do Subagent é encerrada e descartada!]
+
+📥 4. Único texto que entra na conversa principal (+190 tokens):
+"Encontrado em src/services/CheckoutService.ts (linha 142):
+usa Math.floor() antes de dividir pelas parcelas. Sugestão: arredondar
+apenas no centavo final."`,
+    noSubVerdict: "💡 Note que o Subagent tem seu próprio model, lista restrita de tools e instruções próprias!",
+    withSubVerdict: "✅ Os 18 arquivos abertos morreram na sala do Subagent. O chat principal só recebeu 4 linhas limpas!"
   }
 };
 
 function setSubagentCase(caseKey) {
-  ["investigate", "parallel", "safety"].forEach((k) => {
+  ["investigate", "parallel", "safety", "code"].forEach((k) => {
     const id = "subagentCase" + k.charAt(0).toUpperCase() + k.slice(1);
     const btn = document.getElementById(id);
     if (btn) btn.className = "tab-btn" + (k === caseKey ? " active" : "");
   });
 
   const c = subagentCases[caseKey];
-  document.getElementById("noSubagentTitle").textContent = c.noSubTitle;
-  document.getElementById("noSubagentTokenBadge").textContent = c.noSubTokens;
+  const noCard = document.getElementById("noSubagentCard");
+  const noTitle = document.getElementById("noSubagentTitle");
+  const noBadge = document.getElementById("noSubagentTokenBadge");
+
+  noTitle.textContent = c.noSubTitle;
   document.getElementById("withSubagentTitle").textContent = c.withSubTitle;
+  noBadge.textContent = c.noSubTokens;
   document.getElementById("withSubagentTokenBadge").textContent = c.withSubTokens;
   document.getElementById("noSubagentDesc").textContent = c.noSubDesc;
   document.getElementById("withSubagentDesc").textContent = c.withSubDesc;
 
-  document.getElementById("noSubagentSteps").innerHTML = c.noSubSteps
-    .map(
-      (s) => `
-      <div class="flow-step">
-        <span>${s.label}</span>
-        <strong style="color: ${s.color}; font-family: var(--font-mono); font-size: 0.76rem;">${s.badge}</strong>
-      </div>
-    `
-    )
-    .join("");
+  if (c.isCodeView) {
+    noCard.style.borderTopColor = "var(--accent-subagent)";
+    noTitle.style.color = "#f472b6";
+    noBadge.className = "cache-status-pill pill-blue";
+    document.getElementById("noSubagentSteps").innerHTML = `<div class="code-preview" style="font-size:0.75rem;line-height:1.48;"></div>`;
+    document.getElementById("noSubagentSteps").firstChild.textContent = c.leftCode;
 
-  document.getElementById("withSubagentSteps").innerHTML = c.withSubSteps
-    .map(
-      (s) => `
-      <div class="flow-step">
-        <span>${s.label}</span>
-        <strong style="color: ${s.color}; font-family: var(--font-mono); font-size: 0.76rem;">${s.badge}</strong>
-      </div>
-    `
-    )
-    .join("");
+    document.getElementById("withSubagentSteps").innerHTML = `<div class="code-preview" style="font-size:0.75rem;line-height:1.48;"></div>`;
+    document.getElementById("withSubagentSteps").firstChild.textContent = c.rightCode;
+  } else {
+    noCard.style.borderTopColor = "var(--accent-danger)";
+    noTitle.style.color = "#f87171";
+    noBadge.className = "cache-status-pill pill-red";
+    document.getElementById("noSubagentSteps").innerHTML = c.noSubSteps
+      .map(
+        (s) => `
+        <div class="flow-step">
+          <span>${s.label}</span>
+          <strong style="color: ${s.color}; font-family: var(--font-mono); font-size: 0.76rem;">${s.badge}</strong>
+        </div>
+      `
+      )
+      .join("");
+
+    document.getElementById("withSubagentSteps").innerHTML = c.withSubSteps
+      .map(
+        (s) => `
+        <div class="flow-step">
+          <span>${s.label}</span>
+          <strong style="color: ${s.color}; font-family: var(--font-mono); font-size: 0.76rem;">${s.badge}</strong>
+        </div>
+      `
+      )
+      .join("");
+  }
 
   document.getElementById("noSubagentVerdict").textContent = c.noSubVerdict;
   document.getElementById("withSubagentVerdict").textContent = c.withSubVerdict;
