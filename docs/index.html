@@ -26,8 +26,9 @@
       <button class="slide-dot" data-slide="3">04 · Modular</button>
       <button class="slide-dot" data-slide="4">05 · Tools</button>
       <button class="slide-dot" data-slide="5">06 · Skills</button>
-      <button class="slide-dot" data-slide="6">07 · Skills vs Subagents</button>
-      <button class="slide-dot" data-slide="7">08 · Decisão</button>
+      <button class="slide-dot" data-slide="6">07 · Subagents</button>
+      <button class="slide-dot" data-slide="7">08 · Skills vs Subagents</button>
+      <button class="slide-dot" data-slide="8">09 · Decisão</button>
     </nav>
 
     <div class="top-actions">
@@ -35,7 +36,7 @@
         ⛶ Tela Cheia
       </button>
       <button class="action-btn" id="toggleNotesBtn" title="Atalho: tecla N">
-        🎙️ Roteiro <span id="slideCounterBadge">01/08</span>
+        🎙️ Roteiro <span id="slideCounterBadge">01/09</span>
       </button>
       <button class="nav-btn" id="prevSlideBtn" title="Slide anterior (← / ↑)">←</button>
       <button class="nav-btn" id="nextSlideBtn" title="Próximo slide (→ / ↓)">→</button>
@@ -537,12 +538,89 @@
   </section>
 
   <!-- =====================================================================
-       SLIDE 07: SKILLS VS SUBAGENTS (LADO A LADO)
+       SLIDE 07: SUBAGENTS (ISOLANDO O TRABALHO PESADO EM OUTRA SALA)
        ===================================================================== -->
   <section class="slide" id="slide-6" data-index="6">
     <div class="slide-container">
       <div class="slide-header">
-        <span class="slide-eyebrow eyebrow-duel">06 · O Grande Duelo Lado a Lado</span>
+        <span class="slide-eyebrow eyebrow-duel">06 · Subagents (Contexto Isolado & Especialistas)</span>
+        <h2 class="slide-title">Subagents: Isolando a Exploração Pesada em Outra Sala</h2>
+        <p class="slide-subtitle">
+          E quando <strong>não existe receita pronta</strong> e a IA <em>realmente precisa</em> ler 40 arquivos, investigar um bug inédito ou auditar o sistema inteiro? O <strong>Subagent</strong> absorve esse custo em uma <strong>janela de contexto separada</strong> e devolve só o resumo limpo.
+        </p>
+      </div>
+
+      <div class="control-bar">
+        <div class="tab-group">
+          <button class="tab-btn active" id="subagentCaseInvestigate" onclick="setSubagentCase('investigate')">
+            🕵️ 1. Investigação Pesada (Ler 40 Arquivos)
+          </button>
+          <button class="tab-btn" id="subagentCaseParallel" onclick="setSubagentCase('parallel')">
+            ⚡ 2. Paralelismo (3 Especialistas Simultâneos)
+          </button>
+          <button class="tab-btn" id="subagentCaseSafety" onclick="setSubagentCase('safety')">
+            🔒 3. Permissão & Modelo Sob Medida
+          </button>
+        </div>
+      </div>
+
+      <div class="tool-comparison-grid">
+        <!-- Without Subagent -->
+        <div class="approach-card bad">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <h3 style="font-size: 1.05rem; color: #f87171;" id="noSubagentTitle">❌ Sem Subagent (Tudo na Conversa Principal)</h3>
+              <span class="cache-status-pill pill-red" id="noSubagentTokenBadge">+14.000t na sua janela!</span>
+            </div>
+            <p style="font-size: 0.84rem; color: var(--text-secondary);" id="noSubagentDesc"></p>
+
+            <div class="flow-steps" id="noSubagentSteps"></div>
+          </div>
+
+          <div style="padding: 12px; border-radius: var(--radius-sm); background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25); font-size: 0.8rem; color: #fca5a5;" id="noSubagentVerdict"></div>
+        </div>
+
+        <!-- With Subagent -->
+        <div class="approach-card good" style="border-top-color: var(--accent-subagent);">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <h3 style="font-size: 1.05rem; color: #f472b6;" id="withSubagentTitle">✅ Com Subagent (Janela Isolada + Resumo)</h3>
+              <span class="cache-status-pill pill-green" id="withSubagentTokenBadge">Só +220t na principal (-98%)</span>
+            </div>
+            <p style="font-size: 0.84rem; color: var(--text-secondary);" id="withSubagentDesc"></p>
+
+            <div class="flow-steps" id="withSubagentSteps"></div>
+          </div>
+
+          <div style="padding: 12px; border-radius: var(--radius-sm); background: rgba(236, 72, 153, 0.1); border: 1px solid rgba(236, 72, 153, 0.3); font-size: 0.8rem; color: #f9a8d4;" id="withSubagentVerdict"></div>
+        </div>
+      </div>
+
+      <!-- Bottom Summary of the 3-Step Token Lifecycle of a Subagent -->
+      <div class="card" style="margin-top: 16px; padding: 13px 18px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; font-size: 0.82rem;">
+        <div>
+          <strong style="color: #38bdf8;">1️⃣ Delegação (~80 tokens):</strong><br/>
+          <span style="color: var(--text-secondary);">O agente principal cria o Subagent passando apenas a missão específica.</span>
+        </div>
+        <div>
+          <strong style="color: #f472b6;">2️⃣ Trabalho Isolado (Milhares de tokens fora):</strong><br/>
+          <span style="color: var(--text-secondary);">O Subagent abre dezenas de arquivos na <strong>janela própria dele</strong> (que é descartada no fim).</span>
+        </div>
+        <div>
+          <strong style="color: #34d399;">3️⃣ Retorno Limpo (~220 tokens):</strong><br/>
+          <span style="color: var(--text-secondary);">Apenas a conclusão mastigada volta para a sua conversa principal!</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       SLIDE 08: SKILLS VS SUBAGENTS (LADO A LADO)
+       ===================================================================== -->
+  <section class="slide" id="slide-7" data-index="7">
+    <div class="slide-container">
+      <div class="slide-header">
+        <span class="slide-eyebrow eyebrow-duel">07 · O Grande Duelo Lado a Lado</span>
         <h2 class="slide-title">Skills vs. Subagents: Como Cada Um Lida com os Tokens?</h2>
         <p class="slide-subtitle">
           A diferença prática: a <strong>Skill</strong> dá a receita pronta para o agente principal <strong>não precisar vasculhar arquivos</strong>; já o <strong>Subagent</strong> entra quando <strong>alguém precisa vasculhar dezenas de arquivos</strong>, fazendo isso em outra sala.
@@ -654,12 +732,12 @@
   </section>
 
   <!-- =====================================================================
-       SLIDE 08: GUIA DE DECISÃO — QUAL USAR EM CADA CENÁRIO?
+       SLIDE 09: GUIA DE DECISÃO — QUAL USAR EM CADA CENÁRIO?
        ===================================================================== -->
-  <section class="slide" id="slide-7" data-index="7">
+  <section class="slide" id="slide-8" data-index="8">
     <div class="slide-container">
       <div class="slide-header">
-        <span class="slide-eyebrow eyebrow-cache">07 · Resumo Prático</span>
+        <span class="slide-eyebrow eyebrow-cache">08 · Resumo Prático</span>
         <h2 class="slide-title">Mapa de Decisão: Quando Usar Cada Peça?</h2>
         <p class="slide-subtitle">
           Um guia rápido de bolso para saber onde colocar cada regra, conhecimento ou automação no seu dia a dia.

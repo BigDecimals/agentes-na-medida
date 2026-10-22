@@ -3,7 +3,7 @@
 // ============================================================================
 
 let currentSlide = 0;
-const totalSlides = 8;
+const totalSlides = 9;
 
 // Speaker Notes (~15 minutes total pacing)
 const speakerNotes = [
@@ -41,13 +41,12 @@ const speakerNotes = [
     `
   },
   {
-    title: "Slide 04 · Instructions Modularizadas (~2 min)",
+    title: "Slide 04 · Instructions Modularizadas (~1.5 min)",
     html: `
       <p><strong>Ponto principal:</strong> Em vez de um arquivo monolítico gigante, modularizamos as instruções por pasta!</p>
       <ul>
         <li>Clique nas pastas (<code>/frontend</code>, <code>/backend</code>, <code>/tests</code>, <code>/docs</code>) para mostrar que a IA só carrega as regras daquela área quando entra na pasta.</li>
         <li>Se a IA está mexendo no banco de dados ou na documentação de negócio, ela não gasta tokens lendo regras de CSS.</li>
-        <li>Clique em <strong>Comparar Monolito</strong> para mostrar a diferença gritante no consumo de tokens.</li>
       </ul>
     `
   },
@@ -62,7 +61,7 @@ const speakerNotes = [
     `
   },
   {
-    title: "Slide 06 · Skills: Como Poupam Tokens (~2.5 min)",
+    title: "Slide 06 · Skills: Como Poupam Tokens (~2 min)",
     html: `
       <p><strong>Ponto principal:</strong> Sem uma Skill, o agente principal precisa <strong>abrir arquivo por arquivo</strong> para entender como o projeto funciona, gastando milhares de tokens de exploração.</p>
       <ul>
@@ -72,17 +71,27 @@ const speakerNotes = [
     `
   },
   {
-    title: "Slide 07 · Skills vs. Subagents Lado a Lado (~2 min)",
+    title: "Slide 07 · Subagents: Isolando o Trabalho Pesado (~2 min)",
     html: `
-      <p><strong>A diferença cristalina no uso de tokens:</strong></p>
+      <p><strong>Ponto principal:</strong> E quando não existe receita pronta e a IA <em>realmente precisa</em> ler 40 arquivos (ex: caçar um bug inédito ou auditar o sistema)?</p>
       <ul>
-        <li><strong>Skill (Mesma Conversa):</strong> Evita que o agente precise explorar arquivos, pois já dá a receita pronta (~320 tokens) na conversa atual.</li>
-        <li><strong>Subagent (Janela Isolada):</strong> Quando a tarefa é uma investigação aberta e <em>alguém realmente precisa</em> abrir 40 arquivos (~12.000 tokens), o Subagent faz isso em outra sala e devolve só o resumo (~250 tokens)!</li>
+        <li>Se o agente principal fizer isso, ele acumula +14.000 tokens de código lido na sua conversa principal.</li>
+        <li>Com um <strong>Subagent</strong>, essa exploração acontece em uma <strong>janela de contexto separada</strong> (que é descartada no fim), e o agente principal recebe apenas ~220 tokens com a conclusão!</li>
       </ul>
     `
   },
   {
-    title: "Slide 08 · Mapa de Decisão e Fechamento (~1 min)",
+    title: "Slide 08 · Skills vs. Subagents Lado a Lado (~1 min)",
+    html: `
+      <p><strong>O resumo do duelo:</strong></p>
+      <ul>
+        <li><strong>Skill (Mesma Conversa):</strong> Dá o mapa pronto (~320t) para o agente <strong>não precisar</strong> abrir arquivo por arquivo.</li>
+        <li><strong>Subagent (Outra Sala):</strong> Quando <strong>é obrigatório</strong> abrir 40 arquivos (~12.000t), faz isso em outra sala e traz só a resposta (~250t)!</li>
+      </ul>
+    `
+  },
+  {
+    title: "Slide 09 · Mapa de Decisão e Fechamento (~1 min)",
     html: `
       <p><strong>Fechamento prático:</strong></p>
       <ul>
@@ -677,6 +686,114 @@ function setSkillCase(caseKey) {
 }
 
 // ============================================================================
+// SLIDE 07 DATA: Subagents (Isolated Context & Heavy Exploration)
+// ============================================================================
+const subagentCases = {
+  investigate: {
+    noSubTitle: "❌ Sem Subagent (Tudo na Conversa Principal)",
+    noSubTokens: "+14.000t na sua janela!",
+    withSubTitle: "✅ Com Subagent (Janela Isolada + Resumo)",
+    withSubTokens: "Só +220t na principal (-98%)",
+    noSubDesc: "Você pede: 'Descubra por que o cálculo de frete dá diferença em pedidos parcelados'. Não há receita pronta; a IA precisa investigar:",
+    withSubDesc: "O agente principal delega a investigação para um Subagent em outra sala, protegendo a memória da sua conversa:",
+    noSubSteps: [
+      { label: "1. Agente principal abre 35 arquivos de código e testes procurando a regra", badge: "+11.200 tokens", color: "#f87171" },
+      { label: "2. Lê logs de erro e histórico de commits direto na sua conversa", badge: "+2.800 tokens", color: "#f87171" },
+      { label: "3. Todo esse lixo intermediário fica preso no seu chat para os próximos turnos!", badge: "Chat Poluído", color: "#f87171" }
+    ],
+    withSubSteps: [
+      { label: "1. Agente principal aciona Subagent: 'Ache a causa raiz do frete parcelado'", badge: "80 tokens", color: "#38bdf8" },
+      { label: "2. Subagent lê os 35 arquivos na JANELA ISOLADA DELE (descartada ao final)", badge: "14.000t isolados", color: "#f472b6" },
+      { label: "3. Subagent devolve só o achado exato: 'Arquivo Checkout.ts, linha 142 (arredondamento)'", badge: "+220t na principal", color: "#34d399" }
+    ],
+    noSubVerdict: "❌ Sua conversa principal fica pesada, cara e lenta porque carregou 35 arquivos que não serão mais usados.",
+    withSubVerdict: "✅ O Subagent fez o trabalho pesado em outra sala e trouxe apenas as 5 linhas de resposta que importavam!"
+  },
+  parallel: {
+    noSubTitle: "❌ Sem Subagent (Sequencial e Misturado)",
+    noSubTokens: "+18.500t misturados · Lento",
+    withSubTitle: "✅ Com 3 Subagents em Paralelo",
+    withSubTokens: "3x mais rápido · Foco isolado",
+    noSubDesc: "Você quer revisar um módulo inteiro antes do lançamento avaliando Segurança, Performance e Cobertura de Testes:",
+    withSubDesc: "O agente principal dispara 3 Subagents especialistas simultaneamente, cada um com sua própria janela limpa:",
+    noSubSteps: [
+      { label: "1. Analisa Segurança, depois Performance, depois Testes na mesma janela", badge: "+18.500 tokens", color: "#f87171" },
+      { label: "2. Demora o triplo do tempo porque faz uma checagem depois da outra", badge: "Sequencial", color: "#f87171" },
+      { label: "3. Mistura alertas de SQL com regras de UI e acaba esquecendo pontos críticos", badge: "Atenção Diluída", color: "#f87171" }
+    ],
+    withSubSteps: [
+      { label: "1. Dispara Subagent A (Segurança), Subagent B (Performance) e Subagent C (QA)", badge: "Em Paralelo ⚡", color: "#38bdf8" },
+      { label: "2. Cada especialista analisa o código com 100% de foco na sua janela isolada", badge: "Zero Distração", color: "#f472b6" },
+      { label: "3. Agente principal recebe apenas os 3 resumos executivos e monta o parecer", badge: "+650t na principal", color: "#34d399" }
+    ],
+    noSubVerdict: "❌ Fazer múltiplas auditorias pesadas na mesma conversa estoura o contexto e reduz a qualidade da revisão.",
+    withSubVerdict: "✅ Com Subagents você ganha velocidade (execução paralela) e qualidade (cada especialista focado em 1 tema)."
+  },
+  safety: {
+    noSubTitle: "❌ Agente Único Fazendo Pesquisa e Edição",
+    noSubTokens: "Modelo Caro + Risco de Edição",
+    withSubTitle: "✅ Subagent com Permissão e Modelo Sob Medida",
+    withSubTokens: "Read-Only + Modelo Econômico",
+    noSubDesc: "Usar o agente principal (com modelo pesado e permissão total de escrita) apenas para explorar arquivos e tirar dúvidas:",
+    withSubDesc: "Configurar um Subagent Explorador somente-leitura e com modelo rápido/econômico:",
+    noSubSteps: [
+      { label: "1. Agente principal tem permissão de alterar arquivos e rodar comandos destrutivos", badge: "Risco Desnecessário", color: "#f87171" },
+      { label: "2. Gasta tokens do modelo mais caro (Pro/Opus) só para listar e ler pastas", badge: "Custo Elevado", color: "#f87171" },
+      { label: "3. Acumula buscas exploratórias junto com a tomada de decisão", badge: "Sem Separação", color: "#f87171" }
+    ],
+    withSubSteps: [
+      { label: "1. Subagent Pesquisador configurado apenas com tools de leitura (Read-Only)", badge: "100% Seguro 🔒", color: "#34d399" },
+      { label: "2. Pode rodar em um modelo rápido/leve (Flash) para varrer arquivos rapidamente", badge: "Muito Mais Barato", color: "#38bdf8" },
+      { label: "3. Devolve o contexto mastigado para o agente principal decidir o que fazer", badge: "Arquitetura Limpa", color: "#f472b6" }
+    ],
+    noSubVerdict: "❌ Nem toda subtarefa precisa das mesmas permissões ou do modelo mais caro do sistema.",
+    withSubVerdict: "✅ Subagents permitem isolar não só o contexto (tokens), mas também permissões de segurança e custo de modelo!"
+  }
+};
+
+function setSubagentCase(caseKey) {
+  ["investigate", "parallel", "safety"].forEach((k) => {
+    const id = "subagentCase" + k.charAt(0).toUpperCase() + k.slice(1);
+    const btn = document.getElementById(id);
+    if (btn) btn.className = "tab-btn" + (k === caseKey ? " active" : "");
+  });
+
+  const c = subagentCases[caseKey];
+  document.getElementById("noSubagentTitle").textContent = c.noSubTitle;
+  document.getElementById("noSubagentTokenBadge").textContent = c.noSubTokens;
+  document.getElementById("withSubagentTitle").textContent = c.withSubTitle;
+  document.getElementById("withSubagentTokenBadge").textContent = c.withSubTokens;
+  document.getElementById("noSubagentDesc").textContent = c.noSubDesc;
+  document.getElementById("withSubagentDesc").textContent = c.withSubDesc;
+
+  document.getElementById("noSubagentSteps").innerHTML = c.noSubSteps
+    .map(
+      (s) => `
+      <div class="flow-step">
+        <span>${s.label}</span>
+        <strong style="color: ${s.color}; font-family: var(--font-mono); font-size: 0.76rem;">${s.badge}</strong>
+      </div>
+    `
+    )
+    .join("");
+
+  document.getElementById("withSubagentSteps").innerHTML = c.withSubSteps
+    .map(
+      (s) => `
+      <div class="flow-step">
+        <span>${s.label}</span>
+        <strong style="color: ${s.color}; font-family: var(--font-mono); font-size: 0.76rem;">${s.badge}</strong>
+      </div>
+    `
+    )
+    .join("");
+
+  document.getElementById("noSubagentVerdict").textContent = c.noSubVerdict;
+  document.getElementById("withSubagentVerdict").textContent = c.withSubVerdict;
+  fitSlidesToViewport();
+}
+
+// ============================================================================
 // SLIDE 07 DATA: Skills vs Subagents Context Simulator
 // ============================================================================
 function setDuelSim(mode) {
@@ -843,6 +960,7 @@ document.addEventListener("DOMContentLoaded", () => {
   selectFolder("frontend");
   setToolCase("logs");
   setSkillCase("explore");
+  setSubagentCase("investigate");
   setDuelSim("skill");
   updateNavigationUI(0);
   fitSlidesToViewport();
@@ -908,7 +1026,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } else if (e.key === "n" || e.key === "N") {
       e.preventDefault();
       toggleNotes();
-    } else if (e.key >= "1" && e.key <= "8") {
+    } else if (e.key >= "1" && e.key <= "9") {
       goToSlide(Number(e.key) - 1);
     }
   });
