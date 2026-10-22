@@ -1,153 +1,724 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Uma conversa de 15 minutos sobre contexto, skills, ferramentas e modelos na medida certa. Com laboratório Java reproduzível.">
-  <title>Agentes na medida — Seu agente precisa pensar tanto assim?</title>
-  <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="vendor/reveal/dist/reset.css">
-  <link rel="stylesheet" href="vendor/reveal/dist/reveal.css">
-  <link rel="stylesheet" href="vendor/reveal/dist/plugin/highlight/monokai.css">
-  <link rel="stylesheet" href="assets/presentation.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agentes na Medida — Pare de Fazer a IA Adivinhar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-  <a class="skip-link" href="#/inicio">Ir para a apresentação</a>
-  <header class="chrome">
-    <a class="brand" href="#/inicio"><span class="brand-mark" aria-hidden="true">a/</span> agentes na medida</a>
-    <nav aria-label="Modos de visualização"><a href="?view=reading">Leitura</a><a href="?print-pdf" target="_blank" rel="noopener">Imprimir</a><a href="https://github.com/BigDecimals/agentes-na-medida">Código ↗</a></nav>
-  </header>
-  <main class="reveal"><div class="slides">
-    <section id="inicio" data-timing="30" class="cover">
-      <p class="eyebrow">Uma conversa sobre agentes / 15 minutos</p>
-      <h1>Seu agente precisa<br>pensar <em>tanto assim?</em></h1>
-      <p class="lead">Skills, ferramentas e modelos<br>na medida certa.</p>
-      <div class="cover-art" aria-hidden="true"><span class="orbit one"></span><span class="orbit two"></span><span class="orbit three"></span><span class="core">a/</span><span class="orbit-label">menos ruído<br>mais direção</span></div>
-      <p class="bottom-note">Use ← → para navegar · Esc para visão geral · S para notas</p>
-      <aside class="notes">Abertura, 30 segundos. A audiência já usa IA: não vamos explicar o que é um chatbot. A conversa é sobre desenhar o trabalho para não gastar inteligência com o que já sabemos executar. Os números vêm de execuções reais de uma consulta pequena. Não prometa a mesma economia para toda tarefa.</aside>
-    </section>
-    <section id="padaria" data-timing="45">
-      <p class="eyebrow">01 / Antes de culpar o modelo</p>
-      <h2>“Estou com fome.”<br><span class="muted">não é um pedido.</span></h2>
-      <div class="bakery"><div class="receipt"><span class="ticket-label">PADARIA · PEDIDO #001</span><p>Eu quero bolo.</p><div class="fragment"><hr><p class="question">Uma fatia? Inteiro?<br>Qual sabor? Para quando?</p></div><div class="fragment ticket-answer">Uma fatia de chocolate,<br>para levar.</div></div><div class="bakery-caption"><p>A pessoa no balcão<br>não ficou menos capaz.</p><p class="fragment accent">Faltou informação<br>para decidir.</p></div></div>
-      <aside class="notes">45 segundos. Você entra na padaria e diz que está com fome. Pão? Sanduíche? Café da manhã ou festa? Quero bolo melhora o pedido, mas ainda há decisões abertas. Clique para as perguntas e depois para a fatia de chocolate. O alvo da piada é a ambiguidade, não o usuário. Não é preciso explicar a receita ao atendente.</aside>
-    </section>
-    <section id="pedido" data-timing="45">
-      <p class="eyebrow">01 / O mesmo problema, outro balcão</p>
-      <h2>“Arruma minha aplicação.”</h2>
-      <div class="three-up outcomes"><article><span>?</span><h3>Perguntar</h3><p>Esclarecer uma decisão importante.</p></article><article><span>↗</span><h3>Investigar</h3><p>Explorar caminhos até entender o problema.</p></article><article><span>!</span><h3>Supor</h3><p>Resolver com confiança o problema errado.</p></article></div>
-      <p class="takeaway fragment">Primeiro, esclareça o resultado.<br>Depois, pare de redescobrir o caminho.</p>
-      <aside class="notes">45 segundos. Um agente pode e deve pedir esclarecimentos quando necessário; ele não é obrigado a adivinhar. Pedidos amplos são adequados para exploração. A distinção é não deixar decisões de alto impacto escondidas. Transição: instruções melhores não significam prompts cada vez maiores.</aside>
-    </section>
-    <section id="pecas" data-timing="55">
-      <p class="eyebrow">02 / Quatro peças, funções diferentes</p>
-      <h2>Quem pensa.<br>Quem executa.</h2>
-      <div class="flow"><article><span class="step">01</span><h3>Modelo</h3><p>Interpreta e propõe ações.</p></article><article><span class="step">02</span><h3>Agente</h3><p>Orquestra ações e resultados.</p></article><article><span class="step">03</span><h3>Ferramenta</h3><p>Executa uma operação definida.</p></article><article><span class="step">04</span><h3>Skill</h3><p>Ensina quando e como usar o fluxo.</p></article></div>
-      <p class="fine">Uma skill é orientação. Permissões e validações precisam existir no código.</p>
-      <aside class="notes">55 segundos. Evite transformar isso num glossário. O modelo entende o pedido; o agente mantém o ciclo; a ferramenta consulta pedidos; a skill diz qual ferramenta usar e quais limites preservar. Uma skill não é outro modelo nem uma barreira de segurança. MCP é uma forma de expor ferramentas; um comando local também serve.</aside>
-    </section>
-    <section id="contexto" data-timing="65">
-      <p class="eyebrow">02 / O que entra na próxima chamada?</p>
-      <h2>O log também<br>vira <em>contexto.</em></h2>
-      <div class="context-stack"><div>Instruções e ferramentas <span>input</span></div><div>Histórico relevante <span>input</span></div><div class="log-layer">Saídas dos comandos e consultas <span>input</span></div><div class="answer-layer">Resposta e chamadas geradas <span>output</span></div></div>
-      <p class="fine">Contexto de uma chamada ≠ input acumulado da execução.<br>Tokens ≠ custo em reais ≠ tempo. Cache deve ser identificado separadamente.</p>
-      <aside class="notes">65 segundos. Um teste Maven não gasta tokens por existir. O modelo gasta ao decidir e ao receber a saída. Logs grandes podem reaparecer no contexto das próximas chamadas. Cache pode mudar o preço, não faz o conteúdo desaparecer. Contar somente a resposta final ou o agente filho esconde parte do custo. Contexto e input acumulado não são sinônimos.</aside>
-    </section>
-    <section id="experimento" data-timing="50">
-      <p class="eyebrow">03 / Um banco. Um pedido. Três caminhos.</p>
-      <h2>“Os cinco pedidos de maior valor<br>que aguardam envio.”</h2>
-      <div class="lab-strip"><span>Java + Spring</span><span>JDBC + H2</span><span>Dados sintéticos</span><span>Resposta verificável</span></div>
-      <div class="two-up"><article class="panel"><p class="label">O modelo precisa decidir</p><p>Status, limite<br>e intenção do usuário.</p></article><article class="panel"><p class="label">O código pode executar</p><p>Validar, filtrar,<br>ordenar e limitar.</p></article></div>
-      <p class="fine">Execução gravada antes da apresentação. Nenhum banco ou modelo roda neste site.</p>
-      <aside class="notes">50 segundos. Apresente o laboratório de pedidos, independente de qualquer sistema real. H2 é um banco SQL embarcado, escolhido para reprodução simples; não é uma simulação de texto. A consulta usa JDBC e retorna valores decimais e IDs estáveis. O desempate também precisa estar definido. O código está no repositório.</aside>
-    </section>
-    <section id="caminhos" data-timing="65">
-      <p class="eyebrow">03 / Onde estamos economizando trabalho?</p>
-      <h2>Não compare só<br>a última resposta.</h2>
-      <div class="three-up paths"><article><p class="label">A / Acesso genérico</p><ol><li>Consultar instruções</li><li>Inspecionar estrutura</li><li>Obter e processar dados</li><li>Entregar resposta</li></ol></article><article><p class="label">B / Ferramenta</p><ol><li>Identificar a operação</li><li>Informar filtros</li><li>Receber resultado limitado</li></ol></article><article class="featured"><p class="label">C / Ferramenta + skill</p><ol><li>Carregar o procedimento</li><li>Usar a operação documentada</li><li>Preservar as restrições</li></ol></article></div>
-      <p class="fine">Fluxos ilustrativos, não traces medidos. O baseline pode escolher um caminho melhor.<br>Mesmo modelo, esforço, tarefa e critério de acerto. Sem forçar desperdício.</p>
-      <aside class="notes">65 segundos. Estes são caminhos conceituais, não uma animação fingindo ser uma execução real. Ferramentas movem trabalho determinístico para código. Skills evitam redescoberta. Separar os três braços ajuda a não atribuir todo ganho à skill. Rodadas independentes, ordem alternada e falhas mantidas nos resultados.</aside>
-    </section>
-    <section id="skill" data-timing="60">
-      <p class="eyebrow">03 / O procedimento cabe aqui</p>
-      <h2>Menos manual. Mais direção.</h2>
-      <pre class="skill-code"><code class="language-markdown" data-trim data-line-numbers="1-3|5-8|10-11">
----
-name: consultar-pedidos
-description: Consultar pedidos do laboratório com filtros estruturados.
----
-Use a busca documentada, sem escrever SQL arbitrário.
-Preserve status e limite solicitados.
-Não amplie filtros quando não houver resultados.
-Não trate uma página como o total de pedidos.
 
-Se a restrição não existir na ferramenta, esclareça.
-Responda apenas com dados retornados pela consulta.
-      </code></pre>
-      <p class="fine">Trecho didático da skill. Instruções completas e comandos reproduzíveis no repositório.</p>
-      <aside class="notes">60 segundos. Codex descobre metadados de skills e carrega as instruções quando relevantes. Não é custo zero. Este bloco demonstra regras, não esconde uma enciclopédia. Não se deve recarregar documentação inteira para uma tarefa já resolvida. O comando concreto está na skill do laboratório e será ligado à implementação verificada.</aside>
-    </section>
-    <section id="codigo" data-timing="45">
-      <p class="eyebrow">03 / A inteligência que não precisa ser gerada</p>
-      <h2>O contrato está no código.</h2>
-      <pre><code id="java-snippet" class="language-java" data-line-numbers></code></pre>
-      <p class="fine" id="code-provenance">Trecho extraído do exemplo Java, não uma implementação paralela para o slide.</p>
-      <aside class="notes">45 segundos. Mostrar a consulta parametrizada da implementação testada. O modelo não precisa inventar joins, ordenação ou limites. O banco faz o trabalho e devolve apenas a página pedida. Regras da ferramenta continuam valendo independentemente do prompt.</aside>
-    </section>
-    <section id="evidencia" data-timing="65">
-      <p class="eyebrow">03 / Evidência antes de porcentagem</p>
-      <h2>Ferramenta ajuda.<br>Skill também custa.</h2>
-      <div class="evidence-status"><span class="status-dot" aria-hidden="true"></span><strong id="benchmark-status">Recibos registrados</strong><p id="benchmark-reason">Totais por execução, não só a última resposta.</p></div>
-      <div class="three-up measures"><article><h3>Acesso genérico</h3><p class="metric-value" data-benchmark-arm="generic"></p></article><article><h3>Ferramenta</h3><p class="metric-value" data-benchmark-arm="tool"></p></article><article><h3>Ferramenta + skill</h3><p class="metric-value" data-benchmark-arm="skill"></p></article></div>
-      <p class="fine">Luna · esforço low · n = 3 por configuração · uma consulta sintética.<br>Sem o contexto desta conversa. <a href="https://github.com/BigDecimals/agentes-na-medida/blob/main/benchmarks/RESULTS.md">Recibos, escopo e limites ↗</a></p>
-      <aside class="notes">65 segundos. Medianas de três execuções Luna/low: genérico 1782 tokens, ferramenta 929, ferramenta mais skill 1978. Todos acertaram. A ferramenta reduziu o trabalho desta consulta; carregar uma skill desnecessária custou mais. Isso não prova que skills são ruins: procedimentos úteis podem evitar tentativas e erros em tarefas difíceis. A amostra tem um único pedido e não mede o agente completo. A conversa principal e probes de preparação estão fora da comparação; os limites e recibos estão no repositório.</aside>
-    </section>
-    <section id="testes" data-timing="70">
-      <p class="eyebrow">04 / A mesma ideia no trabalho diário</p>
-      <h2>Uma pergunta pequena.<br>Um teste relevante.</h2>
-      <div class="two-up"><article class="panel"><p class="label">Validação ampla</p><pre><code class="language-bash">mvn test</code></pre><p>Útil no momento certo.<br>Não a cada ajuste por reflexo.</p></article><article class="panel featured"><p class="label">Durante a investigação</p><pre><code class="language-bash" id="focused-command"># Comando do teste verificado
-# sincronizado do laboratório</code></pre><p>Responda à hipótese atual.<br>Amplie conforme o impacto.</p></article></div>
-      <p class="takeaway">Economize repetição, não cobertura obrigatória.</p>
-      <aside class="notes">70 segundos. A mesma mudança pode exigir teste focal, testes do módulo e integração. Use o menor check relevante durante iteração; execute a validação exigida antes de concluir. A primeira execução também inclui compilação e dependências, então não atribua toda diferença de tempo ao escopo dos testes. O comando focal vem do exemplo que realmente executamos.</aside>
-    </section>
-    <section id="logs" data-timing="50">
-      <p class="eyebrow">04 / Filtre antes de chegar ao modelo</p>
-      <h2>O modelo precisa do diagnóstico.<br><span class="muted">Não do romance.</span></h2>
-      <div class="two-up"><div class="log-window" aria-label="Exemplo ilustrativo de log extenso"><span>[INFO] Compiling…</span><span>[INFO] Resources copied…</span><span>[INFO] Starting application context…</span><span>[INFO] Initializing connection pool…</span><span>[INFO] Running test class…</span><span>[INFO] Closing application context…</span></div><article class="panel featured"><p class="label">Contrato de uma saída útil</p><ul><li>Exit code original</li><li>Testes executados e ignorados</li><li>Falhas + trecho relevante</li><li>Caminho do log completo</li></ul></article></div>
-      <p class="fine">Exemplo ilustrativo. “grep error” sozinho pode esconder uma falha.<br>Preserve stderr, contexto e evidência de que o teste realmente rodou.</p>
-      <aside class="notes">50 segundos. Não mostrar um log inventado como resultado real: o painel está rotulado como ilustração. Um helper deve interpretar relatórios Surefire, preservar o exit code e manter o log completo em armazenamento limitado. Nunca transformar saída vazia em sucesso. O modelo lê só o necessário para decidir o próximo passo.</aside>
-    </section>
-    <section id="modelos" data-timing="90">
-      <p class="eyebrow">05 / Capacidade sob demanda</p>
-      <h2>Astra ou Sol<br><em>para tudo?</em></h2>
-      <p class="lead small">Escolha pela tarefa e pelo risco. Não pelo nome.</p>
-      <div class="model-options" role="group" aria-label="Exemplos de escolha de modelo"><button type="button" data-task="filters" aria-pressed="true">Traduzir pedido em filtros</button><button type="button" data-task="failure" aria-pressed="false">Investigar falha entre serviços</button><button type="button" data-task="security" aria-pressed="false">Revisar autorização</button></div>
-      <div id="model-advice" class="advice" aria-live="polite">Um modelo mais leve é candidato: tarefa estreita, ferramenta validada e resposta fácil de conferir. Meça a taxa de acerto.</div>
-      <p class="fine">Modelo e esforço de raciocínio são escolhas separadas.<br><span id="model-evidence">Compare acerto, uso e risco com o fluxo fixo.</span></p>
-      <aside class="notes">90 segundos. Clique entre tarefas. Modelo menor para filtros é uma hipótese avaliável, não garantia. Diagnóstico entre serviços pode justificar capacidade e esforço maiores. Autorização pede revisão cuidadosa e testes negativos: modelo grande não é controle de segurança. Não comparamos capacidades relativas de Astra e Sol sem evidência. Um modelo barato que falha repetidamente pode custar mais por tarefa correta.</aside>
-    </section>
-    <section id="delegacao" data-timing="65">
-      <p class="eyebrow">05 / Delegar não é multiplicar por padrão</p>
-      <h2>Subagente é isolamento.<br>Não desconto automático.</h2>
-      <div class="two-up"><article class="panel"><p class="label">Pode valer a pena</p><p>Uma investigação extensa<br>que devolve evidências curtas.</p><div class="mini-flow">pai → investigação isolada → síntese</div></article><article class="panel"><p class="label">Pode sair mais caro</p><p>Uma consulta simples<br>com outro modelo no meio.</p><div class="mini-flow">pai → filho → ferramenta → filho → pai</div></article></div>
-      <p class="takeaway">Meça a execução inteira, incluindo tentativas e filhos.</p>
-      <aside class="notes">65 segundos. O benefício é conter exploração ruidosa e, às vezes, paralelizar. O filho também consome tokens e pode herdar contexto. Em consultas simples, chamar a ferramenta diretamente costuma ser a arquitetura mais simples. Não precisa de equipe de agentes para servir a fatia de bolo.</aside>
-    </section>
-    <section id="fechamento" data-timing="45" class="closing">
-      <p class="eyebrow">06 / Para levar</p>
-      <h2>Antes de aumentar o modelo,<br><em>melhore o trabalho.</em></h2>
-      <ol class="checklist"><li>Defina o resultado e as restrições.</li><li>Coloque o determinístico em código.</li><li>Documente o caminho numa skill curta.</li><li>Leia e execute só o que a etapa exige.</li><li>Escolha capacidade pelo risco. Verifique.</li></ol>
-      <div class="closing-links"><a href="https://github.com/BigDecimals/agentes-na-medida">Código, skills e metodologia ↗</a><a href="sources.html">Fontes e limites ↗</a></div>
-      <aside class="notes">45 segundos. Feche retomando a padaria: você não explica o funcionamento da padaria toda vez que compra bolo. Melhor fluxo reduz decisões desnecessárias, mas não elimina as necessárias. A apresentação tem 845 segundos de conteúdo planejado e uma pequena margem até 15 minutos; consulte o roteiro para a soma validada. Convide a audiência a reproduzir e questionar as medidas, não decorar uma receita universal.</aside>
-    </section>
-  </div></main>
-  <footer class="deck-footer"><span>Java · Codex · trabalho verificável</span><span id="slide-position" aria-live="polite"></span></footer>
-  <noscript><p class="noscript">Ative JavaScript para navegar. O <a href="https://github.com/BigDecimals/agentes-na-medida">repositório</a> contém o roteiro e os exemplos.</p></noscript>
-  <script src="vendor/reveal/dist/reveal.js"></script>
-  <script src="vendor/reveal/dist/plugin/highlight.js"></script>
-  <script src="vendor/reveal/dist/plugin/notes.js"></script>
-  <script src="data/benchmark.js"></script>
-  <script src="data/verified-code.js"></script>
-  <script src="assets/presentation.js"></script>
+  <!-- Top Navigation & Progress Bar -->
+  <header class="top-bar">
+    <div class="brand">
+      <span class="brand-dot"></span>
+      <span>Agentes na Medida</span>
+      <span class="brand-sub">· Engenharia de Contexto (~15 min)</span>
+    </div>
+
+    <nav class="slide-dots" id="slideDots" aria-label="Navegação de slides">
+      <button class="slide-dot active" data-slide="0">01 · Início</button>
+      <button class="slide-dot" data-slide="1">02 · Descritivo</button>
+      <button class="slide-dot" data-slide="2">03 · Cache</button>
+      <button class="slide-dot" data-slide="3">04 · Modular</button>
+      <button class="slide-dot" data-slide="4">05 · Tools</button>
+      <button class="slide-dot" data-slide="5">06 · Skills vs Subagents</button>
+      <button class="slide-dot" data-slide="6">07 · Decisão</button>
+    </nav>
+
+    <div class="top-actions">
+      <button class="action-btn" id="toggleNotesBtn" title="Atalho: tecla N">
+        🎙️ Roteiro <span id="slideCounterBadge">01/07</span>
+      </button>
+      <button class="nav-btn" id="prevSlideBtn" title="Slide anterior (← / ↑)">←</button>
+      <button class="nav-btn" id="nextSlideBtn" title="Próximo slide (→ / ↓)">→</button>
+    </div>
+  </header>
+
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+
+  <!-- =====================================================================
+       SLIDE 01: CAPA & TESE CENTRAL
+       ===================================================================== -->
+  <section class="slide" id="slide-0" data-index="0">
+    <div class="slide-container">
+      <div class="hero-grid">
+        <div>
+          <span class="slide-eyebrow">⚡ Apresentação · IA Aplicada no Dia a Dia</span>
+          <h1 class="hero-title">
+            Pare de Fazer a <span class="gradient-text">IA Adivinhar.</span>
+          </h1>
+          <p class="hero-lead">
+            Quando um agente de IA entrega algo errado, quase nunca é falta de inteligência do modelo — é <strong>falta de contexto claro</strong> ou <strong>excesso de ruído</strong> na janela de memória.
+          </p>
+
+          <div class="problem-cards">
+            <div class="problem-card danger">
+              <h4>🎲 1. A Armadilha do "Chute"</h4>
+              <p>Pedidos vagos obrigam a IA a preencher cada lacuna usando probabilidade. Ela não pergunta — ela adivinha (e muitas vezes erra).</p>
+            </div>
+            <div class="problem-card warning">
+              <h4>🌊 2. Poluição de Contexto</h4>
+              <p>Jogar todos os manuais e dados brutos de uma vez deixa a conversa lenta, cara em tokens e faz o modelo perder o foco.</p>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <button class="nav-btn" onclick="goToSlide(1)" style="background: rgba(56, 189, 248, 0.2); border-color: rgba(56, 189, 248, 0.5); color: #38bdf8; padding: 10px 18px; font-size: 0.9rem;">
+              Começar Apresentação →
+            </button>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">
+              Use o <strong>Scroll</strong> ou as setas <strong>← / →</strong> do teclado · Tecla <strong>N</strong> abre o roteiro de fala
+            </span>
+          </div>
+        </div>
+
+        <!-- Right column: Interactive Architecture Map -->
+        <div class="pillar-stack">
+          <div class="pillar-stack-header">
+            <span>As 5 Peças da Engenharia de Contexto</span>
+            <span style="color: var(--accent-prompt);">Clique para ir →</span>
+          </div>
+
+          <div class="pillar-item" onclick="goToSlide(1)">
+            <div class="pillar-left">
+              <div class="pillar-icon" style="background: rgba(56, 189, 248, 0.16); color: #38bdf8;">🎯</div>
+              <div class="pillar-info">
+                <h5>1. Pedido Descritivo</h5>
+                <p>Objetivo, contexto, restrições e formato para zerar adivinhações</p>
+              </div>
+            </div>
+            <span class="pillar-badge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">Intenção</span>
+          </div>
+
+          <div class="pillar-item" onclick="goToSlide(2)">
+            <div class="pillar-left">
+              <div class="pillar-icon" style="background: rgba(16, 185, 129, 0.16); color: #34d399;">⚡</div>
+              <div class="pillar-info">
+                <h5>2. Instructions & Prefix Cache</h5>
+                <p>Regras fixas no topo do prompt que ficam em cache (-90% custo)</p>
+              </div>
+            </div>
+            <span class="pillar-badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">Em Cache</span>
+          </div>
+
+          <div class="pillar-item" onclick="goToSlide(3)">
+            <div class="pillar-left">
+              <div class="pillar-icon" style="background: rgba(168, 85, 247, 0.16); color: #c084fc;">📁</div>
+              <div class="pillar-info">
+                <h5>3. Instructions Modularizadas</h5>
+                <p>Regras carregadas sob medida conforme a IA entra nas pastas</p>
+              </div>
+            </div>
+            <span class="pillar-badge" style="background: rgba(168, 85, 247, 0.15); color: #c084fc;">Por Escopo</span>
+          </div>
+
+          <div class="pillar-item" onclick="goToSlide(4)">
+            <div class="pillar-left">
+              <div class="pillar-icon" style="background: rgba(245, 158, 11, 0.16); color: #fbbf24;">🛠️</div>
+              <div class="pillar-info">
+                <h5>4. Tools (Ferramentas)</h5>
+                <p>Execução determinística que poupa tokens e reaproveita código</p>
+              </div>
+            </div>
+            <span class="pillar-badge" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24;">Ação & Reuso</span>
+          </div>
+
+          <div class="pillar-item" onclick="goToSlide(5)">
+            <div class="pillar-left">
+              <div class="pillar-icon" style="background: rgba(236, 72, 153, 0.16); color: #f472b6;">⚔️</div>
+              <div class="pillar-info">
+                <h5>5. Skills vs. Subagents</h5>
+                <p>Manual sob demanda na mesma sala vs. Especialista em outra sala</p>
+              </div>
+            </div>
+            <span class="pillar-badge" style="background: rgba(236, 72, 153, 0.15); color: #f472b6;">Lado a Lado</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       SLIDE 02: O PEDIDO DESCRITIVO (ELIMINANDO OS PONTOS CEGOS)
+       ===================================================================== -->
+  <section class="slide" id="slide-1" data-index="1">
+    <div class="slide-container">
+      <div class="slide-header">
+        <span class="slide-eyebrow">01 · Clareza de Intenção</span>
+        <h2 class="slide-title">Ser Descritivo = Eliminar os "Chutes" da IA</h2>
+        <p class="slide-subtitle">
+          Toda informação que você omite vira uma moeda jogada para o alto. Ser descritivo não é escrever muito — é responder às <strong>4 perguntas essenciais</strong> antes da IA começar.
+        </p>
+      </div>
+
+      <div class="control-bar">
+        <div class="tab-group" aria-label="Escolha o exemplo">
+          <button class="tab-btn active" id="promptScenarioProduct" onclick="setPromptScenario('product')">
+            📊 Exemplo 1: Produto & Negócio
+          </button>
+          <button class="tab-btn" id="promptScenarioDev" onclick="setPromptScenario('dev')">
+            💻 Exemplo 2: Engenharia & QA
+          </button>
+        </div>
+
+        <div class="tab-group" aria-label="Alternar qualidade do pedido">
+          <button class="tab-btn active-danger" id="promptModeVague" onclick="setPromptMode('vague')">
+            ❌ Pedido Vago (IA no Chute)
+          </button>
+          <button class="tab-btn" id="promptModeDescriptive" onclick="setPromptMode('descriptive')">
+            ✅ Pedido Descritivo (Na Medida)
+          </button>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Left: Prompt & 4 Pillars -->
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary);" id="promptBoxTitle">
+              O que o usuário digitou:
+            </span>
+            <span class="cache-status-pill pill-red" id="promptGuessBadge">5 Pontos Cegos (Chutes)</span>
+          </div>
+
+          <div class="prompt-box" id="promptTextDisplay"></div>
+
+          <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-top: 8px;">
+            Os 4 Pilares de um Pedido Descritivo:
+          </div>
+          <div class="pillar-pills">
+            <div class="pillar-pill">
+              <strong style="color: #38bdf8;">1. Objetivo</strong>
+              O que precisa ser entregue e para qual finalidade.
+            </div>
+            <div class="pillar-pill">
+              <strong style="color: #c084fc;">2. Contexto</strong>
+              Onde isso se encaixa, quem vai usar e dados de origem.
+            </div>
+            <div class="pillar-pill">
+              <strong style="color: #fbbf24;">3. Restrições</strong>
+              O que <em>não</em> fazer, limites técnicos ou regras de negócio.
+            </div>
+            <div class="pillar-pill">
+              <strong style="color: #34d399;">4. Formato</strong>
+              Estrutura exata da resposta (tabela, código, tópicos).
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: What happens inside the AI head -->
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary);" id="blindSpotHeader">
+              O que acontece na cabeça da IA:
+            </span>
+          </div>
+
+          <div class="blind-spots-list" id="blindSpotsList"></div>
+
+          <div style="margin-top: 16px; padding: 13px 15px; border-radius: var(--radius-md); background: rgba(15, 23, 42, 0.85); border: 1px solid var(--border-subtle);" id="promptOutcomeBox">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       SLIDE 03: INSTRUCTIONS & O SEGREDO DO CACHE (PREFIX CACHING)
+       ===================================================================== -->
+  <section class="slide" id="slide-2" data-index="2">
+    <div class="slide-container">
+      <div class="slide-header">
+        <span class="slide-eyebrow eyebrow-cache">02 · Instructions & Prefix Caching</span>
+        <h2 class="slide-title">Instructions: A Memória Fixa (e Por Que Ela Fica em Cache)</h2>
+        <p class="slide-subtitle">
+          Você não precisa repetir regras da empresa em todo prompt. As <strong>Instructions</strong> ficam no topo da conversa — exatamente onde os modelos aplicam o <strong>Prefix Caching</strong>.
+        </p>
+      </div>
+
+      <div class="control-bar">
+        <div class="tab-group">
+          <button class="tab-btn active" id="cacheStateTurn1" onclick="setCacheState('turn1')">
+            1️⃣ 1ª Mensagem (Criando o Cache)
+          </button>
+          <button class="tab-btn" id="cacheStateTurn2" onclick="setCacheState('turn2')">
+            ⚡ 2ª+ Mensagem (Prefixo em Cache 🟢)
+          </button>
+          <button class="tab-btn" id="cacheStateBloated" onclick="setCacheState('bloated')">
+            ⚠️ Armadilha: Instructions Gigantes
+          </button>
+        </div>
+      </div>
+
+      <div class="grid-12">
+        <!-- Left: How Prefix Caching Works -->
+        <div class="card">
+          <h3 style="font-size: 1.08rem; margin-bottom: 10px;">Como a IA lê e guarda o Cache (De Cima para Baixo)</h3>
+          <p style="font-size: 0.86rem; color: var(--text-secondary); margin-bottom: 14px;">
+            Os provedores de IA guardam em <strong>cache automático</strong> tudo o que é idêntico desde o início do prompt. Enquanto o topo não muda, você não paga o processamento total de novo!
+          </p>
+
+          <div class="cache-stack" id="cacheStackVisualizer"></div>
+
+          <div class="metrics-row" id="cacheMetricsRow"></div>
+        </div>
+
+        <!-- Right: Explanation & Best Practices -->
+        <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <h3 style="font-size: 1.08rem; margin-bottom: 12px;" id="cacheExplainTitle">Por que colocar regras nas Instructions é tão vantajoso?</h3>
+            <div id="cacheExplainBody" style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.65;"></div>
+          </div>
+
+          <div style="margin-top: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div style="padding: 13px; border-radius: var(--radius-md); background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.28);">
+              <strong style="color: #34d399; font-size: 0.84rem; display: block; margin-bottom: 4px;">✅ O que vai na Instruction Global:</strong>
+              <ul style="font-size: 0.8rem; color: var(--text-secondary); padding-left: 16px;">
+                <li>Visão geral do produto e stack</li>
+                <li>Idioma e tom de resposta</li>
+                <li>Comandos básicos de build/teste</li>
+                <li>Regras universais e imutáveis</li>
+              </ul>
+            </div>
+            <div style="padding: 13px; border-radius: var(--radius-md); background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.28);">
+              <strong style="color: #f87171; font-size: 0.84rem; display: block; margin-bottom: 4px;">❌ O que NÃO colocar no topo global:</strong>
+              <ul style="font-size: 0.8rem; color: var(--text-secondary); padding-left: 16px;">
+                <li>Manuais de 20 páginas de um setor só</li>
+                <li>Regras que só valem para 1 pasta</li>
+                <li>Tutoriais raros usados 1x por mês</li>
+                <li>Dados dinâmicos que mudam todo turno</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       SLIDE 04: INSTRUCTIONS MODULARIZADAS (POR PASTA / ESCOPO)
+       ===================================================================== -->
+  <section class="slide" id="slide-3" data-index="3">
+    <div class="slide-container">
+      <div class="slide-header">
+        <span class="slide-eyebrow eyebrow-modular">03 · Instructions Modularizadas</span>
+        <h2 class="slide-title">Contexto Sob Medida Conforme a IA Entra nas Pastas</h2>
+        <p class="slide-subtitle">
+          Para o contexto não ficar gigante, dividimos as instruções por diretório ou padrão de arquivo (<code>applyTo</code>). A IA só carrega as regras daquela área <strong>quando está trabalhando nela</strong>.
+        </p>
+      </div>
+
+      <div class="grid-12">
+        <!-- Left: Interactive Folder Explorer -->
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary);">
+              Clique onde a IA está trabalhando agora:
+            </span>
+          </div>
+
+          <div class="folder-tree">
+            <button class="folder-node active" id="folder-frontend" onclick="selectFolder('frontend')">
+              <span class="folder-path">📁 /src/frontend/ <span style="font-size: 0.74rem; color: #c084fc;">(UI & Componentes)</span></span>
+              <span class="folder-tokens">+350 tokens</span>
+            </button>
+
+            <button class="folder-node" id="folder-backend" onclick="selectFolder('backend')">
+              <span class="folder-path">📁 /src/backend/api/ <span style="font-size: 0.74rem; color: #38bdf8;">(APIs & Segurança)</span></span>
+              <span class="folder-tokens">+420 tokens</span>
+            </button>
+
+            <button class="folder-node" id="folder-tests" onclick="selectFolder('tests')">
+              <span class="folder-path">📁 /tests/e2e/ <span style="font-size: 0.74rem; color: #34d399;">(QA & Automação)</span></span>
+              <span class="folder-tokens">+300 tokens</span>
+            </button>
+
+            <button class="folder-node" id="folder-docs" onclick="selectFolder('docs')">
+              <span class="folder-path">📁 /docs/produto/ <span style="font-size: 0.74rem; color: #fbbf24;">(Requisitos & Negócio)</span></span>
+              <span class="folder-tokens">+280 tokens</span>
+            </button>
+
+            <button class="folder-node monolith-btn" id="folder-monolith" onclick="selectFolder('monolith')" style="margin-top: 6px;">
+              <span class="folder-path">⚠️ Comparar: Se Tudo Fosse 1 Arquivo Único</span>
+              <span class="folder-tokens" style="color: #f87171;">4.500 tokens!</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: Active Context Window Preview -->
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="font-size: 1.05rem;" id="folderTitleDisplay">IA trabalhando em: <code>/src/frontend/</code></h3>
+            <span class="cache-status-pill pill-green" id="folderSavingsBadge">83% menos tokens de instrução</span>
+          </div>
+
+          <div style="margin-top: 12px; font-size: 0.8rem; color: var(--text-secondary); display: flex; justify-content: space-between;">
+            <span>Ocupação do Contexto de Instruções:</span>
+            <strong id="folderTokenCountText" style="color: var(--text-primary);">750 / 4.500 tokens</strong>
+          </div>
+
+          <div class="context-meter-bar">
+            <div class="meter-segment" id="meterRoot" style="width: 9%; background: var(--accent-cache);" title="Raiz Global (Em Cache)"></div>
+            <div class="meter-segment" id="meterScoped" style="width: 8%; background: var(--accent-modular);" title="Instrução da Pasta Atual"></div>
+          </div>
+
+          <div style="display: flex; gap: 16px; font-size: 0.76rem; color: var(--text-secondary); margin-bottom: 14px;">
+            <span>🟢 <strong>Raiz Global (400t):</strong> Sempre ativa e em cache</span>
+            <span id="meterLegendScoped">🟣 <strong>Escopo da Pasta (+350t):</strong> Ativada sob demanda</span>
+          </div>
+
+          <div class="code-preview" id="folderCodePreview"></div>
+
+          <p style="font-size: 0.83rem; color: var(--text-secondary); margin-top: 12px;" id="folderTakeawayText"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       SLIDE 05: TOOLS (POUPANDO TOKENS E REAPROVEITANDO LÓGICA)
+       ===================================================================== -->
+  <section class="slide" id="slide-4" data-index="4">
+    <div class="slide-container">
+      <div class="slide-header">
+        <span class="slide-eyebrow eyebrow-tool">04 · Tools (Ferramentas)</span>
+        <h2 class="slide-title">Tools: Poupando Tokens e Reaproveitando Trabalho</h2>
+        <p class="slide-subtitle">
+          Não gaste tokens do modelo para fazer trabalho braçal repetitivo. Quando você transforma uma ação ou consulta em uma <strong>Tool</strong>, você economiza milhares de tokens, ganha precisão exata e <strong>reaproveita a mesma solução</strong> para todo o time.
+        </p>
+      </div>
+
+      <div class="control-bar">
+        <div class="tab-group">
+          <button class="tab-btn active" id="toolCaseLogs" onclick="setToolCase('logs')">
+            📄 Caso 1: Analisar 5.000 linhas de Log / Planilha
+          </button>
+          <button class="tab-btn" id="toolCaseSprint" onclick="setToolCase('sprint')">
+            📋 Caso 2: Cruzar Status de Tarefas da Sprint
+          </button>
+          <button class="tab-btn" id="toolCaseCalc" onclick="setToolCase('calc')">
+            🧮 Caso 3: Validar Regras e Cálculos Financeiros
+          </button>
+        </div>
+      </div>
+
+      <div class="tool-comparison-grid">
+        <!-- Without Tool: Raw tokens in prompt -->
+        <div class="approach-card bad">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <h3 style="font-size: 1.05rem; color: #f87171;">❌ Sem Tool (Tudo "No Braço" no Prompt)</h3>
+              <span class="cache-status-pill pill-red" id="noToolTokenBadge">~18.500 tokens</span>
+            </div>
+            <p style="font-size: 0.84rem; color: var(--text-secondary);" id="noToolDesc"></p>
+
+            <div class="flow-steps" id="noToolSteps"></div>
+          </div>
+
+          <div style="padding: 12px; border-radius: var(--radius-sm); background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25); font-size: 0.8rem; color: #fca5a5;" id="noToolVerdict"></div>
+        </div>
+
+        <!-- With Tool: Deterministic execution + Reuse -->
+        <div class="approach-card good">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <h3 style="font-size: 1.05rem; color: #fbbf24;">✅ Com Tool (Execução Determinística + Reuso)</h3>
+              <span class="cache-status-pill pill-green" id="withToolTokenBadge">~240 tokens (-98%)</span>
+            </div>
+            <p style="font-size: 0.84rem; color: var(--text-secondary);" id="withToolDesc"></p>
+
+            <div class="flow-steps" id="withToolSteps"></div>
+          </div>
+
+          <div style="padding: 12px; border-radius: var(--radius-sm); background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); font-size: 0.8rem; color: #6ee7b7;" id="withToolVerdict"></div>
+        </div>
+      </div>
+
+      <!-- Bottom Quick Rule: LLM vs Tool -->
+      <div class="card" style="margin-top: 16px; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+        <div style="font-size: 0.85rem;">
+          <strong style="color: #38bdf8;">🧠 Quando deixar para o Modelo (LLM):</strong> Interpretar intenção, resumir ideias, redigir textos, decidir próximos passos com contexto.
+        </div>
+        <div style="font-size: 0.85rem;">
+          <strong style="color: #fbbf24;">🛠️ Quando usar uma Tool:</strong> Filtrar dados grandes, fazer cálculos exatos, consultar APIs/bancos e repetir rotinas padronizadas.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       SLIDE 06: SKILLS VS SUBAGENTS (LADO A LADO)
+       ===================================================================== -->
+  <section class="slide" id="slide-5" data-index="5">
+    <div class="slide-container">
+      <div class="slide-header">
+        <span class="slide-eyebrow eyebrow-duel">05 · O Grande Duelo Lado a Lado</span>
+        <h2 class="slide-title">Skills vs. Subagents: Quando Usar Cada Um?</h2>
+        <p class="slide-subtitle">
+          Ambos evitam que você coloque tudo nas Instructions globais. A diferença fundamental está em <strong>onde a tarefa acontece</strong>: na <strong>mesma janela de contexto</strong> ou em uma <strong>janela isolada</strong>.
+        </p>
+      </div>
+
+      <div class="duel-grid">
+        <!-- SKILLS COLUMN -->
+        <div class="duel-card skill-card">
+          <div class="duel-header">
+            <div class="duel-title" style="color: var(--accent-skill);">📘 Skills</div>
+            <span class="cache-status-pill" style="background: rgba(6, 182, 212, 0.18); color: #22d3ee;">Mesma Conversa</span>
+          </div>
+          <p class="duel-Analogy">"É como abrir um manual de instruções em cima da mesa do agente atual."</p>
+
+          <ul class="feature-list">
+            <li>
+              <span>🔍</span>
+              <div>
+                <strong>Revelação Progressiva (Progressive Disclosure):</strong> No começo, a IA só gasta ~1 linha sabendo que a Skill existe. Só abre o manual (<code>SKILL.md</code>) quando você pede aquela tarefa.
+              </div>
+            </li>
+            <li>
+              <span>🧠</span>
+              <div>
+                <strong>Contexto Compartilhado:</strong> Roda dentro da sua conversa atual — aproveita tudo o que vocês já discutiram até ali.
+              </div>
+            </li>
+            <li>
+              <span>🧰</span>
+              <div>
+                <strong>Combo Manual + Tools:</strong> Pode trazer templates, checklists e scripts prontos para padronizar uma entrega.
+              </div>
+            </li>
+            <li>
+              <span>🎯</span>
+              <div>
+                <strong>Quando usar:</strong> Tarefas padronizadas e repetíveis (ex: <em>gerar Release Notes, criar PR no padrão do time, escrever história de usuário</em>).
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- SUBAGENTS COLUMN -->
+        <div class="duel-card subagent-card">
+          <div class="duel-header">
+            <div class="duel-title" style="color: var(--accent-subagent);">🤖 Subagents</div>
+            <span class="cache-status-pill" style="background: rgba(236, 72, 153, 0.18); color: #f472b6;">Contexto Isolado</span>
+          </div>
+          <p class="duel-Analogy">"É como pedir para um especialista ir a outra sala pesquisar e trazer só a conclusão."</p>
+
+          <ul class="feature-list">
+            <li>
+              <span>🚪</span>
+              <div>
+                <strong>Janela de Contexto Própria:</strong> O agente principal cria um ajudante do zero apenas com a missão específica que precisa ser resolvida.
+              </div>
+            </li>
+            <li>
+              <span>🛡️</span>
+              <div>
+                <strong>Blindagem contra Ruído:</strong> O Subagent pode abrir 40 arquivos, ler logs enormes e errar tentativas sem sujar a memória da conversa principal.
+              </div>
+            </li>
+            <li>
+              <span>⚡</span>
+              <div>
+                <strong>Paralelismo e Especialização:</strong> Você pode disparar 3 Subagents ao mesmo tempo (ex: segurança, performance e testes).
+              </div>
+            </li>
+            <li>
+              <span>🎯</span>
+              <div>
+                <strong>Quando usar:</strong> Pesquisas pesadas, exploração de muitos arquivos, auditorias ou tarefas independentes que geram muito volume intermediário.
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Interactive Context Simulator -->
+      <div class="sim-visualizer">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <span style="font-size: 0.82rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary);">
+            Simulador de Janela de Contexto — Veja o que acontece na memória:
+          </span>
+          <div class="tab-group">
+            <button class="tab-btn active" id="simBtnSkill" onclick="setDuelSim('skill')">
+              📘 Usando uma Skill
+            </button>
+            <button class="tab-btn" id="simBtnSubagent" onclick="setDuelSim('subagent')">
+              🤖 Usando um Subagent
+            </button>
+            <button class="tab-btn" id="simBtnBad" onclick="setDuelSim('bad')">
+              ❌ Fazendo Pesquisa Pesada sem Subagent
+            </button>
+          </div>
+        </div>
+
+        <div class="context-lanes">
+          <div class="lane-box">
+            <div class="lane-title">
+              <span>Janela do Agente Principal (Sua Conversa)</span>
+              <span id="simMainTokenLabel" style="color: #22d3ee;">Limpa e Focada (22% ocupada)</span>
+            </div>
+            <div class="context-meter-bar" id="simMainBar"></div>
+            <div style="font-size: 0.8rem; color: var(--text-secondary);" id="simMainExplain"></div>
+          </div>
+
+          <div class="lane-box">
+            <div class="lane-title">
+              <span>Janela do Subagent (Outra Sala / Isolada)</span>
+              <span id="simSubTokenLabel" style="color: var(--text-muted);">Inativa</span>
+            </div>
+            <div class="context-meter-bar" id="simSubBar"></div>
+            <div style="font-size: 0.8rem; color: var(--text-secondary);" id="simSubExplain"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       SLIDE 07: GUIA DE DECISÃO — QUAL USAR EM CADA CENÁRIO?
+       ===================================================================== -->
+  <section class="slide" id="slide-6" data-index="6">
+    <div class="slide-container">
+      <div class="slide-header">
+        <span class="slide-eyebrow eyebrow-cache">06 · Resumo Prático</span>
+        <h2 class="slide-title">Mapa de Decisão: Quando Usar Cada Peça?</h2>
+        <p class="slide-subtitle">
+          Um guia rápido de bolso para saber onde colocar cada regra, conhecimento ou automação no seu dia a dia.
+        </p>
+      </div>
+
+      <!-- Comparison Table -->
+      <div class="matrix-table-wrap">
+        <table class="matrix-table">
+          <thead>
+            <tr>
+              <th>Recurso</th>
+              <th>Quando Carrega?</th>
+              <th>Janela de Contexto</th>
+              <th>Efeito em Tokens & Cache</th>
+              <th>Melhor Caso de Uso</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong style="color: #38bdf8;">🎯 Pedido Descritivo</strong></td>
+              <td>Na sua mensagem atual</td>
+              <td>Conversa atual</td>
+              <td>Evita retrabalho e tentativas extras</td>
+              <td>Definir objetivo, contexto, restrições e formato da tarefa do momento</td>
+            </tr>
+            <tr>
+              <td><strong style="color: #34d399;">⚡ Instruction Global</strong></td>
+              <td>Sempre (em todo turno)</td>
+              <td>Fixo no topo da conversa</td>
+              <td><strong>🟢 Fica em Cache</strong> (-90% custo após 1º turno)</td>
+              <td>Regras universais enxutas que valem para 100% do projeto</td>
+            </tr>
+            <tr>
+              <td><strong style="color: #c084fc;">📁 Instruction Modular</strong></td>
+              <td>Ao entrar na pasta/arquivo</td>
+              <td>Conversa atual (sob escopo)</td>
+              <td>Poupa o contexto global de regras irrelevantes</td>
+              <td>Padrões específicos de <code>/frontend</code>, <code>/backend</code>, <code>/tests</code> ou <code>/docs</code></td>
+            </tr>
+            <tr>
+              <td><strong style="color: #fbbf24;">🛠️ Tool (Ferramenta)</strong></td>
+              <td>Quando a IA chama a ação</td>
+              <td>Executa fora do modelo</td>
+              <td><strong>Poupa milhares de tokens</strong> + reaproveita código</td>
+              <td>Filtrar dados grandes, cálculos exatos, buscar em APIs/bancos</td>
+            </tr>
+            <tr>
+              <td><strong style="color: #22d3ee;">📘 Skill</strong></td>
+              <td>Sob demanda (Revelação Progressiva)</td>
+              <td><strong>Mesma janela</strong> (compartilhada)</td>
+              <td>Só gasta 1 linha até ser ativada pela tarefa</td>
+              <td>Playbooks passo-a-passo, templates de PR, release notes, fluxos da equipe</td>
+            </tr>
+            <tr>
+              <td><strong style="color: #f472b6;">🤖 Subagent</strong></td>
+              <td>Quando delegado pelo agente</td>
+              <td><strong>Janela isolada</strong> (outra sala)</td>
+              <td>Gasta tokens isolados e devolve só o resumo limpo</td>
+              <td>Explorar dezenas de arquivos, auditar código, pesquisar sem poluir o chat</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Interactive Scenario Cards -->
+      <div style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 10px;">
+        Cenários Reais do Dia a Dia (Clique em qualquer card para destacar):
+      </div>
+
+      <div class="scenario-grid">
+        <div class="scenario-card" onclick="this.classList.toggle('active-card')">
+          <div class="scenario-q">1. "Toda resposta do projeto deve ser em português e usar nossa stack oficial."</div>
+          <div class="scenario-a">
+            <span class="scenario-answer-badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">⚡ Instruction Global</span>
+            Vale para 100% das conversas e fica congelada no Prefix Cache.
+          </div>
+        </div>
+
+        <div class="scenario-card" onclick="this.classList.toggle('active-card')">
+          <div class="scenario-q">2. "Regras de SQL e migrations que só importam quando a IA mexe na pasta do banco."</div>
+          <div class="scenario-a">
+            <span class="scenario-answer-badge" style="background: rgba(168, 85, 247, 0.2); color: #c084fc;">📁 Instruction Modular</span>
+            Carrega apenas quando a IA entra em <code>/database/**</code>, sem pesar no resto.
+          </div>
+        </div>
+
+        <div class="scenario-card" onclick="this.classList.toggle('active-card')">
+          <div class="scenario-q">3. "Extrair todos os pedidos com erro de um arquivo CSV de 20.000 linhas."</div>
+          <div class="scenario-a">
+            <span class="scenario-answer-badge" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24;">🛠️ Tool / Script</span>
+            Filtra fora da IA com precisão exata, poupando milhares de tokens e podendo ser reusado.
+          </div>
+        </div>
+
+        <div class="scenario-card" onclick="this.classList.toggle('active-card')">
+          <div class="scenario-q">4. "Seguir o template e checklist oficial da empresa para gerar a nota de release."</div>
+          <div class="scenario-a">
+            <span class="scenario-answer-badge" style="background: rgba(6, 182, 212, 0.2); color: #22d3ee;">📘 Skill</span>
+            Abre o manual sob demanda na mesma conversa, aproveitando o contexto atual.
+          </div>
+        </div>
+
+        <div class="scenario-card" onclick="this.classList.toggle('active-card')">
+          <div class="scenario-q">5. "Investigar 50 arquivos do sistema para descobrir onde um cálculo legado acontece."</div>
+          <div class="scenario-a">
+            <span class="scenario-answer-badge" style="background: rgba(236, 72, 153, 0.2); color: #f472b6;">🤖 Subagent</span>
+            Faz a busca pesada em uma janela isolada e devolve apenas o achado final.
+          </div>
+        </div>
+
+        <div class="scenario-card" onclick="this.classList.toggle('active-card')">
+          <div class="scenario-q">6. "Pedir uma funcionalidade específica deixando claro objetivo, público e formato."</div>
+          <div class="scenario-a">
+            <span class="scenario-answer-badge" style="background: rgba(56, 189, 248, 0.2); color: #38bdf8;">🎯 Pedido Descritivo</span>
+            Remove os pontos cegos para a IA acertar de primeira sem adivinhar.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Floating Speaker Notes Drawer (Toggle with 'N' or Header Button) -->
+  <aside class="notes-drawer" id="notesDrawer" aria-live="polite">
+    <div class="notes-header">
+      <span id="notesSlideTitle">🎙️ Roteiro do Apresentador · Slide 01</span>
+      <button class="nav-btn" onclick="toggleNotes()" style="padding: 2px 8px; font-size: 0.75rem;">✕</button>
+    </div>
+    <div class="notes-body" id="notesBody"></div>
+  </aside>
+
+  <script src="./app.js"></script>
 </body>
 </html>
