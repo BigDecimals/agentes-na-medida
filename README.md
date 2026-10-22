@@ -1,5 +1,10 @@
 # Agentes na Medida — Pare de Fazer a IA Adivinhar
 
+### 🚀 **[Abrir Apresentação no Navegador (GitHub Pages)](https://bigdecimals.github.io/agentes-na-medida/)**
+Link direto: **`https://bigdecimals.github.io/agentes-na-medida/`**
+
+---
+
 Apresentação interativa (~15 minutos) em formato híbrido (**Scrollytelling + Slides**) sobre **Engenharia de Contexto** aplicada ao dia a dia:
 
 1. **O Pedido Descritivo**: Como eliminar os "pontos cegos" onde a IA precisa adivinhar (Objetivo + Contexto + Restrições + Formato).
@@ -11,10 +16,8 @@ Apresentação interativa (~15 minutos) em formato híbrido (**Scrollytelling + 
    - **Subagents**: Especialistas com **janela de contexto isolada** para pesquisas pesadas sem poluir a conversa principal.
 6. **Mapa de Decisão**: Guia prático de quando usar cada recurso.
 
-## Como Apresentar
+## Atalhos Durante a Apresentação
 
-- **Via GitHub Pages**: A apresentação fica em [`docs/index.html`](./docs/index.html) (compatível tanto com publicação pela pasta `/docs` quanto pela raiz `/`).
-- **Atalhos durante a apresentação**:
-  - `Scroll` ou setas `←` / `→` (`PageUp` / `PageDown`): Navegar entre os slides
-  - `1` a `7`: Ir direto para o slide correspondente
-  - `N`: Abrir/fechar o **Roteiro do Apresentador** com tempo sugerido por seção
+- `Scroll` ou setas `←` / `→` (`PageUp` / `PageDown`): Navegar entre os slides
+- `1` a `7`: Ir direto para o slide correspondente
+- `N`: Abrir/fechar o **Roteiro do Apresentador** com tempo sugerido por seção
