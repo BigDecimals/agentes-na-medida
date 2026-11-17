@@ -81,16 +81,15 @@ body.is-fullscreen .top-bar {
   background: rgba(7, 9, 14, 0.72);
 }
 
-. progress-track-dummy { display: none; }
-
 .brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 0.93rem;
   letter-spacing: -0.01em;
   color: var(--text-primary);
+  white-space: nowrap;
 }
 
 .brand-dot {
@@ -104,28 +103,35 @@ body.is-fullscreen .top-bar {
 .brand-sub {
   color: var(--text-muted);
   font-weight: 500;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 1520px) {
+  .brand-sub {
+    display: none;
+  }
 }
 
 .slide-dots {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
 }
 
 .slide-dot {
   background: rgba(148, 163, 184, 0.14);
   border: 1px solid transparent;
   color: var(--text-secondary);
-  padding: 5px 11px;
+  padding: 4px 9px;
   border-radius: 999px;
-  font-size: 0.76rem;
+  font-size: 0.73rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
+  white-space: nowrap;
 }
 
 .slide-dot:hover {
@@ -995,6 +1001,235 @@ body.is-fullscreen .progress-track {
   margin-bottom: 6px;
 }
 
+/* ==========================================================================
+   SLIDE 10: Real-World Multi-Agent Case Study & Interactive Mermaid Stage
+   ========================================================================== */
+.case-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.zoom-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(13, 17, 26, 0.92);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 4px 6px;
+}
+
+.zoom-btn {
+  background: rgba(30, 41, 59, 0.78);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.16s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.zoom-btn:hover {
+  background: rgba(56, 189, 248, 0.18);
+  border-color: rgba(56, 189, 248, 0.45);
+  color: #38bdf8;
+}
+
+.zoom-btn.accent-expand {
+  background: rgba(56, 189, 248, 0.16);
+  border-color: rgba(56, 189, 248, 0.45);
+  color: #38bdf8;
+}
+
+.zoom-readout {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  min-width: 48px;
+  text-align: center;
+}
+
+.mermaid-stage-card {
+  background: rgba(10, 14, 23, 0.92);
+  border: 1px solid var(--border-highlight);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  position: relative;
+}
+
+.mermaid-stage-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 14px;
+  background: rgba(18, 24, 38, 0.95);
+  border-bottom: 1px solid var(--border-subtle);
+  flex-wrap: wrap;
+}
+
+.mermaid-legend {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 0.73rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.legend-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid var(--border-subtle);
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.mermaid-hint {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.mermaid-viewport {
+  width: 100%;
+  height: 415px;
+  overflow: hidden;
+  position: relative;
+  cursor: grab;
+  user-select: none;
+  background-color: #080c14;
+  background-image:
+    radial-gradient(rgba(148, 163, 184, 0.11) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.mermaid-viewport.is-dragging {
+  cursor: grabbing;
+}
+
+.mermaid-pan-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+.mermaid-pan-layer svg {
+  display: block;
+  max-width: none !important;
+}
+
+.mermaid-code-panel {
+  display: none;
+  height: 415px;
+  overflow: auto;
+  padding: 16px 20px;
+  background: #070a11;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  line-height: 1.55;
+  color: #cbd5e1;
+  white-space: pre;
+}
+
+.mermaid-code-panel.active {
+  display: block;
+}
+
+.case-kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.case-kpi-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 9px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.case-kpi-item strong {
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.case-kpi-item span {
+  font-size: 0.73rem;
+  color: var(--text-secondary);
+  line-height: 1.35;
+}
+
+/* Fullscreen Interactive Diagram Lightbox */
+.mermaid-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 350;
+  background: rgba(5, 8, 14, 0.96);
+  backdrop-filter: blur(18px);
+  display: none;
+  flex-direction: column;
+}
+
+.mermaid-modal.open {
+  display: flex;
+}
+
+.mermaid-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 20px;
+  background: rgba(13, 17, 26, 0.96);
+  border-bottom: 1px solid var(--border-highlight);
+  flex-wrap: wrap;
+}
+
+.mermaid-modal-viewport {
+  flex: 1;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  cursor: grab;
+  user-select: none;
+  background-color: #070a11;
+  background-image:
+    radial-gradient(rgba(148, 163, 184, 0.12) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+.mermaid-modal-viewport.is-dragging {
+  cursor: grabbing;
+}
+
 /* Responsive adjustments */
 @media (max-width: 1024px) {
   html {
@@ -1014,7 +1249,8 @@ body.is-fullscreen .progress-track {
   .context-lanes {
     grid-template-columns: 1fr;
   }
-  .scenario-grid {
+  .scenario-grid,
+  .case-kpi-strip {
     grid-template-columns: 1fr 1fr;
   }
   .slide-dots {
@@ -1029,7 +1265,8 @@ body.is-fullscreen .progress-track {
   .problem-cards,
   .pillar-pills,
   .metrics-row,
-  .scenario-grid {
+  .scenario-grid,
+  .case-kpi-strip {
     grid-template-columns: 1fr;
   }
 }

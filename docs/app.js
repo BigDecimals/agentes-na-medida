@@ -3,7 +3,7 @@
 // ============================================================================
 
 let currentSlide = 0;
-const totalSlides = 9;
+const totalSlides = 10;
 
 // Speaker Notes (~15 minutes total pacing)
 const speakerNotes = [
@@ -91,12 +91,24 @@ const speakerNotes = [
     `
   },
   {
-    title: "Slide 09 · Mapa de Decisão e Fechamento (~1 min)",
+    title: "Slide 09 · Mapa de Decisão (~1 min)",
     html: `
-      <p><strong>Fechamento prático:</strong></p>
+      <p><strong>Resumo rápido antes do caso real:</strong></p>
       <ul>
-        <li>Passe rapidamente pela tabela resumo: cada peça tem seu lugar exato.</li>
-        <li>Convide o público a olhar os 6 cenários práticos embaixo: quando damos o contexto certo, na hora certa e no lugar certo, paramos de contar com a sorte e passamos a ter engenharia previsível.</li>
+        <li>Passe pela tabela resumo mostrando o papel de cada peça.</li>
+        <li><em>Gancho para o Slide 10:</em> "Agora vamos ver todas essas 5 peças trabalhando juntas num laboratório real 24/7 em produção!"</li>
+      </ul>
+    `
+  },
+  {
+    title: "Slide 10 · Estudo de Caso Real 24/7 (~2 min)",
+    html: `
+      <p><strong>Demonstração ao vivo (clique em "⛶ Ampliar Diagrama"):</strong></p>
+      <ul>
+        <li><strong>1. Cache &amp; Governança:</strong> <code>AGENTS.md</code> + catálogo de 6 Skills (~180t) ficam fixos no Prefix Cache (-90% custo).</li>
+        <li><strong>2. Enxame 3-Tier no Swarm Board:</strong> <code>@coordinator</code> (Carbon High) acorda a cada 30 min e aciona especialistas via <code>@nome</code> (custo 0 enquanto dormem).</li>
+        <li><strong>3. Skills vs. Subagents na prática:</strong> <code>@trainer</code> abre sua <strong>Skill</strong> na mesma sala para seguir o protocolo SFT, enquanto <code>@auditor</code> dispara <strong>14 Subagents Read-Only</strong> em salas isoladas (~180k tokens descartados!).</li>
+        <li><strong>4. Tools CLI:</strong> <code>lab</code> valida 100% <code>loss_mask==1</code>, calibra pesos F32 e submete ao Kaggle sem chute matemático.</li>
       </ul>
     `
   }
@@ -1121,6 +1133,544 @@ function updateFullscreenUI() {
 }
 
 // ============================================================================
+// SLIDE 10 DATA & CONTROLLER: Real-World Multi-Agent Mermaid Showcase
+// ============================================================================
+const caseDiagrams = {
+  ecosystem: `flowchart LR
+  subgraph L1["1. INSTRUCTIONS & PREFIX CACHE (-90% CUSTO)"]
+    direction TB
+    AGENTS["⚡ AGENTS.md (Instruction Global)
+    Fuso GMT-3 · 0 Warnings · ≤ 700 Linhas
+    Fronteiras Estritas de Escrita"]:::cacheNode
+    CAT["📑 Indice de Skills em Cache (~180t)
+    6 entradas YAML (name + description)
+    Corpos SKILL.md fechados em repouso"]:::cacheNode
+    TOML[("⚙️ lab.toml (Estado & Ratchet)
+    [gemma.mastermind] · [gemma.ratchet]
+    Candidatos em Quarentena")]:::modNode
+  end
+
+  subgraph L2["2. ENXAME AUTONOMO 24/7 (NATIVE SWARM · 3 TIERS)"]
+    direction TB
+    CRON(["⏰ Schedule Cron (*/30 min · IsDaemon)"]):::swarmNode
+    COORD{{"👑 @coordinator (Juiz Supremo)
+    Tier 1: Gemini 4 Carbon High"}}:::coordNode
+    BOARD["📋 Native Swarm Message Board
+    post_message · read_board · swarm_wait
+    Doorbell @nome (0 tokens em espera)"]:::boardNode
+
+    subgraph T2["Tier 2 · Orchestrator Carbon (Planeja Carbon / Executa Hydrogen)"]
+      direction TB
+      TRAINER["🏋️ @trainer
+      SFT LoRA, Calibracao & Evals
+      (0 subagents aninhados)"]:::swarmNode
+      FANATIC["🕵️ @fanatic (Cron 6h)
+      Detetive Paranoico Causa Raiz
+      (1 hipotese falsificavel/vez)"]:::swarmNode
+      AUDITOR["🛡️ @auditor (Cron 12h)
+      Guardiao Zero-Defeito & Wheels
+      (Silencioso se 0 CRITICAL/HIGH)"]:::swarmNode
+    end
+
+    subgraph T3["Tier 3 · Gemini 4 Hydrogen Medium (Ops & Docs Leves)"]
+      direction TB
+      COMPMON["📡 @comp-monitor
+      Radar Kaggle LB, Cotas & Forum"]:::opsNode
+      SCRIBE["📝 @scribe
+      Sincroniza LOG, PAPER & STATUS"]:::opsNode
+      WATCH["⏱️ @monitor
+      Watchdog Anti-Stall do Board"]:::opsNode
+    end
+  end
+
+  subgraph L3["3. SKILLS (MESMA SALA) vs SUBAGENTS (OUTRA SALA)"]
+    direction TB
+    subgraph SKBOX["📘 Skills (.agents/skills/*/SKILL.md · Revelacao Progressiva)"]
+      direction TB
+      SK_MM["📘 Skill: mastermind-overseer
+      SKILL.md + mastermind-ledger.md"]:::skillNode
+      SK_TR["📘 Skill: training-cycle
+      SKILL.md + trainer-memory.md
+      + findings_tasks/ + candidates/"]:::skillNode
+      SK_FN["📘 Skill: paranoid-fanatic
+      SKILL.md + fanatic-dossier.md"]:::skillNode
+      SK_AU["📘 Skill: repo-auditor
+      SKILL.md + findings/ + references/*.md"]:::skillNode
+      SK_OP["📘 Skills: competition-monitor & scribe
+      STATUS.md · FORUM.md · LOG.md · PAPER.md"]:::skillNode
+    end
+
+    subgraph SUBBOX["🤖 Subagents (invoke_subagent · Janelas 100% Isoladas)"]
+      direction TB
+      SUB14["🤖 Ate 14 Subagents Read-Only Paralelos
+      Dataset · Loss Mask · Safetensors · Wheel · Pytest
+      ~180k tokens descartados -> retorna so resumo!"]:::subNode
+      SUBMON["🤖 Subagent Persistente (send_message)
+      Sessao isolada p/ polling de LB e Forum"]:::subNode
+    end
+  end
+
+  subgraph L4["4. TOOLS CLI DETERMINISTICAS (.venv/bin/lab) & GPUS"]
+    direction TB
+    TL_PULSE["🛠️ Tool: lab pulse & mastermind-status
+    Trava .venv + Saldo Dual-Colab & Kaggle"]:::toolNode
+    TL_GATE["🛠️ Tool: devil-advocate & train-gate
+    Bloqueia DE-01..45 + 100% loss_mask==1"]:::toolNode
+    TL_AUTOP["🛠️ Tool: fanatic-autopsy & fanatic-p0
+    Forense Exata + Preempcao P0 Automatica"]:::toolNode
+    TL_COLAB["🔥 Tool GPU: lab colab job (2x Contas)
+    GPUs G4 / A100 · SFT LoRA & Evals"]:::gpuNode
+    TL_CALIB["🛠️ Tool: calibrate, check & non-regression
+    Norma F32 @0.975x · 0 regressoes 2/2 vs 0.22"]:::toolNode
+    TL_KAGGLE["🏆 Tool GPU: kaggle-queue & gemma submit
+    4xL4 (≤ 11h) -> 4-Gate BiS -> submission.zip"]:::gpuNode
+  end
+
+  AGENTS -.->|"Prefix Cache Fixo"| COORD
+  CAT -.->|"Indice 30t/Skill"| BOARD
+  CRON -->|"Tick 30m"| COORD
+  COORD <-->|"Diretivas & Ratchet"| TOML
+  COORD ==>|"Doorbell @nome"| BOARD
+  WATCH -.->|"Destrava stall"| BOARD
+
+  BOARD ==>|"Missao SFT"| TRAINER
+  BOARD ==>|"Forense 6h"| FANATIC
+  BOARD ==>|"Drift / Audit"| AUDITOR
+  BOARD -->|"Sync Pos-Run"| SCRIBE
+  BOARD -->|"Checar LB"| COMPMON
+
+  COORD ---|"Abre na mesma sala"| SK_MM
+  TRAINER ---|"Abre na mesma sala"| SK_TR
+  FANATIC ---|"Abre na mesma sala"| SK_FN
+  AUDITOR ---|"Abre na mesma sala"| SK_AU
+  SCRIBE ---|"Abre na mesma sala"| SK_OP
+  COMPMON ---|"Abre na mesma sala"| SK_OP
+
+  AUDITOR ==>|"invoke_subagent (x14)"| SUB14
+  COMPMON ==>|"send_message"| SUBMON
+
+  COORD -->|"Checa cotas"| TL_PULSE
+  TRAINER -->|"1. Gate Zero-Defeito"| TL_GATE
+  TRAINER -->|"2. Treina LoRA"| TL_COLAB
+  TRAINER -->|"3. Valida Campeao"| TL_CALIB
+  TRAINER ==>|"4. Auto-Submit BiS"| TL_KAGGLE
+  FANATIC -->|"Auditoria & P0"| TL_AUTOP
+  TL_AUTOP -.->|"Trava P0 se bug real"| TOML
+  SUBMON -->|"API Kaggle"| TL_KAGGLE
+
+  classDef cacheNode fill:#062e24,stroke:#10b981,stroke-width:2px,color:#ecfdf5
+  classDef modNode fill:#24123b,stroke:#a855f7,stroke-width:2px,color:#f3e8ff
+  classDef coordNode fill:#0c2d48,stroke:#38bdf8,stroke-width:2.5px,color:#f0f9ff
+  classDef boardNode fill:#112240,stroke:#60a5fa,stroke-width:2px,color:#e0f2fe
+  classDef swarmNode fill:#0f2438,stroke:#38bdf8,stroke-width:1.8px,color:#e0f2fe
+  classDef opsNode fill:#162032,stroke:#94a3b8,stroke-width:1.5px,color:#f1f5f9
+  classDef skillNode fill:#083344,stroke:#06b6d4,stroke-width:2px,color:#cffafe
+  classDef subNode fill:#3b0d2c,stroke:#ec4899,stroke-width:2px,color:#fce7f3
+  classDef toolNode fill:#362207,stroke:#f59e0b,stroke-width:2px,color:#fef3c7
+  classDef gpuNode fill:#421c07,stroke:#fb923c,stroke-width:2.5px,color:#ffedd5`,
+
+  sequence: `sequenceDiagram
+  autonumber
+  participant MM as 👑 Coordinator (Carbon High)
+  participant BD as 📋 Swarm Board (Doorbell)
+  participant TR as 🏋️ @trainer + 📘 Skill
+  participant AU as 🛡️ @auditor + 📘 Skill
+  participant SB as 🤖 14 Subagents (Isolados)
+  participant FN as 🕵️ @fanatic + 📘 Skill
+  participant TL as 🛠️ Tools CLI (lab) & GPUs
+  participant SC as 📝 @scribe & @comp-monitor
+
+  Note over MM,SC: AGENTS.md + Indice das 6 Skills ja estao congelados no Prefix Cache (-90% custo)
+
+  MM->>TL: Cron */30m -> abre mastermind-overseer/SKILL.md -> roda lab gemma mastermind-status
+  TL-->>MM: JSON enxuto (Saldo 2x Colab G4, Cota Kaggle 4xL4, Ratchet 21.0/44)
+  MM->>BD: post_message("@trainer Execute ciclo SFT ancorado no Campeao 0.22") + swarm_wait
+
+  BD->>TR: Acorda @trainer (Orchestrator Carbon)
+  Note over TR: Abre training-cycle/SKILL.md + trainer-memory.md na MESMA janela (~600t)
+  TR->>TL: Tool: lab gemma devil-advocate & train-gate (valida 100% loss_mask==1)
+  TL-->>TR: Gate APROVADO (0 Dead-Ends, max_per_repo ≤ 5, 0 CRITICAL/HIGH)
+
+  par Auditoria de Paridade com Subagents Isolados
+    BD->>AU: Acorda @auditor em mudanca de wheel ou ciclo 12h
+    AU->>SB: invoke_subagent x14 (Dataset, Safetensors, Wheel Parity, Pytest)
+    Note over SB: 14 salas Read-Only leem 50+ arquivos (~180k tokens descartados!)
+    SB-->>AU: Retorna apenas resumo executivo (~300t: 0 CRITICAL / 0 HIGH)
+  and Treino Remoto em GPU + Forense 6h
+    TR->>TL: Tool: lab colab job (Treino LoRA SFT em 2x G4 + canary12 + extra-d-clean)
+    FN->>TL: Ciclo 6h -> abre paranoid-fanatic/SKILL.md -> lab gemma fanatic-autopsy
+    TL-->>FN: Hipotese testada (se defeito provado -> aciona fanatic-p0 no lab.toml)
+    TL-->>TR: Pesos baixados -> lab gemma calibrate (F32 @0.975x) + non-regression
+  end
+
+  TR->>TL: 4 Gates BiS OK! -> lab kaggle-queue (4xL4 ≤ 11.0h) -> lab gemma submit
+  TL-->>TR: Submissao Oficial enviada ao Kaggle (submission.zip certificada)
+  TR->>BD: post_message("[done] @coordinator @scribe @comp-monitor Novo recorde submetido")
+
+  BD->>SC: Acorda Tier 3 (Hydrogen Medium)
+  SC->>TL: Confere JSONs brutos + lab submissions + lab forum --new
+  SC-->>BD: STATUS.md, LOG.md, TRAINING.md, PAPER.md e FORUM.md sincronizados (GMT-3)`,
+
+  anatomy: `flowchart TB
+  subgraph CTX["COMO CADA PECA PROTEGE A JANELA DE CONTEXTO E A COTA"]
+    direction LR
+    P_CACHE["🟢 1. Prefix Cache no Topo (-90%)
+    AGENTS.md + Schemas de Tools
+    + 6 linhas de Indice de Skills (~180t)
+    Carregado 1x -> reaproveitado em tudo"]:::cacheNode
+
+    P_SKILL["📘 2. Skill na Mesma Sala (~400t)
+    .agents/skills/{agente}/SKILL.md
+    Entrega comandos e regras prontas
+    Evita abrir 40 arquivos no chute!"]:::skillNode
+
+    P_SUB["🤖 3. Subagent em Outra Sala (-98%)
+    invoke_subagent (14 escopos Read-Only)
+    Absorve +180.000t de leitura bruta
+    Devolve apenas ~300t ao agente pai!"]:::subNode
+
+    P_TOOL["🛠️ 4. Tool Fora do Modelo (100% Exato)
+    CLI Python .venv/bin/lab
+    Decodifica tensores, normas F32 e Docker
+    Zero conta de cabeca no texto!"]:::toolNode
+  end
+
+  subgraph OWN["FRONTEIRAS ESTRITAS DE ARQUIVOS (ZERO COLISOES ENTRE 6 AGENTES SIMULTANEOS)"]
+    direction LR
+    O_MM["👑 @coordinator (Carbon High)
+    Dono exclusivo de:
+    lab.toml ([gemma.mastermind/ratchet])
+    mastermind-ledger.md"]:::coordNode
+
+    O_TR["🏋️ @trainer (Orchestrator)
+    Dono exclusivo de:
+    candidates/{novo}/ · build/jobs/
+    findings_tasks/ · trainer-memory.md"]:::swarmNode
+
+    O_AU["🛡️ @auditor (Orchestrator)
+    Dono exclusivo de:
+    findings/ (README, F-XX, SOLUTIONS)
+    dataset_audit.py · ratchet.py · tests/"]:::skillNode
+
+    O_FN["🕵️ @fanatic (Orchestrator)
+    Dono exclusivo de:
+    gemma_agent/fanatic.py
+    fanatic-dossier.md + gatilho P0"]:::subNode
+
+    O_SC["📝 @scribe & @comp-monitor (Hydrogen)
+    Donos exclusivos de:
+    STATUS.md · research/LOG.md
+    TRAINING.md · PAPER.md · FORUM.md"]:::toolNode
+  end
+
+  P_CACHE --> P_SKILL --> P_SUB --> P_TOOL
+  P_CACHE -.->|"Governado por"| O_MM
+  P_SKILL -.->|"Receita SFT"| O_TR
+  P_SUB -.->|"14 Salas Audit"| O_AU
+  P_TOOL -.->|"Forense CLI"| O_FN
+  P_TOOL -.->|"Metricas JSON"| O_SC
+
+  classDef cacheNode fill:#062e24,stroke:#10b981,stroke-width:2px,color:#ecfdf5
+  classDef coordNode fill:#0c2d48,stroke:#38bdf8,stroke-width:2.2px,color:#f0f9ff
+  classDef swarmNode fill:#0f2438,stroke:#38bdf8,stroke-width:1.8px,color:#e0f2fe
+  classDef skillNode fill:#083344,stroke:#06b6d4,stroke-width:2px,color:#cffafe
+  classDef subNode fill:#3b0d2c,stroke:#ec4899,stroke-width:2px,color:#fce7f3
+  classDef toolNode fill:#362207,stroke:#f59e0b,stroke-width:2px,color:#fef3c7`
+};
+
+let currentCaseTab = "ecosystem";
+let lastDiagramKey = "ecosystem";
+let mermaidReady = false;
+let mermaidRenderCounter = 0;
+
+const panZoomState = {
+  inline: { scale: 1, fitScale: 1, x: 0, y: 0, vbW: 1200, vbH: 600 },
+  modal: { scale: 1, fitScale: 1, x: 0, y: 0, vbW: 1200, vbH: 600 }
+};
+
+function ensureMermaidInitialized() {
+  if (mermaidReady || typeof window.mermaid === "undefined") return;
+  window.mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: "strict",
+    theme: "base",
+    flowchart: {
+      htmlLabels: false,
+      curve: "basis",
+      nodeSpacing: 26,
+      rankSpacing: 44,
+      padding: 14
+    },
+    sequence: {
+      actorMargin: 36,
+      messageMargin: 28,
+      boxMargin: 8,
+      useMaxWidth: false
+    },
+    themeVariables: {
+      darkMode: true,
+      background: "#080c14",
+      fontFamily: "Inter, system-ui, sans-serif",
+      fontSize: "13px",
+      primaryColor: "#121826",
+      primaryTextColor: "#f1f5f9",
+      primaryBorderColor: "#38bdf8",
+      lineColor: "#64748b",
+      secondaryColor: "#0f172a",
+      tertiaryColor: "#111827",
+      clusterBkg: "#0d1320",
+      clusterBorder: "#334155",
+      titleColor: "#e2e8f0",
+      edgeLabelBackground: "#0b111d",
+      actorBkg: "#112240",
+      actorBorder: "#38bdf8",
+      actorTextColor: "#f1f5f9",
+      actorLineColor: "#475569",
+      signalColor: "#94a3b8",
+      signalTextColor: "#f1f5f9",
+      labelBoxBkgColor: "#0f172a",
+      labelBoxBorderColor: "#334155",
+      labelTextColor: "#e2e8f0",
+      loopTextColor: "#38bdf8",
+      noteBkgColor: "#083344",
+      noteTextColor: "#cffafe",
+      noteBorderColor: "#06b6d4"
+    }
+  });
+  mermaidReady = true;
+}
+
+function normalizeRenderedSvg(layerEl) {
+  const svgEl = layerEl.querySelector("svg");
+  if (!svgEl) return { vbW: 1200, vbH: 600 };
+
+  svgEl.style.maxWidth = "none";
+  const vb = svgEl.getAttribute("viewBox");
+  let vbW = 1200;
+  let vbH = 600;
+  if (vb) {
+    const parts = vb.trim().split(/[\s,]+/).map(Number);
+    if (parts.length === 4 && parts[2] > 0 && parts[3] > 0) {
+      vbW = parts[2];
+      vbH = parts[3];
+    }
+  }
+  svgEl.setAttribute("width", String(vbW));
+  svgEl.setAttribute("height", String(vbH));
+  return { vbW, vbH };
+}
+
+function applyPanZoomTransform(targetKey) {
+  const isModal = targetKey === "modal";
+  const layer = document.getElementById(isModal ? "mermaidModalPanLayer" : "mermaidPanLayer");
+  const readout = document.getElementById(isModal ? "modalZoomReadout" : "mermaidZoomReadout");
+  const st = panZoomState[targetKey];
+  if (!layer) return;
+
+  layer.style.transform = `translate(${st.x.toFixed(1)}px, ${st.y.toFixed(1)}px) scale(${st.scale.toFixed(4)})`;
+  if (readout) {
+    const relPct = Math.round((st.scale / (st.fitScale || 1)) * 100);
+    readout.textContent = `${relPct}%`;
+  }
+}
+
+function resetMermaidPanZoom(mode = "fit", isModal = false) {
+  const targetKey = isModal ? "modal" : "inline";
+  const viewport = document.getElementById(isModal ? "mermaidModalViewport" : "mermaidViewport");
+  if (!viewport) return;
+
+  const st = panZoomState[targetKey];
+  const vw = viewport.clientWidth || 1100;
+  const vh = viewport.clientHeight || 415;
+  const pad = isModal ? 40 : 24;
+
+  const fitScale = Math.min((vw - pad) / st.vbW, (vh - pad) / st.vbH);
+  st.fitScale = fitScale > 0 ? fitScale : 1;
+
+  if (mode === "detail") {
+    st.scale = Math.max(st.fitScale * 1.65, isModal ? 1.05 : 0.85);
+    st.x = 20;
+    st.y = 18;
+  } else {
+    st.scale = st.fitScale;
+    st.x = (vw - st.vbW * st.scale) / 2;
+    st.y = (vh - st.vbH * st.scale) / 2;
+  }
+  applyPanZoomTransform(targetKey);
+}
+
+function zoomMermaid(deltaFactor, isModal = false, anchorX = null, anchorY = null) {
+  const targetKey = isModal ? "modal" : "inline";
+  const viewport = document.getElementById(isModal ? "mermaidModalViewport" : "mermaidViewport");
+  if (!viewport) return;
+
+  const st = panZoomState[targetKey];
+  const minScale = Math.max(st.fitScale * 0.45, 0.08);
+  const maxScale = Math.max(st.fitScale * 6, 4);
+  const nextScale = Math.min(maxScale, Math.max(minScale, st.scale * (1 + deltaFactor)));
+
+  const cx = anchorX !== null ? anchorX : viewport.clientWidth / 2;
+  const cy = anchorY !== null ? anchorY : viewport.clientHeight / 2;
+  const ratio = nextScale / st.scale;
+
+  st.x = cx - (cx - st.x) * ratio;
+  st.y = cy - (cy - st.y) * ratio;
+  st.scale = nextScale;
+  applyPanZoomTransform(targetKey);
+}
+
+async function renderDiagramInto(targetKey, diagramKey) {
+  const isModal = targetKey === "modal";
+  const layer = document.getElementById(isModal ? "mermaidModalPanLayer" : "mermaidPanLayer");
+  if (!layer) return;
+
+  const source = caseDiagrams[diagramKey];
+  ensureMermaidInitialized();
+
+  if (typeof window.mermaid === "undefined") {
+    layer.innerHTML = `<pre style="padding:18px;color:#cbd5e1;font-family:var(--font-mono);font-size:0.78rem;">${source.replace(/</g, "&lt;")}</pre>`;
+    return;
+  }
+
+  mermaidRenderCounter += 1;
+  const renderId = `mermaidSvg_${targetKey}_${mermaidRenderCounter}`;
+  const { svg } = await window.mermaid.render(renderId, source);
+  layer.innerHTML = svg;
+
+  const dims = normalizeRenderedSvg(layer);
+  panZoomState[targetKey].vbW = dims.vbW;
+  panZoomState[targetKey].vbH = dims.vbH;
+  resetMermaidPanZoom("fit", isModal);
+}
+
+async function setCaseDiagram(tabKey) {
+  currentCaseTab = tabKey;
+  if (tabKey !== "code") {
+    lastDiagramKey = tabKey;
+  }
+
+  const tabs = [
+    ["ecosystem", "caseTabEcosystem", "modalTabEcosystem"],
+    ["sequence", "caseTabSequence", "modalTabSequence"],
+    ["anatomy", "caseTabAnatomy", "modalTabAnatomy"],
+    ["code", "caseTabCode", null]
+  ];
+  tabs.forEach(([key, inlineId, modalId]) => {
+    const btn = document.getElementById(inlineId);
+    if (btn) btn.className = "tab-btn" + (key === tabKey ? " active" : "");
+    if (modalId) {
+      const mBtn = document.getElementById(modalId);
+      if (mBtn) mBtn.className = "tab-btn" + (key === lastDiagramKey ? " active" : "");
+    }
+  });
+
+  const viewport = document.getElementById("mermaidViewport");
+  const codePanel = document.getElementById("mermaidCodePanel");
+
+  if (tabKey === "code") {
+    viewport.style.display = "none";
+    codePanel.classList.add("active");
+    codePanel.textContent = `%% Diagrama ativo: ${lastDiagramKey}\n${caseDiagrams[lastDiagramKey]}`;
+    return;
+  }
+
+  viewport.style.display = "block";
+  codePanel.classList.remove("active");
+  await renderDiagramInto("inline", lastDiagramKey);
+
+  const modal = document.getElementById("mermaidModal");
+  if (modal && modal.classList.contains("open")) {
+    await renderDiagramInto("modal", lastDiagramKey);
+  }
+}
+
+async function openMermaidModal() {
+  const modal = document.getElementById("mermaidModal");
+  if (!modal) return;
+  modal.classList.add("open");
+  await renderDiagramInto("modal", lastDiagramKey);
+}
+
+function closeMermaidModal() {
+  const modal = document.getElementById("mermaidModal");
+  if (modal) {
+    modal.classList.remove("open");
+  }
+}
+
+function copyCurrentMermaid() {
+  const btn = document.getElementById("copyMermaidBtn");
+  const source = caseDiagrams[lastDiagramKey];
+  if (!navigator.clipboard) return;
+  navigator.clipboard.writeText(source).then(() => {
+    if (!btn) return;
+    const prev = btn.textContent;
+    btn.textContent = "✅ Copiado!";
+    setTimeout(() => {
+      btn.textContent = prev;
+    }, 1600);
+  });
+}
+
+function attachPanZoomInteractions(viewportId, isModal) {
+  const viewport = document.getElementById(viewportId);
+  if (!viewport) return;
+
+  const targetKey = isModal ? "modal" : "inline";
+  let dragging = false;
+  let startClientX = 0;
+  let startClientY = 0;
+  let originX = 0;
+  let originY = 0;
+
+  viewport.addEventListener("pointerdown", (e) => {
+    if (e.button !== 0) return;
+    dragging = true;
+    startClientX = e.clientX;
+    startClientY = e.clientY;
+    originX = panZoomState[targetKey].x;
+    originY = panZoomState[targetKey].y;
+    viewport.classList.add("is-dragging");
+    viewport.setPointerCapture(e.pointerId);
+  });
+
+  viewport.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    const rect = viewport.getBoundingClientRect();
+    const cssScale = rect.width / (viewport.offsetWidth || rect.width || 1);
+    const dx = (e.clientX - startClientX) / cssScale;
+    const dy = (e.clientY - startClientY) / cssScale;
+    panZoomState[targetKey].x = originX + dx;
+    panZoomState[targetKey].y = originY + dy;
+    applyPanZoomTransform(targetKey);
+  });
+
+  const endDrag = () => {
+    dragging = false;
+    viewport.classList.remove("is-dragging");
+  };
+  viewport.addEventListener("pointerup", endDrag);
+  viewport.addEventListener("pointercancel", endDrag);
+
+  viewport.addEventListener(
+    "wheel",
+    (e) => {
+      if (!isModal && !e.ctrlKey && !e.metaKey) {
+        return;
+      }
+      e.preventDefault();
+      const rect = viewport.getBoundingClientRect();
+      const cssScale = rect.width / (viewport.offsetWidth || rect.width || 1);
+      const localX = (e.clientX - rect.left) / cssScale;
+      const localY = (e.clientY - rect.top) / cssScale;
+      const delta = e.deltaY < 0 ? 0.16 : -0.16;
+      zoomMermaid(delta, isModal, localX, localY);
+    },
+    { passive: false }
+  );
+}
+
+// ============================================================================
 // NAVIGATION, SCROLL TRACKING & KEYBOARD SHORTCUTS
 // ============================================================================
 function updateNavigationUI(index) {
@@ -1134,7 +1684,8 @@ function updateNavigationUI(index) {
   document.getElementById("progressFill").style.width = `${progress}%`;
 
   const formattedIndex = String(index + 1).padStart(2, "0");
-  document.getElementById("slideCounterBadge").textContent = `${formattedIndex}/0${totalSlides}`;
+  const formattedTotal = String(totalSlides).padStart(2, "0");
+  document.getElementById("slideCounterBadge").textContent = `${formattedIndex}/${formattedTotal}`;
 
   // Update Speaker Notes content
   const note = speakerNotes[index] || speakerNotes[0];
@@ -1167,6 +1718,9 @@ document.addEventListener("DOMContentLoaded", () => {
   setSkillCase("explore");
   setSubagentCase("investigate");
   setDuelSim("skill");
+  attachPanZoomInteractions("mermaidViewport", false);
+  attachPanZoomInteractions("mermaidModalViewport", true);
+  setCaseDiagram("ecosystem");
   updateNavigationUI(0);
   fitSlidesToViewport();
 
@@ -1174,7 +1728,16 @@ document.addEventListener("DOMContentLoaded", () => {
     document.fonts.ready.then(() => fitSlidesToViewport());
   }
 
-  window.addEventListener("resize", fitSlidesToViewport);
+  window.addEventListener("resize", () => {
+    fitSlidesToViewport();
+    if (currentCaseTab !== "code") {
+      resetMermaidPanZoom("fit", false);
+    }
+    const modal = document.getElementById("mermaidModal");
+    if (modal && modal.classList.contains("open")) {
+      resetMermaidPanZoom("fit", true);
+    }
+  });
   document.addEventListener("fullscreenchange", updateFullscreenUI);
 
   // Slide dot clicks
@@ -1219,6 +1782,21 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    const modal = document.getElementById("mermaidModal");
+    if (modal && modal.classList.contains("open")) {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        closeMermaidModal();
+      } else if (e.key === "+" || e.key === "=") {
+        e.preventDefault();
+        zoomMermaid(0.25, true);
+      } else if (e.key === "-") {
+        e.preventDefault();
+        zoomMermaid(-0.25, true);
+      }
+      return;
+    }
+
     if (e.key === "ArrowRight" || e.key === "PageDown") {
       e.preventDefault();
       goToSlide(currentSlide + 1);
@@ -1233,6 +1811,8 @@ document.addEventListener("DOMContentLoaded", () => {
       toggleNotes();
     } else if (e.key >= "1" && e.key <= "9") {
       goToSlide(Number(e.key) - 1);
+    } else if (e.key === "0") {
+      goToSlide(9);
     }
   });
 });

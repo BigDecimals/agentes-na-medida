@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="./styles.css?v=5" />
+  <link rel="stylesheet" href="./styles.css?v=6" />
 </head>
 <body>
 
@@ -32,6 +32,7 @@
       <button class="slide-dot" data-slide="6">07 · Subagents</button>
       <button class="slide-dot" data-slide="7">08 · Skills vs Subagents</button>
       <button class="slide-dot" data-slide="8">09 · Decisão</button>
+      <button class="slide-dot" data-slide="9">10 · Caso Real</button>
     </nav>
 
     <div class="top-actions">
@@ -39,7 +40,7 @@
         ⛶ Tela Cheia
       </button>
       <button class="action-btn" id="toggleNotesBtn" title="Atalho: tecla N">
-        🎙️ Roteiro <span id="slideCounterBadge">01/09</span>
+        🎙️ Roteiro <span id="slideCounterBadge">01/10</span>
       </button>
       <button class="nav-btn" id="prevSlideBtn" title="Slide anterior (← / ↑)">←</button>
       <button class="nav-btn" id="nextSlideBtn" title="Próximo slide (→ / ↓)">→</button>
@@ -872,6 +873,127 @@
     </div>
   </section>
 
+  <!-- =====================================================================
+       SLIDE 10: ESTUDO DE CASO REAL — ENXAME MULTIAGENTE AUTÔNOMO 24/7
+       ===================================================================== -->
+  <section class="slide" id="slide-9" data-index="9">
+    <div class="slide-container">
+      <div class="slide-header" style="margin-bottom: 12px;">
+        <span class="slide-eyebrow eyebrow-prompt">09 · Estudo de Caso Real em Produção (24/7)</span>
+        <h2 class="slide-title">Tudo Junto na Prática: Enxame Autônomo 24/7 (Kaggle Gemma 4 Agent)</h2>
+        <p class="slide-subtitle">
+          Arquitetura real do nosso laboratório autônomo combinando <strong>Instructions em Cache</strong>, <strong>Enxame 3-Tier</strong>, <strong>6 Skills</strong>, <strong>14 Subagents Isolados</strong> e <strong>Tools CLI Determinísticas</strong>.
+        </p>
+      </div>
+
+      <!-- Diagram Switcher & Zoom Controls -->
+      <div class="case-toolbar">
+        <div class="tab-group">
+          <button class="tab-btn active" id="caseTabEcosystem" onclick="setCaseDiagram('ecosystem')">
+            🗺️ 1. Ecossistema Completo
+          </button>
+          <button class="tab-btn" id="caseTabSequence" onclick="setCaseDiagram('sequence')">
+            🔄 2. Ciclo de Interação (Sequência)
+          </button>
+          <button class="tab-btn" id="caseTabAnatomy" onclick="setCaseDiagram('anatomy')">
+            🧬 3. Contexto, Modelos &amp; Fronteiras
+          </button>
+          <button class="tab-btn" id="caseTabCode" onclick="setCaseDiagram('code')">
+            📄 4. Código Mermaid (.mmd)
+          </button>
+        </div>
+
+        <div class="zoom-controls">
+          <button class="zoom-btn" onclick="zoomMermaid(-0.2)" title="Diminuir zoom">−</button>
+          <span class="zoom-readout" id="mermaidZoomReadout">100%</span>
+          <button class="zoom-btn" onclick="zoomMermaid(0.2)" title="Aumentar zoom">+</button>
+          <button class="zoom-btn" onclick="resetMermaidPanZoom('fit')" title="Encaixar diagrama inteiro">↺ Ajustar</button>
+          <button class="zoom-btn" onclick="resetMermaidPanZoom('detail')" title="Zoom de leitura detalhada">🔍 Ler Detalhes</button>
+          <button class="zoom-btn" id="copyMermaidBtn" onclick="copyCurrentMermaid()" title="Copiar código Mermaid">📋 Copiar</button>
+          <button class="zoom-btn accent-expand" onclick="openMermaidModal()" title="Abrir diagrama em tela cheia interativa">⛶ Ampliar Diagrama</button>
+        </div>
+      </div>
+
+      <!-- Interactive Mermaid Stage -->
+      <div class="mermaid-stage-card">
+        <div class="mermaid-stage-topbar">
+          <div class="mermaid-legend">
+            <span class="legend-chip"><span class="legend-dot" style="background: #10b981;"></span>Instructions &amp; Cache (AGENTS.md)</span>
+            <span class="legend-chip"><span class="legend-dot" style="background: #38bdf8;"></span>Enxame 3-Tier &amp; Swarm Board</span>
+            <span class="legend-chip"><span class="legend-dot" style="background: #06b6d4;"></span>Skills (Mesma Sala · SKILL.md)</span>
+            <span class="legend-chip"><span class="legend-dot" style="background: #ec4899;"></span>Subagents (Salas Isoladas)</span>
+            <span class="legend-chip"><span class="legend-dot" style="background: #f59e0b;"></span>Tools CLI (lab) &amp; GPUs</span>
+          </div>
+          <span class="mermaid-hint">Arraste para navegar · Ctrl+Scroll para zoom · Duplo clique para tela cheia</span>
+        </div>
+
+        <div class="mermaid-viewport" id="mermaidViewport" ondblclick="openMermaidModal()">
+          <div class="mermaid-pan-layer" id="mermaidPanLayer"></div>
+        </div>
+
+        <pre class="mermaid-code-panel" id="mermaidCodePanel"></pre>
+      </div>
+
+      <!-- Production Architecture Highlights -->
+      <div class="case-kpi-strip">
+        <div class="case-kpi-item" style="border-top: 2px solid var(--accent-cache);">
+          <strong style="color: #34d399;">⚡ Prefix Cache + Fronteiras</strong>
+          <span><code>AGENTS.md</code> fixo no topo (-90% custo) e dono exclusivo por pasta (0 colisões de edição).</span>
+        </div>
+        <div class="case-kpi-item" style="border-top: 2px solid var(--accent-prompt);">
+          <strong style="color: #38bdf8;">👑 Enxame 3-Tier (Doorbell)</strong>
+          <span>Carbon High decide, Orchestrator treina/audita e Hydrogen documenta (93–96% cota poupada).</span>
+        </div>
+        <div class="case-kpi-item" style="border-top: 2px solid var(--accent-skill);">
+          <strong style="color: #22d3ee;">📘 6 Skills Sob Demanda</strong>
+          <span>Catálogo inicial de ~180t; cada agente abre só seu <code>SKILL.md</code> + <code>references/</code> ao agir.</span>
+        </div>
+        <div class="case-kpi-item" style="border-top: 2px solid var(--accent-subagent);">
+          <strong style="color: #f472b6;">🤖 14 Subagents Isolados</strong>
+          <span><code>@auditor</code> delega varreduras de +180k tokens em salas Read-Only e recebe só o resumo.</span>
+        </div>
+        <div class="case-kpi-item" style="border-top: 2px solid var(--accent-tool);">
+          <strong style="color: #fbbf24;">🛠️ Tools CLI &amp; 4-Gate BiS</strong>
+          <span><code>lab</code> valida 100% <code>loss_mask==1</code>, calibra F32 e submete ao Kaggle sem chute do LLM.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Fullscreen Interactive Lightbox for Stage Presentation -->
+  <div class="mermaid-modal" id="mermaidModal" role="dialog" aria-modal="true" aria-label="Diagrama de Arquitetura Ampliado">
+    <div class="mermaid-modal-header">
+      <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+        <strong style="color: #38bdf8; font-size: 0.9rem;">🔬 Arquitetura Interativa · Caso Real 24/7</strong>
+        <div class="tab-group">
+          <button class="tab-btn active" id="modalTabEcosystem" onclick="setCaseDiagram('ecosystem')">
+            🗺️ 1. Ecossistema Completo
+          </button>
+          <button class="tab-btn" id="modalTabSequence" onclick="setCaseDiagram('sequence')">
+            🔄 2. Ciclo de Interação
+          </button>
+          <button class="tab-btn" id="modalTabAnatomy" onclick="setCaseDiagram('anatomy')">
+            🧬 3. Contexto &amp; Fronteiras
+          </button>
+        </div>
+      </div>
+
+      <div class="zoom-controls">
+        <span style="font-size: 0.74rem; color: var(--text-muted); margin-right: 4px;">Scroll = Zoom · Arraste = Mover</span>
+        <button class="zoom-btn" onclick="zoomMermaid(-0.25, true)">−</button>
+        <span class="zoom-readout" id="modalZoomReadout">100%</span>
+        <button class="zoom-btn" onclick="zoomMermaid(0.25, true)">+</button>
+        <button class="zoom-btn" onclick="resetMermaidPanZoom('fit', true)">↺ Ajustar</button>
+        <button class="zoom-btn" onclick="resetMermaidPanZoom('detail', true)">🔍 Zoom 1:1</button>
+        <button class="zoom-btn" onclick="closeMermaidModal()" style="border-color: rgba(239, 68, 68, 0.45); color: #f87171;">✕ Fechar (Esc)</button>
+      </div>
+    </div>
+
+    <div class="mermaid-modal-viewport" id="mermaidModalViewport">
+      <div class="mermaid-pan-layer" id="mermaidModalPanLayer"></div>
+    </div>
+  </div>
+
   <!-- Floating Speaker Notes Drawer (Toggle with 'N' or Header Button) -->
   <aside class="notes-drawer" id="notesDrawer" aria-live="polite">
     <div class="notes-header">
@@ -881,6 +1003,7 @@
     <div class="notes-body" id="notesBody"></div>
   </aside>
 
-  <script src="./app.js?v=5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <script src="./app.js?v=6"></script>
 </body>
 </html>
